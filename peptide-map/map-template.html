@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Peptide Supply Map</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Where the registered 503B outsourcing facilities are and how few there are, where the documented supply comes from, the two-layer status of each compound, a chronology zoomed on 2023 to 2027, and the court rulings that set the pattern for what is pursued and what holds up. Every element is footnoted to a primary source.">
+<link rel="icon" href="../favicon.svg?v=2" type="image/svg+xml"><link rel="icon" href="../favicon.ico?v=2" sizes="32x32"><link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one sheet, the United States in the middle with one symbol per state sized by its count of 503B facilities, three inset panels at the edges for the origins the documents name, a rail of tables on the right, the chronology (zoomed on the decade that matters, in lanes) and the court rulings below, then the register, everything footnoted into one sources list. */
+:root{
+  --paper:#edeeea; --paper2:#e3e5df; --ink:#1e2226; --ink2:#4b525a; --muted:#737b84; --rule:#c9cdc6;
+  --water:#d6dde0; --land:#f6f6f2; --land2:#e9eae3;
+  --tol:#2f4f8f; --enf:#8f2b2b; --lawful:#4f6b4a; --single:#8a8f96; --pin:#1e2226; --pinhalo:#f6f6f2;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif; --sans:"IBM Plex Sans",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#161a1e;--paper2:#1e2328;--ink:#e6e8e3;--ink2:#b9bec4;--muted:#8d949c;--rule:#333a41;--water:#1b2228;--land:#242a30;--land2:#2b323a;--tol:#8fb0ec;--enf:#e07a7a;--lawful:#9cc08f;--single:#8d949c;--pin:#e6e8e3;--pinhalo:#161a1e;color-scheme:dark}}
+:root[data-theme="dark"]{--paper:#161a1e;--paper2:#1e2328;--ink:#e6e8e3;--ink2:#b9bec4;--muted:#8d949c;--rule:#333a41;--water:#1b2228;--land:#242a30;--land2:#2b323a;--tol:#8fb0ec;--enf:#e07a7a;--lawful:#9cc08f;--single:#8d949c;--pin:#e6e8e3;--pinhalo:#161a1e;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;padding-block:0 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:var(--tol)}
+.plate{max-width:1240px;margin:0 auto}
+header{padding:28px 0 18px;border-bottom:1.5px solid var(--ink);display:grid;grid-template-columns:1fr auto;gap:12px 32px;align-items:end}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(1.9rem,3.6vw,2.9rem);line-height:1.05;margin:6px 0 10px;text-wrap:balance}
+h2{font-family:var(--serif);font-weight:600;font-size:1.2rem;margin:0 0 8px}
+.lede{max-width:66ch;color:var(--ink2);margin:0}
+.asof{font-family:var(--mono);font-size:.78rem;color:var(--ink2);text-align:right;line-height:1.5}
+.asof b{color:var(--ink);font-weight:500}
+main{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:24px 28px;margin-top:18px}
+.mapcol{min-width:0}
+.controls{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;font-size:.82rem;color:var(--ink2);padding:8px 0 10px;border-bottom:1px solid var(--rule)}
+.controls label{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.controls input{accent-color:var(--tol);margin:0}
+.controls .grp{display:inline-flex;gap:10px;align-items:center}
+.controls .k{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.mapwrap{overflow-x:auto;margin-top:10px;border:1px solid var(--rule);background:var(--water)}
+.mapwrap svg{display:block;min-width:720px;width:100%;height:auto;font-family:var(--sans)}
+.states{fill:var(--land);stroke:var(--paper);stroke-width:.6}
+.nation{fill:none;stroke:var(--ink2);stroke-width:.8}
+.inset-box{fill:var(--paper2);stroke:var(--ink2);stroke-width:.8}
+.inset-land{fill:var(--land2);stroke:var(--paper);stroke-width:.5}
+.inset-focus{fill:var(--land);stroke:var(--ink2);stroke-width:.7}
+.inset-title{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;fill:var(--ink2)}
+.inset-sub{font-size:10px;fill:var(--muted)}
+.origin{fill:var(--enf)}.origin.lawful{fill:var(--lawful)}
+.origin-label{font-size:9.5px;fill:var(--ink2)}
+.route{fill:none;stroke-linecap:round;cursor:pointer}
+.route.documented{stroke:var(--enf);stroke-width:2.2}
+.route.partial{stroke:var(--enf);stroke-width:1.5;stroke-opacity:.75}
+.route.single{stroke:var(--single);stroke-width:1.3;stroke-dasharray:4 4}
+.route.lawful{stroke:var(--lawful);stroke-width:1.6}
+.route.none{stroke:var(--single);stroke-width:1.2;stroke-dasharray:2 5}
+.route:hover,.route.on{stroke-width:3.2;stroke-opacity:1}
+.node{fill:var(--paper);stroke:var(--ink);stroke-width:1.2}
+.node-label{font-size:10.5px;fill:var(--ink);paint-order:stroke;stroke:var(--paper);stroke-width:3px;stroke-linejoin:round}
+.pin{fill:var(--pin);stroke:var(--pinhalo);stroke-width:1;cursor:pointer}
+.pin.uninspected{fill:var(--paper);stroke:var(--pin);stroke-width:1.2}
+.pin.warning{stroke:var(--enf);stroke-width:1.8}
+.pin.dim{opacity:.1}
+.sym{fill:var(--tol);fill-opacity:.85;stroke:var(--paper);stroke-width:1.5;cursor:pointer}.sym.z{fill:none;stroke:var(--muted);stroke-width:1;stroke-dasharray:2 3;cursor:default}.sym.dim{fill-opacity:.25}
+.symn{font-family:var(--mono);font-size:13px;font-weight:500;fill:#fff;text-anchor:middle;pointer-events:none}.symn.big{font-size:17px}.syms{font-family:var(--mono);font-size:9px;fill:var(--ink2);text-anchor:middle;pointer-events:none}.lead{stroke:var(--muted);stroke-width:.7;fill:none}
+.lane{font-family:var(--mono);font-size:10px;fill:var(--ink2)}.lane-line{stroke:var(--rule)}.yrline{stroke:var(--rule);stroke-dasharray:2 3}.ev.court{fill:var(--ink)}.k.court{background:var(--ink)}
+.courts{margin-top:30px;border-top:1.5px solid var(--ink);padding-top:12px}.courts .sub{max-width:80ch;color:var(--ink2);margin:0 0 10px}.courts table{font-size:.82rem}.courts td:nth-child(1){white-space:nowrap;font-family:var(--mono);font-size:.74rem;font-weight:400}.courts .kind{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:block;margin-top:2px}.courts .lesson{color:var(--ink);font-family:var(--serif);font-size:.98rem;line-height:1.4}.courts .pattern{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 28px;margin:14px 0 0;padding:0;list-style:none;font-size:.84rem;color:var(--ink2)}.courts .pattern b{color:var(--ink)}
+.legend text{font-size:10.5px;fill:var(--ink2)}
+.legend .h{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;fill:var(--muted)}
+.cap{font-size:.8rem;color:var(--muted);margin:8px 0 0;max-width:80ch}
+.tip{position:fixed;z-index:20;pointer-events:none;max-width:320px;background:var(--ink);color:var(--paper);font-size:.8rem;line-height:1.4;padding:8px 10px;border-radius:3px;display:none}
+.tip b{display:block;font-weight:600}
+.tip .n{color:var(--rule);font-family:var(--mono);font-size:.72rem}
+/* the rail */
+.rail{min-width:0;display:grid;gap:22px;align-content:start}
+.rail section{border-top:1.5px solid var(--ink);padding-top:10px}
+.rail .sub{font-size:.82rem;color:var(--ink2);margin:0 0 8px}
+table{border-collapse:collapse;width:100%;font-size:.8rem}
+th{text-align:left;font-family:var(--mono);font-weight:500;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:4px 6px 6px 0;border-bottom:1px solid var(--rule);vertical-align:bottom}
+td{padding:6px 6px 6px 0;border-bottom:1px solid var(--rule);vertical-align:top;color:var(--ink2)}
+td:first-child{color:var(--ink);font-weight:500}
+.chip{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px}
+.chip.tol{background:var(--tol)}.chip.no{background:var(--enf)}.chip.ok{background:var(--lawful)}.chip.mixed{background:var(--single)}
+.dates li{margin:0 0 8px;font-size:.84rem}
+.dates .d{font-family:var(--mono);font-size:.74rem;color:var(--ink2);display:block}
+ul{padding-left:18px;margin:0}
+.fn{font-family:var(--mono);font-size:.68rem;color:var(--tol);vertical-align:super;text-decoration:none;margin-left:2px}
+/* chronology */
+.chron{margin-top:30px;border-top:1.5px solid var(--ink);padding-top:12px}
+.strip{overflow-x:auto}
+.strip svg{display:block;min-width:720px;width:100%;height:auto}
+.strip .yr{font-family:var(--mono);font-size:10px;fill:var(--muted)}
+.strip .axis{stroke:var(--rule)}
+.strip .ev{cursor:pointer;stroke:var(--paper);stroke-width:1.2}
+.ev.rule{fill:var(--ink2)}.ev.list{fill:var(--tol)}.ev.glp1{fill:var(--single)}.ev.enforce{fill:var(--enf)}.ev.hhs{fill:var(--tol);stroke:var(--ink);stroke-width:2}.ev.next{fill:var(--paper);stroke:var(--ink);stroke-width:1.4}
+.chron ol{list-style:none;padding:0;margin:14px 0 0;columns:2;column-gap:36px}
+.chron li{break-inside:avoid;display:grid;grid-template-columns:92px 1fr;gap:10px;padding:7px 0;border-bottom:1px solid var(--rule);font-size:.84rem}
+.chron .d{font-family:var(--mono);font-size:.74rem;color:var(--ink2);padding-top:2px}
+.chron .k{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;vertical-align:0}
+.k.rule{background:var(--ink2)}.k.list{background:var(--tol)}.k.glp1{background:var(--single)}.k.enforce{background:var(--enf)}.k.hhs{background:var(--tol);box-shadow:0 0 0 2px var(--paper),0 0 0 3px var(--ink)}.k.next{background:var(--paper);box-shadow:inset 0 0 0 1.5px var(--ink)}
+/* register and sources */
+details{margin-top:26px;border-top:1.5px solid var(--ink);padding-top:10px}
+summary{cursor:pointer;font-family:var(--serif);font-weight:600;font-size:1.2rem;list-style:none}
+summary::after{content:" +";color:var(--muted)}details[open] summary::after{content:" −"}
+.regwrap{overflow-x:auto;margin-top:10px}
+.reg{min-width:760px;font-size:.78rem}
+.reg td:nth-child(1){white-space:nowrap;font-family:var(--mono);font-size:.72rem;font-weight:400}
+.sources{margin-top:26px;border-top:1.5px solid var(--ink);padding-top:10px}
+.sources ol{columns:2;column-gap:36px;padding-left:0;list-style:none;counter-reset:s}
+.sources li{counter-increment:s;break-inside:avoid;font-size:.78rem;color:var(--ink2);padding:4px 0;display:grid;grid-template-columns:30px 1fr;gap:6px}
+.sources li::before{content:counter(s);font-family:var(--mono);font-size:.72rem;color:var(--tol)}
+.sources a{word-break:break-all;color:var(--ink2)}
+.sources a:hover{color:var(--tol)}
+footer{margin-top:34px;font-size:.78rem;color:var(--muted);max-width:90ch;border-top:1px solid var(--rule);padding-top:12px}
+:focus-visible{outline:2px solid var(--tol);outline-offset:2px}
+@media (max-width:1000px){main{grid-template-columns:1fr}.chron ol,.sources ol{columns:1}.courts .pattern{grid-template-columns:1fr}header{grid-template-columns:1fr}.asof{text-align:left}}
+@media (prefers-reduced-motion:no-preference){.route,.pin{transition:stroke-width .15s,opacity .2s}}
+</style>
+</head>
+<body>
+<div class="plate">
+<header>
+  <div><div class="eyebrow">Sheet 01 · Pharmaceutical supply · United States</div>
+  <h1>Peptide Supply Map</h1>
+  <p class="lede">Where the registered 503B outsourcing facilities are, and how few: one symbol per state, sized by its count. The insets name the places government documents give as the origins of supply. The rail holds the standing of each compound under FDA's lists and the HHS draft policy. Below, the chronology zoomed on the years that matter, and the court rulings that show what is pursued and what has held up. Every element carries a footnote to a primary source.</p></div>
+  <div class="asof"><b>As of <span id="asof"></span></b><br>FDA facility list current as of 2026-10-29<br>Maps public guidance. Not legal advice.<br><a href="index.html">← The front door: order a peptide and ride its track</a><br><a href="glossary.html">Glossary of the terms on this map</a></div>
+</header>
+<main>
+  <div class="mapcol">
+    <div class="controls" id="controls">
+      <span class="grp"><span class="k">503B facilities</span><label><input type="checkbox" id="lFac" checked>State symbols</label><label><input type="checkbox" id="lDots" checked>Each facility</label></span>
+      <span class="grp"><span class="k">Count only</span><label><input type="checkbox" id="fUnins">Never inspected</label><label><input type="checkbox" id="fPrior">Prior non-compliance</label><label><input type="checkbox" id="fWarn">Warning letter</label></span>
+    </div>
+    <div class="mapwrap"><svg id="map" viewBox="0 0 1100 740" role="img" aria-label="Map of the United States with one symbol per state sized by its count of registered 503B outsourcing facilities, with inset panels for China, Europe and Mexico naming the origins of supply"></svg></div>
+    <p class="cap" id="mapcap"></p>
+  </div>
+  <aside class="rail">
+    <section><h2>Compound status, two layers</h2><p class="sub">FDA's list status and the HHS draft tolerance are different things. Tolerated is never approved.<a class="fn" href="#sources" id="fnTol"></a></p>
+      <table id="compounds"><thead><tr><th>Compound</th><th>503A pharmacy</th><th>HHS draft (2026-10-30)</th><th>503B</th></tr></thead><tbody></tbody></table></section>
+    <section><h2>Live dates</h2><ul class="dates" id="dates"></ul></section>
+    <section><h2>Reading the map</h2><p class="sub">One circle per state, sized by its count of registered 503B facilities, the number inside. A dashed ring is a state with none. The small dots are the facilities themselves. The insets name the places government documents give as origins; no supply lines are drawn, because the documented routes are parcels through express hubs and drums through importers, not a line on a map.</p></section>
+  </aside>
+</main>
+<section class="chron"><h2>Chronology, zoomed on 2023 to 2027</h2><p class="sub" style="color:var(--ink2);margin:0 0 8px;font-size:.84rem">Everything that moved, moved in these four years. One lane per kind of event; the 2013 Act that created 503B facilities sits off the left edge.</p>
+  <div class="strip"><svg id="strip" viewBox="0 0 1100 200" role="img" aria-label="Timeline of rule changes, 2023 to 2027, in lanes by kind"></svg></div>
+  <ol id="chron"></ol></section>
+<section class="courts" id="courts"><h2>The court record: what is pursued, and what has held up</h2><p class="sub">Warning letters say what FDA thinks. Rulings, pleas and settlements say what held up in front of a judge. Read down the right-hand column for the pattern. Allegations in pending cases are not findings; none of this is legal advice.</p>
+  <div class="regwrap"><table id="courtsT"><thead><tr><th>Date</th><th>Case and forum</th><th>What was decided</th><th>What it tells you</th></tr></thead><tbody></tbody></table></div>
+  <ul class="pattern"><li><b>Pursued.</b> Research-use-only sales to consumers, by web store, clinic or prescriber (pleas since 2014; letters in 2025 and 2026). Copies of approved drugs compounded "regularly and in inordinate amounts", with clinical differences the Empower letter calls pretextual. Claims that a compounded drug equals or is approved like the brand (30 telehealth letters, state attorneys general). Grey-market import relabeled at the US end.</li><li><b>Held up.</b> FDA's shortage delistings, through two district courts and the Fifth Circuit. The intended-use test read from the whole record, in every plea. State consumer-protection law against "pharmaceutical grade" claims.</li><li><b>Defensible, on this record.</b> A patient-specific prescription with a documented clinical difference. Bulk substance from an FDA-registered maker with a certificate of analysis, Green List origin for GLP-1 API. No equivalence claims. No research-use-only sales to patients.</li><li><b>Untested.</b> No court has yet ruled on the research-use-only theory for peptides as such; the pleas were negotiated. The HHS draft policy has not been litigated, and the Hims referral to DOJ has produced nothing public.</li></ul></section>
+<details><summary>The federal register behind this map, 69 rows</summary><p class="sub">Every federal rule, list placement, court decision and enforcement letter that decides what can be compounded, prescribed, sold or imported. Date, body, decision, compounds, source. Verified 2026-11-02.</p>
+  <div class="regwrap"><table class="reg" id="register"><thead><tr><th>Date</th><th>Body</th><th>What it decides</th><th>Compounds</th><th>Source</th></tr></thead><tbody></tbody></table></div></details>
+<section class="sources" id="sources"><h2>Sources</h2><ol id="srclist"></ol></section>
+<footer>Compiled from four research tracks on 2026-11-02: the FDA facility registry, the federal rulebook, supply and enforcement records, and trade-press leads checked against primary sources. Claims that could not be traced to a government document, court record or company filing were left off this map. The HHS policy of 2026-10-30 is a draft under comment and may change. Base maps: Natural Earth, via the us-atlas and world-atlas packages. Built with D3.</footer>
+</div>
+<div class="tip" id="tip"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>
+const D=JSON.parse(document.getElementById('data').textContent);
+const $=s=>document.querySelector(s), esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+$('#asof').textContent=D.asOf;
+const fn=n=>`<a class="fn" href="#sources" title="Source ${n}">${n}</a>`;
+$('#fnTol').textContent=D.timeline.find(t=>t.kind==='hhs').n;
+
+/* ---------- the plate ---------- */
+const svg=d3.select('#map'), W=1100, H=740;
+const US={x:214,y:62,k:.78}; // the pre-projected US (975×610) sits here
+const usProj=d3.geoAlbersUsa().scale(1300).translate([487.5,305]);
+const usPt=([lon,lat])=>{const p=usProj([lon,lat]);return p?[US.x+p[0]*US.k,US.y+p[1]*US.k]:null};
+const gUS=svg.append('g').attr('transform',`translate(${US.x},${US.y}) scale(${US.k})`);
+const states=topojson.feature(D.us,D.us.objects.states), nation=topojson.feature(D.us,D.us.objects.nation);
+gUS.append('path').datum(nation).attr('class','nation').attr('d',d3.geoPath());
+gUS.append('path').datum(states).attr('class','states').attr('d',d3.geoPath());
+gUS.append('path').datum(nation).attr('class','nation').attr('d',d3.geoPath());
+
+/* insets: China, Europe, Mexico, each a small panel with its own projection; origins named in the documents */
+const world=topojson.feature(D.world,D.world.objects.countries);
+const byId=id=>world.features.filter(f=>id.includes(+f.id));
+const INSETS=[
+  {key:'china',title:'China',sub:'Origin of every unlawful shipment named in a government document',box:[8,8,236,176],focus:[156],anchor:[244,96],lawful:false,ctx:[156,496,104,364,392,410,408,704,116,418,764,50,586,356,4,860]},
+  {key:'europe',title:'Europe',sub:'Lawful API and contract manufacturing; two web stores in letters',box:[856,8,236,176],focus:[208,372,276,756,56,752],anchor:[856,96],lawful:true,ctx:[250,826,380,528,40,616,724,620,203,578,246,348,703,705,191,70,688,100,642,804,112,440,428,233,352,807,8,499,51,268,31]},
+  {key:'mexico',title:'Mexico',sub:'Domestic counterfeit alerts; no documented route to US patients',box:[8,556,236,176],focus:[484],anchor:[244,644],lawful:false,ctx:[484,320,84,340,222,558,188,591]}
+];
+for(const I of INSETS){
+  const [x,y,w,h]=I.box, g=svg.append('g').attr('class','inset').attr('transform',`translate(${x},${y})`);
+  g.append('rect').attr('class','inset-box').attr('width',w).attr('height',h);
+  const focus={type:'FeatureCollection',features:byId(I.focus)}, ctx={type:'FeatureCollection',features:byId(I.ctx)};
+  const proj=d3.geoMercator().fitExtent([[14,30],[w-14,h-14]],focus), path=d3.geoPath(proj);
+  g.append('clipPath').attr('id','clip-'+I.key).append('rect').attr('width',w).attr('height',h);
+  const gm=g.append('g').attr('clip-path',`url(#clip-${I.key})`);
+  gm.append('path').datum(ctx).attr('class','inset-land').attr('d',path);
+  gm.append('path').datum(focus).attr('class','inset-focus').attr('d',path);
+  for(const [name,lat,lon] of D.origins[I.key]){const p=proj([lon,lat]);if(!p)continue;gm.append('circle').attr('class','origin'+(I.lawful?' lawful':'')).attr('r',2.6).attr('cx',p[0]).attr('cy',p[1]);gm.append('text').attr('class','origin-label').attr('x',p[0]+4).attr('y',p[1]+3).text(name)}
+  g.append('text').attr('class','inset-title').attr('x',10).attr('y',16).text(I.title);
+  g.append('text').attr('class','inset-sub').attr('x',10).attr('y',h-6).text(I.sub.length>52?I.sub.slice(0,50)+'…':I.sub).append('title').text(I.sub);
+  I.pt=I.anchor;
+}
+
+/* one symbol per state, sized by its count of registered 503B facilities; the facilities themselves as small dots beneath */
+const tip=$('#tip');
+function showTip(ev,html){tip.innerHTML=html;tip.style.display='block';moveTip(ev)}
+function moveTip(ev){const x=ev.clientX+14,y=ev.clientY+14;tip.style.left=Math.min(x,innerWidth-340)+'px';tip.style.top=Math.min(y,innerHeight-160)+'px'}
+function hideTip(){tip.style.display='none'}
+const FIPS={1:'AL',2:'AK',4:'AZ',5:'AR',6:'CA',8:'CO',9:'CT',10:'DE',11:'DC',12:'FL',13:'GA',15:'HI',16:'ID',17:'IL',18:'IN',19:'IA',20:'KS',21:'KY',22:'LA',23:'ME',24:'MD',25:'MA',26:'MI',27:'MN',28:'MS',29:'MO',30:'MT',31:'NE',32:'NV',33:'NH',34:'NJ',35:'NM',36:'NY',37:'NC',38:'ND',39:'OH',40:'OK',41:'OR',42:'PA',44:'RI',45:'SC',46:'SD',47:'TN',48:'TX',49:'UT',50:'VT',51:'VA',53:'WA',54:'WV',55:'WI',56:'WY',72:'PR'};
+const OFF={NJ:[30,14],CT:[30,-2],MA:[34,-14],MD:[26,30],DE:[30,16],RI:[40,6],NH:[14,-26],VT:[-14,-26],DC:[22,46]}; // the small eastern states get their symbol pulled aside, with a leader line
+const path0=d3.geoPath(); // the atlas is pre-projected, so centroids come straight out
+const SYM=states.features.map(f=>{const ab=FIPS[+f.id];if(!ab)return null;const c=path0.centroid(f),p=[US.x+c[0]*US.k,US.y+c[1]*US.k],o=OFF[ab]||[0,0];return {ab,p,q:[p[0]+o[0],p[1]+o[1]],all:D.facilities.filter(x=>x.state===ab),list:[]}}).filter(Boolean);
+const gPins=svg.append('g');
+const pins=gPins.selectAll('circle').data(D.facilities.filter(f=>f.lat!=null)).join('circle')
+  .attr('class',f=>'pin'+(f.flags.includes('uninspected')?' uninspected':'')+(f.flags.includes('warning')?' warning':''))
+  .attr('r',2.6).attr('cx',f=>usPt([f.lon,f.lat])?.[0]).attr('cy',f=>usPt([f.lon,f.lat])?.[1])
+  .on('mousemove',(ev,f)=>showTip(ev,`<b>${esc(f.name)}</b>${esc(f.city||'city not listed')}${f.state?', '+esc(f.state):''} · registered ${esc(f.reg)}<br><span class="n">${esc(f.note)}</span><span class="n">[${D.fdaListN}] FDA registry</span>`)).on('mouseleave',hideTip);
+const gSym=svg.append('g');
+gSym.selectAll('line').data(SYM.filter(d=>OFF[d.ab])).join('line').attr('class','lead').attr('x1',d=>d.p[0]).attr('y1',d=>d.p[1]).attr('x2',d=>d.q[0]).attr('y2',d=>d.q[1]);
+const rOf=n=>n?7+Math.sqrt(n)*5.6:5;
+const symG=gSym.selectAll('g').data(SYM).join('g').attr('transform',d=>`translate(${d.q[0]},${d.q[1]})`);
+symG.append('circle').attr('class','sym');symG.append('text').attr('class','symn').attr('y',5);symG.append('text').attr('class','syms');
+symG.on('mousemove',(ev,d)=>{const L=d.list;showTip(ev,`<b>${d.ab} · ${L.length} of ${d.all.length} registered 503B facilit${d.all.length===1?'y':'ies'}</b>${L.slice(0,8).map(f=>esc(f.name)+(f.city?' · '+esc(f.city):'')).join('<br>')}${L.length>8?`<br>and ${L.length-8} more`:''}${L.length?'':'<span class="n">None on the FDA registry</span>'}<span class="n">[${D.fdaListN}] FDA registry</span>`)}).on('mouseleave',hideTip);
+
+/* legend */
+const L=svg.append('g').attr('class','legend').attr('transform','translate(770,606)');
+L.append('text').attr('class','h').attr('y',0).text('Registered 503B facilities, by state');
+[[17,'17'],[4,'4'],[1,'1']].forEach(([n,t],i)=>{const cx=20+i*58;L.append('circle').attr('class','sym').attr('r',rOf(n)).attr('cx',cx).attr('cy',36);L.append('text').attr('class','symn').attr('x',cx).attr('y',41).text(t)});
+L.append('circle').attr('class','sym z').attr('r',5).attr('cx',200).attr('cy',36);L.append('text').attr('x',212).attr('y',40).text('none');
+L.append('circle').attr('class','pin').attr('r',2.6).attr('cx',20).attr('cy',78);L.append('text').attr('x',32).attr('y',82).text('One facility');
+L.append('circle').attr('class','pin uninspected').attr('r',2.6).attr('cx',130).attr('cy',78);L.append('text').attr('x',142).attr('y',82).text('Never inspected');
+L.append('circle').attr('class','pin warning').attr('r',2.6).attr('cx',250).attr('cy',78);L.append('text').attr('x',262).attr('y',82).text('Warning letter');
+
+/* controls */
+function refresh(){
+  const show=$('#lFac').checked, dots=$('#lDots').checked, fl=[['fUnins','uninspected'],['fPrior','prior'],['fWarn','warning']].filter(([id])=>$('#'+id).checked).map(x=>x[1]);
+  const keep=f=>!fl.length||fl.every(k=>f.flags.includes(k));
+  pins.style('display',dots?null:'none').classed('dim',f=>!keep(f));
+  SYM.forEach(d=>d.list=d.all.filter(keep));
+  gSym.style('display',show?null:'none');
+  symG.select('circle').attr('class',d=>'sym'+(d.list.length?'':' z')+(fl.length&&d.list.length<d.all.length?' dim':'')).attr('r',d=>rOf(d.list.length));
+  symG.select('.symn').attr('class',d=>'symn'+(d.list.length>=10?' big':'')).text(d=>d.list.length||'');
+  symG.select('.syms').attr('y',d=>rOf(d.list.length)+10).text(d=>d.ab);
+  const off=D.facilities.filter(f=>f.state&&!SYM.some(d=>d.ab===f.state)).map(f=>f.state).join(', '); const n=D.facilities.length, c=D.facilities.filter(keep).length, top=SYM.filter(d=>d.list.length).sort((a,b)=>b.list.length-a.list.length), none=SYM.filter(d=>!d.all.length&&d.ab!=='DC').map(d=>d.ab);
+  const share=Math.round(100*(top.slice(0,2).reduce((s,d)=>s+d.list.length,0))/Math.max(1,c));
+  $('#mapcap').innerHTML=`${n} facilities on FDA's registry${fl.length?`, ${c} match the filter`:''}, for a country of about 340 million people. ${top.slice(0,2).map(d=>`${d.ab} ${d.list.length}`).join(' and ')} hold ${share} percent; ${none.length} states have none (${none.join(', ')}).${fn(D.fdaListN)} ${off?`Off this map: ${off}. `:''}One facility has no city on the FDA page and is counted in no state; two city-state pairs on the FDA page look like typos and sit at state capitals, flagged in their notes.`;
+}
+document.querySelectorAll('#controls input').forEach(i=>i.addEventListener('change',refresh));refresh();
+
+/* ---------- the rail ---------- */
+d3.select('#compounds tbody').selectAll('tr').data(D.compounds).join('tr').html(c=>`<td><span class="chip ${c.grade}"></span>${esc(c.name)}</td><td>${esc(c.a)}</td><td>${esc(c.hhs)}</td><td>${esc(c.b)}</td>`);
+d3.select('#dates').selectAll('li').data(D.timeline.filter(t=>t.kind==='next')).join('li').html(t=>`<span class="d">${t.date}</span>${esc(t.label)}${fn(t.n)}`);
+
+/* ---------- chronology: 2023 to 2027 in lanes, one per kind of event ---------- */
+const KINDS=[['rule','Rules'],['list','Lists and votes'],['glp1','GLP-1 shortage'],['court','Courts'],['enforce','Enforcement'],['hhs','HHS draft'],['next','Ahead']];
+const S=d3.select('#strip'), X0=118, X1=1070, x=d3.scaleTime().domain([new Date(2023,6,1),new Date(2027,3,1)]).range([X0,X1]), laneY=i=>26+i*24, SH=laneY(KINDS.length)+16;
+S.attr('viewBox',`0 0 1100 ${SH}`);
+KINDS.forEach(([k,label],i)=>{S.append('line').attr('class','lane-line').attr('x1',X0).attr('x2',X1).attr('y1',laneY(i)).attr('y2',laneY(i));S.append('text').attr('class','lane').attr('x',8).attr('y',laneY(i)+3.5).text(label)});
+for(let y=2024;y<=2027;y++){S.append('line').attr('class','yrline').attr('x1',x(new Date(y,0,1))).attr('x2',x(new Date(y,0,1))).attr('y1',laneY(0)-14).attr('y2',laneY(KINDS.length-1)+10);S.append('text').attr('class','yr').attr('x',x(new Date(y,0,1))).attr('y',SH-2).attr('text-anchor','middle').text(y)}
+for(let y=2023;y<=2027;y++)for(let mth=0;mth<12;mth+=3){const d=new Date(y,mth,1);if(d<x.domain()[0]||d>x.domain()[1])continue;S.append('line').attr('class','axis').attr('x1',x(d)).attr('x2',x(d)).attr('y1',SH-18).attr('y2',SH-14)}
+const early=D.timeline.filter(t=>new Date(t.date)<x.domain()[0]), inRange=D.timeline.filter(t=>new Date(t.date)>=x.domain()[0]);
+early.forEach(t=>{const i=KINDS.findIndex(k=>k[0]===t.kind);S.append('rect').attr('class','ev '+t.kind).attr('x',X0-12).attr('y',laneY(i)-5).attr('width',10).attr('height',10).on('mousemove',ev=>showTip(ev,`<b>${t.date}</b>${esc(t.label)}<span class="n">[${t.n}] · before the zoomed years</span>`)).on('mouseleave',hideTip)});
+const stack={};
+S.selectAll('circle').data(inRange).join('circle').attr('class',t=>'ev '+t.kind).attr('r',6).attr('cx',t=>x(new Date(t.date))).attr('cy',t=>{const i=KINDS.findIndex(k=>k[0]===t.kind),b=t.kind+Math.round(x(new Date(t.date))/16);stack[b]=(stack[b]||0)+1;return laneY(i)-(stack[b]-1)*9})
+  .on('mousemove',(ev,t)=>showTip(ev,`<b>${t.date}</b>${esc(t.label)}<span class="n">[${t.n}]</span>`)).on('mouseleave',hideTip);
+d3.select('#chron').selectAll('li').data(D.timeline).join('li').html(t=>`<span class="d">${t.date}</span><span><span class="k ${t.kind}"></span>${esc(t.label)}${fn(t.n)}</span>`);
+
+/* ---------- the court record ---------- */
+d3.select('#courtsT tbody').selectAll('tr').data(D.courts).join('tr').html(c=>`<td>${esc(c.date)}<span class="kind">${esc(c.kind)}</span></td><td>${esc(c.case)}<br><span style="color:var(--muted)">${esc(c.forum)}</span></td><td>${esc(c.decided)}${fn(c.n)}</td><td class="lesson">${esc(c.lesson)}</td>`);
+
+/* ---------- register and sources ---------- */
+d3.select('#register tbody').selectAll('tr').data(D.register).join('tr').html(r=>`<td>${esc(r.date)}</td><td>${esc(r.body)}</td><td>${esc(r.what)}</td><td>${esc(r.compounds)}</td><td>${r.url?`<a href="${esc(r.url)}" target="_blank" rel="noopener">source</a>`:''}</td>`);
+d3.select('#srclist').selectAll('li').data(D.sources).join('li').html(s=>`<span>${esc(s.label)}<br><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.url)}</a></span>`);
+</script>
+</body>
+</html>
