@@ -1,6 +1,6 @@
 # Jay Beatty's tools
 
-Four interactive tools built by Jay Beatty with Claude (Anthropic's AI assistant), hosted here on GitHub Pages so the main site, [jaybeatty.com](https://www.jaybeatty.com), stays light. Each tool is a plain folder of static files: no server, no tracking, no accounts.
+Four interactive tools built by Jay Beatty with AI, hosted here on GitHub Pages so the main site, [jaybeatty.com](https://www.jaybeatty.com), stays light. Each tool is a plain folder of static files: no server, no tracking, no accounts.
 
 | Tool | Open it | What it is |
 |---|---|---|

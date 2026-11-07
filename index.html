@@ -1,20 +1,67 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Jay Beatty's tools</title>
-<link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="apple-touch-icon.png">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AI tools | Jay Beatty</title>
+<meta name="description" content="Four interactive healthcare tools Jay Beatty built: the CMS TEAM Episode Calculator, the Biologics Atlas, Dealer City and the Peptide Ride.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="icon" href="favicon.ico" sizes="32x32"><link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
-:root{color-scheme:light dark;--bg:#fff;--fg:#14121a;--mut:#5b5868;--line:#dcd9e4}
-@media(prefers-color-scheme:dark){:root{--bg:#0c0a12;--fg:#f1eff7;--mut:#a29fb0;--line:#2a2736}}
-body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.5 system-ui,sans-serif}
-main{max-width:640px;margin:0 auto;padding:48px 16px}
-h1{font-size:28px;margin:0 0 8px}p{color:var(--mut)}
-a.t{display:block;border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:12px 0;color:var(--fg);text-decoration:none}
-a.t:hover,a.t:focus-visible{border-color:var(--fg)}a.t b{display:block}a.t span{color:var(--mut);font-size:15px}
-</style></head><body><main>
-<h1>Jay Beatty's tools</h1>
-<p>Interactive tools built with Claude. The main site is <a href="https://www.jaybeatty.com">jaybeatty.com</a>.</p>
-<a class="t" href="team-calculator/"><b>CMS TEAM Episode Calculator</b><span>What the TEAM bundled-payment model pays or costs any participant hospital.</span></a>
-<a class="t" href="biologics-atlas/"><b>Biologics Atlas</b><span>Orthobiologic products by surgical application, with evidence and FDA status, on a 3D skeleton.</span></a>
-<a class="t" href="bonus-lot/"><b>Dealer City</b><span>A Section 125 wellness plan explained as a city a dealership GM builds.</span></a>
-<a class="t" href="peptide-map/"><b>The Peptide Ride and Supply Map</b><span>Where 65 peptides stand under US rules, how they are made, and who supplies them.</span></a>
-</main></body></html>
+:root{--t-fast:150ms;--t-base:260ms;--ease-out:cubic-bezier(.2,.7,.2,1);--bg:#0b0a10;--surface:#14111e;--panel:#1c1730;--line:#2b2542;--fg:#ece9f5;--muted:#a79fc0;--purple:#8366ea;--purple-soft:#b7a6ff;--green:#22a85e;--green-soft:#6fe3a3;--display:"Fraunces",Georgia,"Times New Roman",serif;--body:"IBM Plex Sans",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--purple-soft);text-decoration:none}a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--green-soft);outline-offset:3px}
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.12;margin:0;text-wrap:balance}
+h1{font-size:clamp(2.2rem,5vw,3.6rem);letter-spacing:-.01em}h3{font-size:1.25rem;font-weight:600}
+p{margin:0}
+.wrap{max-width:1180px;margin-inline:auto;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px))}
+header{border-bottom:1px solid var(--line)}
+nav{display:flex;align-items:center;justify-content:space-between;gap:16px;height:60px}
+.brand{font-family:var(--display);font-size:1.15rem;letter-spacing:.08em;text-transform:uppercase;color:var(--fg);white-space:nowrap}.brand b{color:var(--green-soft);font-weight:400}
+.back{font-family:var(--mono);font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;color:var(--fg);font-weight:600;padding:9px 12px;border:1px solid var(--line);border-radius:999px;white-space:nowrap}.back:hover{border-color:var(--green-soft);text-decoration:none}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--green-soft)}
+.eyebrow::before{content:"";display:inline-block;width:22px;height:1px;background:var(--green);vertical-align:middle;margin-right:10px}
+.lede{color:var(--muted);max-width:62ch;font-size:1.05rem}
+main{padding-block:clamp(40px,6vw,80px)}
+.head{margin-bottom:32px}
+.hubgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+@media(max-width:900px){.hubgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.hubgrid{grid-template-columns:1fr}}
+.hcard{display:flex;flex-direction:column;gap:12px;justify-content:space-between;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;color:var(--fg);min-width:0;transition:border-color var(--t-base),transform var(--t-base) var(--ease-out)}
+.hcard:hover{border-color:var(--purple);transform:translateY(-3px);text-decoration:none}
+.hcard .k{font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--green-soft)}
+.hcard h3{font-size:1.3rem}
+.hcard p{color:var(--muted);font-size:.95rem}
+.hcard .go{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--purple-soft);margin-top:auto;font-weight:600}
+.hcard .wordmark{margin:0}
+.hcard .wordmark svg{max-height:56px;width:auto}
+.hcard.new{border-color:var(--green)}
+.hcard .logo{width:64px;height:64px;border-radius:12px;background:#07050d;display:block}
+.hcard .badge{align-self:flex-start;font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:99px;background:var(--green);color:#06150c;font-weight:700}
+.hcard .badge.pv{background:#D65DB1;color:#1a0a15}
+/* wordmarks */
+.wordmark{display:flex;align-items:center;gap:14px;min-width:0}
+.wordmark .mark{width:52px;height:52px;flex:0 0 auto;filter:drop-shadow(0 6px 18px rgba(131,102,234,.25))}
+.wordmark.lg .mark{width:64px;height:64px}
+.wordmark .wm{display:grid;gap:2px;min-width:0}
+.wordmark .wm-k{font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--green-soft)}
+.wordmark .wm-t{font-family:var(--display);font-size:clamp(1.5rem,2.6vw,2rem);line-height:1.05;letter-spacing:-.01em;color:var(--fg)}
+.wordmark.lg .wm-t{font-size:clamp(1.9rem,3.4vw,2.6rem)}
+.wordmark .wm-t em{font-style:italic;color:var(--purple-soft)}
+footer{padding-block:28px;font-size:.8rem;color:var(--muted);border-top:1px solid var(--line)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
+</style></head><body>
+<header><div class="wrap"><nav><a class="brand" href="https://www.jaybeatty.com">Jay <b>Beatty</b></a><a class="back" href="https://www.jaybeatty.com">Main site</a></nav></div></header>
+<main><div class="wrap">
+<div class="head"><div class="eyebrow">AI tools</div><h1 style="margin-top:12px">Healthcare, built with the newest tools.</h1>
+<p class="lede" style="margin-top:16px">I built these because I know this space and wanted to show it with the most modern tools available. Each one is a small example of how I work with AI inside healthcare: public data in, a working tool out, with the method published next to it. No server, no cookies, no accounts.</p></div>
+<div class="hubgrid">
+<a class="hcard" href="biologics-atlas/"><div class="wordmark"><svg class="mark" viewBox="0 0 48 48" aria-hidden="true"><rect x="2" y="2" width="44" height="44" rx="11" fill="#1c1730" stroke="#2b2542"/><circle cx="24" cy="12.5" r="5.2" fill="#d65db1"/><rect x="18.5" y="20.5" width="11" height="4.6" rx="2" fill="#b7a6ff"/><rect x="17" y="27.2" width="14" height="4.6" rx="2" fill="#8366ea"/><rect x="15.5" y="33.9" width="17" height="4.6" rx="2" fill="#6fe3a3"/></svg><div class="wm"><span class="wm-k">Orthobiologics by surgical application</span><span class="wm-t">Biologics <em>Atlas</em></span></div></div><p>Click a bone. See what the market actually has for it.</p><span class="go">Open the atlas</span></a>
+<a class="hcard" href="team-calculator/"><div class="wordmark"><svg class="mark" viewBox="0 0 48 48" aria-hidden="true"><rect x="2" y="2" width="44" height="44" rx="11" fill="#1c1730" stroke="#2b2542"/><path d="M12 30 A14 14 0 1 1 36 30" fill="none" stroke="#8366ea" stroke-width="3.5" stroke-linecap="round"/><circle cx="12" cy="30" r="3.6" fill="#6fe3a3"/><path d="M29 33.5 l4.2 4.2 l7.4 -8.6" fill="none" stroke="#6fe3a3" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="wm"><span class="wm-k">CMS TEAM · mandatory bundled payment</span><span class="wm-t">Episode <em>Calculator</em></span></div></div><p>What will TEAM pay your hospital, or cost it?</p><span class="go">Open the calculator</span></a>
+<a class="hcard" href="bonus-lot/"><div class="wordmark"><svg class="mark" viewBox="0 0 48 48" aria-hidden="true"><rect x="2" y="2" width="44" height="44" rx="11" fill="#1c1730" stroke="#2b2542"/><path d="M10 29 l4 -9 h20 l4 9 z" fill="#8366ea"/><rect x="8" y="27" width="32" height="8" rx="2.5" fill="#d65db1"/><circle cx="16" cy="36" r="3.6" fill="#1c1730" stroke="#6fe3a3" stroke-width="2.4"/><circle cx="32" cy="36" r="3.6" fill="#1c1730" stroke="#6fe3a3" stroke-width="2.4"/><rect x="33" y="29" width="5" height="2.6" rx="1" fill="#ffd166"/></svg><div class="wm"><span class="wm-k">Section 125, explained to a general manager</span><span class="wm-t">Dealer <em>City</em></span></div></div><p>Your people come out ahead. Your store comes out ahead.</p><span class="go">Open Dealer City</span></a>
+<a class="hcard" href="peptide-map/"><div class="wordmark"><svg class="mark" viewBox="0 0 48 48" aria-hidden="true"><rect x="2" y="2" width="44" height="44" rx="11" fill="#1c1730" stroke="#2b2542"/><path d="M20 10 h8 v10 l9 15.5 a2.5 2.5 0 0 1 -2.2 3.5 h-21.6 a2.5 2.5 0 0 1 -2.2 -3.5 l9 -15.5 z" fill="none" stroke="#b7a6ff" stroke-width="2.6" stroke-linejoin="round"/><path d="M15.5 31.5 h17 l3 5 h-23 z" fill="#6fe3a3"/><circle cx="21" cy="27" r="1.6" fill="#d65db1"/><circle cx="27" cy="23.5" r="1.3" fill="#d65db1"/><rect x="17.5" y="8" width="13" height="3" rx="1.5" fill="#8366ea"/></svg><div class="wm"><span class="wm-k">How a peptide reaches a patient</span><span class="wm-t">The Peptide <em>Ride</em></span></div></div><p>Order a peptide at the counter, then see how it reaches a patient under US rules.</p><span class="go">Open the ride</span></a>
+</div>
+</div></main>
+<footer><div class="wrap"><span>© 2026 Jay Beatty. Independent educational tools from public documents. Not affiliated with or endorsed by CMS, FDA, HHS or any company named in them.</span><span><a href="https://www.jaybeatty.com">jaybeatty.com</a></span></div></footer>
+<script data-goatcounter="https://jab.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body></html>
