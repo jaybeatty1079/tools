@@ -6,7 +6,7 @@ Every hospital on that list got a target price per episode and a simple deal. Co
 
 ## What it does
 
-You pick any of the 721 participating hospitals. The page prefills its 2024 Medicare volumes for the 29 MS-DRGs in the model, its Care Compare quality measures, its 30-day post-discharge spending pattern, its county's nursing home market and Medicare Advantage share, and a few facts from its cost report. Then it runs the published reconciliation rules: regional target prices by census division, risk and quality adjustment, stop-gain and stop-loss by track, sequestration. You get the estimated net payment, a view by service line, a set of levers for post-acute care and complications, and a five-year look. Every input shows where it came from. Every proxy says it's a proxy.
+You pick any of the 721 participating hospitals. The page prefills its 2024 Medicare volumes for the MS-DRGs in the model, its Care Compare quality measures, its 30-day post-discharge spending pattern, its county's nursing home market and Medicare Advantage share, and a few facts from its cost report. Then it runs the published reconciliation rules: regional target prices by census division, risk and quality adjustment, stop-gain and stop-loss by track, sequestration. You get the estimated net payment, a view by service line, a set of levers for post-acute care and complications, and a five-year look. Every input shows where it came from. Every proxy says it's a proxy.
 
 The rule I set on day one was public data only. No files from a former employer, no licensed datasets, nothing I couldn't link to. That rule cost me some precision and bought something better: anyone can check it. Thirteen CMS datasets, joined by each hospital's CCN, with the release dates listed.
 

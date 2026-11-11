@@ -45,7 +45,7 @@ Talking points the cases give you: (1) the metro academic center earns about $0.
 
 ## Still to decide
 - Spinal fusion MS-DRG titles for 402, 426 to 430, 447, 448, 450, 451 are shown with CMS's FY2025 regrouping wording, not the full IPPS Table 5 titles. Fine for a calculator; worth a line of your eye.
-- PY2 target prices are not published; the five-year view holds PY1 prices flat and says so.
+- PY2 preliminary target prices (CMS, 2026-11-04) are loaded; PY3 to PY5 start from PY2 and follow the regional trend the user sets.
 - Netlify Forms only works on the live site; the preview build shows the scenario text to copy instead.
 
 
@@ -66,3 +66,6 @@ Talking points the cases give you: (1) the metro academic center earns about $0.
 - Rebuild order is unchanged: `build_metrics.py`, `derive.py`, `assemble.py`, then `build/build_map.py`. If the derivation in app.js changes, regenerate `EXPECT_T3` in build_map.py from the page (`TEAMCALC.pick(p)` then `TEAMCALC.run({track:3})` for the first 14 participants) or the map build refuses to run.
 - Map totals moved: 188 repay $66.9M, 312 paid $126.0M under designated tracks. Resume line can say "20 public CMS datasets".
 
+
+## 2026-10-23: LinkedIn launch post published
+Post 1 went out at about 4:30 pm PT via Claude in Chrome after Jay's approval: https://www.linkedin.com/feed/update/urn:li:activity:7519535999429828608/ . Text is in `LinkedIn_post_calculator_launch.txt`; LinkedIn attached the calculator's Open Graph card and shortened the link to lnkd.in. Boost declined. Comment plan still stands: reply to every comment within the day with a question about their episode mix. Post 2 (three-track sensitivity screenshot) is due in about a week.

@@ -10,6 +10,7 @@ Jay Beatty. Started October 12, 2026 and updated as the tool changes.
 |---|---|---|
 | Oct 12 | Site redesign | Three concepts for jaybeatty.com; Scoreboard chosen the next day. Its palette and type became the calculator's. |
 | Oct 15 | Version one | Reconciliation engine from the CMS PY1 workbook and fact sheets: 29 MS-DRGs × 9 divisions, three tracks, quality adjustment, stop limits, five-year view, 721-hospital picker. |
+| Nov 9 | PY2 prices | CMS's PY2 preliminary target prices loaded: the performance-year selector and the five-year view now price PY2 on PY2, MS-DRGs 523 to 525 added, the 2027 map rebuilt on them, 23 tests. |
 | Oct 16 | Levers | Post-discharge mix and complication levers with editable unit costs, spend-by-setting chart, waterfall. Prompted by the question of whether SNF, home health and infections belonged. |
 | Oct 16 | Lines and cases | Service-line tabs and five case hospitals on real 2024 CMS volumes, named by archetype and city. |
 | Oct 18 | Public data layer | Thirteen datasets joined by CCN; every participant prefills. FY2027 rule read from the Federal Register text. Sixth case added. |
@@ -21,6 +22,7 @@ Jay Beatty. Started October 12, 2026 and updated as the tool changes.
 | Source | Release | Rows read | What the calculator takes from it |
 |---|---|---|---|
 | TEAM PY1 preliminary target prices | 2025-12-10 | 261 price rows | Benchmark, trend, discount and target for 29 MS-DRGs × 9 divisions; baseline 2022 to 2024. |
+| TEAM PY2 preliminary target prices | 2026-11-04 | 324 rows, 288 used | Same fields for 32 MS-DRGs × 9 divisions (adds 523 to 525); the 36 'All' rows are saved, not used. |
 | TEAM participant list | 2026-08-18 | 721 hospitals | Who is in the model, with CCN, CBSA and state. |
 | FY2027 IPPS final rule and impact file | 2026-08-04 | 3,085 hospitals | Beds, residents per bed, DSH and Medicaid shares, urban or rural flag; the TEAM policy changes for PY1 and PY2. |
 | Medicare Inpatient by Provider & Service | 2026-04-23 | 11,164 rows | 2024 inpatient discharges and payment by MS-DRG for every hospital; national and state averages. |
@@ -64,7 +66,7 @@ Jay Beatty. Started October 12, 2026 and updated as the tool changes.
 
 **Why:** Deployable anywhere, including as a private preview, with nothing to maintain. The cost is known and documented under What comes next: no persistence, no ingestion, no multi-user.
 
-### 4. Hold PY1 regional prices flat for the five-year view
+### 4. Hold PY1 regional prices flat for the five-year view (superseded by decision 23 on Nov 9)
 
 *Oct 15*
 
@@ -215,6 +217,14 @@ Jay Beatty. Started October 12, 2026 and updated as the tool changes.
 **Instead of:** A private notes file.
 
 **Why:** A hiring manager or a CFO who reads the calculator should be able to see how it was reasoned, with the alternatives that lost. That is the difference between a weekend project and strategic work, and it only counts if it is visible.
+
+### 23. Load CMS's PY2 preliminary prices and stop holding PY1 flat
+
+*Nov 9*
+
+**Instead of:** Wait for final target prices, or keep holding PY1 prices flat.
+
+**Why:** CMS posted PY2 preliminary prices on 2026-11-04, 288 MS-DRG rows (32 MS-DRGs x 9 divisions) including the new spinal fusion MS-DRGs 523 to 525. They are preliminary: the MS-DRG and APC update factors and the final normalization are applied later, so reconciliation prices will differ. Against PY1 the matched MS-DRG rows moved a median +2.9% (range -22% to +26%), so holding PY1 flat would have been wrong in a direction a reader can check. PY2 now prices PY2 and later; PY3 to PY5 start from PY2 and move by the regional trend the user sets. The workbook also carries 36 'All' rows (CABG, bowel, hip/femur fracture and joint replacement, nine each) that CMS does not explain; they are saved in data_target_prices_py2_all.json and not used. The 2027 map now runs on PY2 prices; its 14 check hospitals match the in-browser engine to the dollar.
 
 ## The CFO review: sixteen objections and fixes
 

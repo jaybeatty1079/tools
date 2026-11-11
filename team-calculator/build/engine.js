@@ -14,7 +14,7 @@ const CATS=[
  {key:'lejr',cat:'MS-Lower extremity joint replacement',label:'Lower extremity joint replacement',short:'LEJR',disc:2,drgs:[['469','Major hip and knee joint replacement or reattachment w MCC, or total ankle replacement'],['470','Major hip and knee joint replacement or reattachment w/o MCC'],['521','Hip replacement w principal dx of hip fracture w MCC'],['522','Hip replacement w principal dx of hip fracture w/o MCC'],['470-OP','Outpatient knee or hip replacement (HCPCS 27447, 27130; CMS reports these under MS-DRG 470 and prices them at its target). Prefilled from APC 5115 services, an upper bound that also holds other Level 5 procedures such as shoulder replacement; edit to your count']]},
  {key:'shfft',cat:'IP-Surgical hip/femur fracture treatment',label:'Surgical hip and femur fracture treatment',short:'Hip/femur fracture',disc:2,drgs:[['480','Hip and femur procedures except major joint w MCC'],['481','Hip and femur procedures except major joint w CC'],['482','Hip and femur procedures except major joint w/o CC/MCC']]},
  {key:'cabg',cat:'IP-Coronary artery bypass graft',label:'Coronary artery bypass graft',short:'CABG',disc:1.5,drgs:[['231','CABG w PTCA w MCC'],['232','CABG w PTCA w/o MCC'],['233','CABG w cardiac cath w MCC'],['234','CABG w cardiac cath w/o MCC'],['235','CABG w/o cardiac cath w MCC'],['236','CABG w/o cardiac cath w/o MCC']]},
- {key:'spine',cat:'MS-Spinal fusion',label:'Spinal fusion',short:'Spinal fusion',disc:2,drgs:[['402','Single level combined anterior and posterior spinal fusion except cervical'],['426','Multiple level combined anterior and posterior spinal fusion except cervical w MCC'],['427','Multiple level combined anterior and posterior spinal fusion except cervical w CC'],['428','Multiple level combined anterior and posterior spinal fusion except cervical w/o CC/MCC'],['429','Combined anterior and posterior spinal fusion (FY2025 regrouping) w MCC'],['430','Combined anterior and posterior spinal fusion (FY2025 regrouping) w/o MCC'],['447','Multiple level spinal fusion except cervical w MCC'],['448','Multiple level spinal fusion except cervical w/o MCC'],['450','Single level spinal fusion except cervical w MCC'],['451','Single level spinal fusion except cervical w/o MCC'],['471','Cervical spinal fusion w MCC'],['472','Cervical spinal fusion w CC'],['473','Cervical spinal fusion w/o CC/MCC'],['473-OP','Outpatient spinal fusion (HCPCS such as 22551; CMS reports these under the matching fusion MS-DRG, priced here at MS-DRG 473)']]},
+ {key:'spine',cat:'MS-Spinal fusion',label:'Spinal fusion',short:'Spinal fusion',disc:2,drgs:[['402','Single level combined anterior and posterior spinal fusion except cervical'],['426','Multiple level combined anterior and posterior spinal fusion except cervical w MCC'],['427','Multiple level combined anterior and posterior spinal fusion except cervical w CC'],['428','Multiple level combined anterior and posterior spinal fusion except cervical w/o CC/MCC'],['429','Combined anterior and posterior spinal fusion (FY2025 regrouping) w MCC'],['430','Combined anterior and posterior spinal fusion (FY2025 regrouping) w/o MCC'],['447','Multiple level spinal fusion except cervical w MCC'],['448','Multiple level spinal fusion except cervical w/o MCC'],['450','Single level spinal fusion except cervical w MCC'],['451','Single level spinal fusion except cervical w/o MCC'],['471','Cervical spinal fusion w MCC'],['472','Cervical spinal fusion w CC'],['473','Cervical spinal fusion w/o CC/MCC'],['523','Spinal fusion MS-DRG new for FY2027, from October 1, 2026 (priced from PY2; enter episodes here for PY2 and later)'],['524','Spinal fusion MS-DRG new for FY2027, from October 1, 2026 (priced from PY2)'],['525','Spinal fusion MS-DRG new for FY2027, from October 1, 2026 (priced from PY2)'],['473-OP','Outpatient spinal fusion (HCPCS such as 22551; CMS reports these under the matching fusion MS-DRG, priced here at MS-DRG 473)']]},
  {key:'bowel',cat:'IP-Major bowel procedure',label:'Major bowel procedure',short:'Major bowel',disc:1.5,drgs:[['329','Major small and large bowel procedures w MCC'],['330','Major small and large bowel procedures w CC'],['331','Major small and large bowel procedures w/o CC/MCC']]}
 ];
 const TRACKS={1:{name:'Track 1',gain:.10,loss:0,negAdj:0,desc:'Upside only. 10% stop-gain. No repayment.'},2:{name:'Track 2',gain:.05,loss:.05,negAdj:.15,desc:'Two-sided. 5% stop-gain and stop-loss. Up to 15% quality relief on repayments.'},3:{name:'Track 3',gain:.20,loss:.20,negAdj:.10,desc:'Two-sided. 20% stop-gain and stop-loss. Up to 10% quality relief on repayments.'}};
@@ -53,12 +53,13 @@ function leverSavings(levers,key,raw){const u=levers.unit,c=levers.cur[key],t=le
   return parts;}
 /* ---------- engine bound to a target-price table ---------- */
 function createEngine(TP){
-  const price=(drg,region)=>{const r=TP.find(x=>x.drg===baseDrg(drg)&&x.region===region);return r?r.target:0;};
+  /* t2 = CMS PY2 preliminary price (published 2026-11-04). PY2 and later read t2 when a row has one; PY3 to PY5 hold PY2 flat, trend is applied by the caller. */
+  const price=(drg,region,py)=>{const r=TP.find(x=>x.drg===baseDrg(drg)&&x.region===region);if(!r)return 0;return (py>=2&&r.t2!=null)?r.t2:r.target;};
   const priceRow=(drg,region)=>TP.find(x=>x.drg===baseDrg(drg)&&x.region===region);
-  function catCalc(c,st,region,risk,spendShift){
+  function catCalc(c,st,region,risk,spendShift,py){
     const counts=st.counts;let n=0,tsum=0;
-    c.drgs.forEach(d=>{const k=counts[d[0]]||0;n+=k;tsum+=k*price(d[0],region);});
-    const regional=n?tsum/n:price(c.drgs[Math.min(1,c.drgs.length-1)][0],region);
+    c.drgs.forEach(d=>{const k=counts[d[0]]||0;n+=k;tsum+=k*price(d[0],region,py);});
+    const regional=n?tsum/n:price(c.drgs[Math.min(1,c.drgs.length-1)][0],region,py);
     const target=regional*risk;
     let spend=st.spend==null?regional:st.spend;
     if(spendShift!=null)spend=target*(1+spendShift);
@@ -67,16 +68,16 @@ function createEngine(TP){
     return {n,regional,target,spend,recon,capped,aggTarget:target*n,aggSpend:spend*n};
   }
   function reconcile(S,opts={}){
-    const region=opts.region??S.region,risk=(opts.risk??S.risk)*(opts.targetMult??1),cqs=opts.cqs??S.cqs,track=opts.track??S.track,shift=opts.shift,spendMult=opts.spendMult??1;
+    const py=opts.py??S.py,region=opts.region??S.region,risk=(opts.risk??S.risk)*(opts.targetMult??1),cqs=opts.cqs??S.cqs,track=opts.track??S.track,shift=opts.shift,spendMult=opts.spendMult??1;
     const rows=[];let recon=0,aggT=0,aggS=0,eps=0;
     CATS.forEach(c=>{const st=S.cats[c.key];if(!st.on)return;
       const st2=spendMult===1?st:Object.assign({},st,{spend:(st.spend==null?null:st.spend*spendMult)});
       let r;
-      if(spendMult!==1&&st.spend==null){const base=catCalc(c,st,region,risk,null);r=catCalc(c,Object.assign({},st,{spend:base.regional*spendMult}),region,risk,shift);}
-      else r=catCalc(c,st2,region,risk,shift);
+      if(spendMult!==1&&st.spend==null){const base=catCalc(c,st,region,risk,null,py);r=catCalc(c,Object.assign({},st,{spend:base.regional*spendMult}),region,risk,shift,py);}
+      else r=catCalc(c,st2,region,risk,shift,py);
       if(r.n===0)return;
       const lv=(opts.levers??S.levers.on)&&(!opts.leverCats||opts.leverCats.includes(c.key)); const lvParts=opts.leverParts; 
-      if(lv){const sv=leverSavings(S.levers,c.key);let cut=sv.total;if(lvParts)cut=lvParts.reduce((q,k)=>q+sv[k],0);if(cut){r=catCalc(c,Object.assign({},st,{spend:r.spend-cut,lowvol:st.lowvol}),region,risk,null);r.leverCut=cut;}}
+      if(lv){const sv=leverSavings(S.levers,c.key);let cut=sv.total;if(lvParts)cut=lvParts.reduce((q,k)=>q+sv[k],0);if(cut){r=catCalc(c,Object.assign({},st,{spend:r.spend-cut,lowvol:st.lowvol}),region,risk,null,py);r.leverCut=cut;}}
       r.c=c;rows.push(r);recon+=r.recon;aggT+=r.aggTarget;aggS+=r.aggSpend;eps+=r.n;});
     const T=TRACKS[track];
     let base=recon; if(track===1&&base<0)base=0;

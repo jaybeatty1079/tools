@@ -37,7 +37,7 @@ The user picks a hospital (or a census region), enters annual Medicare episode c
    - Negative amount, Track 2: adjustment = 15% × CQS/100, reduces what is owed. Track 3: 10% × CQS/100.
 8. **Stop-gain / stop-loss**: the quality-adjusted amount is capped at ±(limit × aggregated target price amount). Track 1: +10% only. Track 2: ±5%. Track 3: ±20%.
 9. The result is the estimated **NPRA**. A positive NPRA is a reconciliation payment from CMS; a negative NPRA is a repayment owed to CMS.
-10. **Five-year view**: repeat steps 2 to 9 for PY1 to PY5 with the same volumes, the spend-improvement assumption compounding yearly, and a track path the user picks (for example Track 1 in PY1 then Track 3). Target prices for PY2 onward are not published yet, so the PY1 regional prices are held flat in standardized dollars and the page says so.
+10. **Five-year view**: repeat steps 2 to 9 for PY1 to PY5 with the same volumes, the spend-improvement assumption compounding yearly, and a track path the user picks (for example Track 1 in PY1 then Track 3). PY1 reads the PY1 workbook and PY2 reads CMS's PY2 preliminary workbook (published 2026-11-04, 288 MS-DRG rows). PY3 to PY5 are not published: they start from the PY2 prices and move by the regional trend the user sets. The 36 'All' rows in the PY2 workbook (CABG, bowel, hip/femur fracture, joint replacement; nine each) are unexplained by CMS and unused.
 
 ## Levers module (added 2026-10-16)
 
@@ -118,14 +118,16 @@ Every one of the 721 participants now carries a record in `data_hospital_slim.js
 
 Read from the rule text in `cms-sources/ipps-fy2027/fy2027-team-section.txt`. What changed and how the calculator handles it:
 
-- MS-DRGs 523, 524 and 525 become spinal fusion episode triggers on October 1, 2026, with distinct target prices from PY2. The PY1 workbook has no prices for them, so the page tells users to count them under the fusion MS-DRG they replaced. No change to the DRG list yet.
+- MS-DRGs 523, 524 and 525 become spinal fusion episode triggers on October 1, 2026, with distinct target prices from PY2. The PY2 workbook prices them (rows added to the spinal fusion list on 2026-11-09, priced from PY2 only; titles not copied because the saved CMS sources do not give them). For PY1 users count them under the fusion MS-DRG they replaced.
 - MS-DRG update factor and APC update factor multiply the prospective trend factor from PY1 (PY1 factors expected 2026 Q4; later years APC in Q1, MS-DRG in Q4). Episodes ending in a performance year's fourth quarter map back to the first fiscal year's MS-DRG. Not in the public workbook; noted as not modeled.
 - Prospective normalization factor and risk adjustment multiplier built from all three baseline years from PY2 (PY1 still uses the most recent year). Noted.
 - Composite quality score: concurrent baseline period beginning PY1 (CMS withdrew the proposed sliding historical baseline); hybrid HWR, PSI-90, THA/TKA PRO-PM and the surgical-death measure move to July to June periods. PY2 to PY5 add Hospital Harm falls with injury and postoperative respiratory failure (calendar-year periods) and the 30-day surgical death measure (two-year July to June). A hospital with no or incomplete data on a measure scores 50. Reflected in the Step 4 note and the proxy CQS rule.
 - CJR-X (nationwide mandatory joint replacement model, starting January 1, 2028 per the CMS fact sheet) excludes TEAM participants through 2030 and has attribution guardrails for overlapping windows. Not modeled.
 - ASC episodes and physician-owned hospitals were requests for information only.
 
-The TEAM PY1 preliminary target price workbook and the updated overview deck on the CMS TEAM page are byte-identical to the copies saved 2026-10-15, so prices are unchanged.
+The TEAM PY1 preliminary target price workbook and the updated overview deck on the CMS TEAM page are byte-identical to the copies saved 2026-10-15, so PY1 prices are unchanged.
+
+2026-11-09 update: CMS posted the PY2 preliminary target prices (2026-11-04) and the September 2026 Risk Adjustment and Preliminary Target Price Specifications. The participant list is unchanged at 721. PY2 prices are loaded (decision 23). The specs confirm the PY2 risk adjustment multiplier uses all baseline years and that hospital-specific prices multiply the regional price by the normalization factor and the hospital's average risk multiplier, which is why the risk multiplier stays a user slider.
 
 MS-DRG titles for the FY2025 spinal fusion regrouping now come from the CMS public file (402, 426 to 428, 448, 451 confirmed; 429, 430, 447, 450 inferred from the CMS mapping summary).
 

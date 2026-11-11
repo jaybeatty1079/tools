@@ -4,7 +4,7 @@
 Port of build/engine.js (catCalc, reconcile, qualityAdj) and the page's derivePublic() so the batch is reproducible without a browser.
 Validated against the live page: the first fourteen participants' Track 3 results must match the in-browser engine to the dollar.
 
-Inputs (all in this folder): data_hospital_slim.json, data_participants.json, data_target_prices_py1.json, cms-sources/pulls/geo/participants_geo.json
+Inputs (all in this folder): data_hospital_slim.json, data_participants.json, data_target_prices_py2.json (CMS PY2 preliminary prices, 2026-11-04), cms-sources/pulls/geo/participants_geo.json
 Outputs: data_map_2027.json (one compact row per hospital) and the map page from build/map-template.html.
 
 Usage: /usr/bin/python3 -I build/build_map.py [--out /path/map.html]"""
@@ -15,14 +15,14 @@ SITE = "/Users/jaybeatty/Claude/jaybeatty-site/team-calculator"
 out_path = sys.argv[sys.argv.index("--out") + 1] if "--out" in sys.argv else os.path.join(SITE, "map.html")
 L = lambda n: json.load(open(os.path.join(ROOT, n)))
 H = L("data_hospital_slim.json"); NAT = H["nat"]; HOSP = H["h"]
-PARTS = L("data_participants.json"); TP = L("data_target_prices_py1.json")
+PARTS = L("data_participants.json"); TP = L("data_target_prices_py2.json")
 GEO = json.load(open(os.path.join(ROOT, "cms-sources/pulls/geo/participants_geo.json")))
 
 # ---- reference tables, copied from engine.js ----
 DIVSTATES = {1: 'CT ME MA NH RI VT', 2: 'NJ NY PA', 3: 'IL IN MI OH WI', 4: 'IA KS MN MO NE ND SD', 5: 'DE DC FL GA MD NC SC VA WV', 6: 'AL KY MS TN', 7: 'AR LA OK TX', 8: 'AZ CO ID MT NV NM UT WY', 9: 'AK CA HI OR WA AS GU MP PR VI'}
 STATE2DIV = {s: d for d, ss in DIVSTATES.items() for s in ss.split(' ')}
 CATS = [("lejr", ["469", "470", "521", "522", "470-OP"]), ("shfft", ["480", "481", "482"]), ("cabg", ["231", "232", "233", "234", "235", "236"]),
-        ("spine", ["402", "426", "427", "428", "429", "430", "447", "448", "450", "451", "471", "472", "473", "473-OP"]), ("bowel", ["329", "330", "331"])]
+        ("spine", ["402", "426", "427", "428", "429", "430", "447", "448", "450", "451", "471", "472", "473", "523", "524", "525", "473-OP"]), ("bowel", ["329", "330", "331"])]
 TRACKS = {1: dict(gain=.10, loss=0, negAdj=0), 2: dict(gain=.05, loss=.05, negAdj=.15), 3: dict(gain=.20, loss=.20, negAdj=.10)}
 UNIT = dict(readmit=19400, ssi=12800)
 LEVER_RA = dict(lejr=4, shfft=12, cabg=12, spine=8, bowel=12)  # typical readmission rate per category, from engine.js LEVER_DEF
@@ -108,8 +108,8 @@ def reconcile(h, dv, track):
     npra -= seq
     return dict(rows=rows, recon=recon, npra=npra, cap=cap, aggT=aggT, aggS=aggS, eps=eps, adj=adj)
 
-# ---- validation against the in-browser engine (TEAMCALC.run({track:3}) on 2026-10-23, after the HRRP six-condition and hip/knee payment signals) ----
-EXPECT_T3 = {"010039": 2617062, "010052": 0, "010065": 28174, "010079": 318740, "010131": 1145268, "030006": 1008702, "030010": 30204, "030011": -409864, "030064": -374283, "030085": 223372, "030111": 0, "030114": -284011, "030148": 66862, "040014": 382363}
+# ---- validation against the in-browser engine (TEAMCALC.run({track:3,py:2}) on 2026-11-09 with the CMS PY2 preliminary prices) ----
+EXPECT_T3 = {"010039": 2659268, "010052": 0, "010065": 28612, "010079": 322907, "010131": 1164004, "030006": 1036062, "030010": 30938, "030011": -432482, "030064": -394332, "030085": 231708, "030111": 0, "030114": -294532, "030148": 68345, "040014": 392742}
 
 rows = []; bad = []
 for p in PARTS:
@@ -142,7 +142,7 @@ def summarize(key):
                 repay_total=round(sum(r[key] for r in neg)), paid_total=round(sum(r[key] for r in pos)), repay_median=round(statistics.median([r[key] for r in neg])) if neg else 0,
                 shielded=len([r for r in withvol if r["track27"] == 1 and r["recon"] < 0]) if key == "npra27" else None)
 summary = dict(designated=summarize("npra27"), all_track3=summarize("t3"), nodata=len([r for r in rows if r.get("nodata")]), geocoded=len([r for r in rows if r.get("lat")]),
-               built="2026-10-22", prices="PY1 preliminary target prices (CMS workbook); PY2 prices not yet published", data_year="CY2024 volumes and FY2026 Care Compare releases")
+               built="2026-11-09", prices="PY2 preliminary target prices (CMS workbook, published 2026-11-04); preliminary, before the FY2027 update factors and final normalization", data_year="CY2024 volumes and FY2026 Care Compare releases")
 by_state = {}
 for r in rows:
     if r.get("nodata") or r["eps"] == 0: continue

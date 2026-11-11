@@ -17,7 +17,7 @@
 <meta name="twitter:title" content="CMS TEAM Episode Calculator · Jay Beatty">
 <meta name="twitter:description" content="What will TEAM pay your hospital, or cost it? Any of the 721 participant hospitals prefilled from 13 public CMS datasets; the published reconciliation rules run live.">
 <meta name="twitter:image" content="https://jaybeatty.com/og/calculator.png">
-<meta name="description" content="Estimate what the CMS Transforming Episode Accountability Model (TEAM) pays or costs your hospital, by track and performance year, using the published PY1 preliminary target prices.">
+<meta name="description" content="Estimate what the CMS Transforming Episode Accountability Model (TEAM) pays or costs your hospital, by track and performance year, using the CMS preliminary target prices for PY1 and PY2.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
@@ -319,10 +319,10 @@ header.open .menu-tg .l3{transform:translateY(-5px) rotate(-45deg)}
 <div class="wrap">
 <section class="hero">
   <div>
-    <div class="wordmark lg"><svg class="mark" viewBox="0 0 48 48" aria-hidden="true"><rect x="2" y="2" width="44" height="44" rx="11" fill="#1c1730" stroke="#2b2542"/><path d="M12 30 A14 14 0 1 1 36 30" fill="none" stroke="#8366ea" stroke-width="3.5" stroke-linecap="round"/><circle cx="12" cy="30" r="3.6" fill="#6fe3a3"/><path d="M29 33.5 l4.2 4.2 l7.4 -8.6" fill="none" stroke="#6fe3a3" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="wm"><span class="wm-k">CMS TEAM · PY1 2026 preliminary target prices</span><span class="wm-t">Episode <em>Calculator</em></span></div></div>
+    <div class="wordmark lg"><svg class="mark" viewBox="0 0 48 48" aria-hidden="true"><rect x="2" y="2" width="44" height="44" rx="11" fill="#1c1730" stroke="#2b2542"/><path d="M12 30 A14 14 0 1 1 36 30" fill="none" stroke="#8366ea" stroke-width="3.5" stroke-linecap="round"/><circle cx="12" cy="30" r="3.6" fill="#6fe3a3"/><path d="M29 33.5 l4.2 4.2 l7.4 -8.6" fill="none" stroke="#6fe3a3" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="wm"><span class="wm-k">CMS TEAM · PY1 and PY2 preliminary target prices</span><span class="wm-t">Episode <em>Calculator</em></span></div></div>
     <h1 style="margin-top:22px;font-size:clamp(1.8rem,3.6vw,2.8rem)">What will TEAM <em>pay your hospital</em>, or cost it?</h1>
     <p class="lede" style="margin-top:20px">The Transforming Episode Accountability Model started January 1, 2026 and runs through 2030. It is mandatory for 711 hospitals across five surgical episodes. Pick your hospital, enter your episode volumes and spend, and see the estimated reconciliation under each participation track, with the quality adjustment, stop-gain and stop-loss rules applied the way CMS describes them.</p>
-    <div class="chips"><span class="chip">721 participant hospitals</span><span class="chip">5 episode categories</span><span class="chip">29 MS-DRGs · 9 regions</span><span class="chip">Tracks 1, 2 and 3</span><span class="chip">No patient data</span></div>
+    <div class="chips"><span class="chip">721 participant hospitals</span><span class="chip">5 episode categories</span><span class="chip">32 MS-DRGs · 9 regions</span><span class="chip">Tracks 1, 2 and 3</span><span class="chip">No patient data</span></div>
     <div class="actions" style="margin-top:26px"><a class="btn primary" href="#calc">Run my hospital</a><a class="btn" href="map.html">Where TEAM bites in 2027</a><a class="btn" href="#how">How TEAM pays</a></div>
   </div>
   <div class="board" aria-label="Model facts">
@@ -340,7 +340,7 @@ header.open .menu-tg .l3{transform:translateY(-5px) rotate(-45deg)}
 <section id="calc">
   <div class="sec-head">
     <div><div class="eyebrow">Calculator</div><h2 style="margin-top:12px">Four inputs, one number.</h2></div>
-    <p class="lede">Everything here comes from the CMS PY1 preliminary target price workbook and the published reconciliation rules. The two things CMS has not published for your hospital, the risk-adjustment multiplier and your composite quality score, are sliders you control.</p>
+    <p class="lede">Everything here comes from the CMS preliminary target price workbooks (PY1, and PY2 as published November 4, 2026) and the published reconciliation rules. The two things CMS has not published for your hospital, the risk-adjustment multiplier and your composite quality score, are sliders you control.</p>
   </div>
   <div class="calc">
   <div class="steps">
@@ -378,7 +378,7 @@ header.open .menu-tg .l3{transform:translateY(-5px) rotate(-45deg)}
       <div class="row" style="margin-top:12px">
         <div class="field"><label for="regional">Regional target change per year (five-year view)</label>
           <div class="slider"><input type="range" id="regional" min="-3" max="1" step="0.5" value="-1"><output id="regionalOut">−1.0%/yr</output></div>
-          <span class="note">The benchmark rebases on a rolling three-year baseline, so as the division improves the target follows it down. Default assumes 1% a year; set 0 to hold PY1 prices flat.</span></div>
+          <span class="note">The benchmark rebases on a rolling three-year baseline, so as the division improves the target follows it down. Default assumes 1% a year from the PY2 prices; set 0 to hold PY2 prices flat.</span></div>
         <div class="field"><label>Payment timing</label><label class="checks" style="font-size:.9rem"><input type="checkbox" id="seq" checked> Apply 2% sequestration to positive payments</label>
           <span class="note">CMS pays or bills the reconciliation in the year after the performance year, with a later true-up for trend and post-episode spending. Repayments are not reduced by sequestration.</span></div>
       </div>
@@ -386,7 +386,7 @@ header.open .menu-tg .l3{transform:translateY(-5px) rotate(-45deg)}
 
     <div class="step">
       <div class="k">Step 3</div><h3>Episodes and spend</h3>
-      <p class="help">Annual traditional-Medicare episodes by MS-DRG, and your average episode spend (Part A and B, anchor through 30 days). Spend defaults to the regional target so you only have to move it. Turn off categories you do not perform. Outpatient joint and fusion episodes count in TEAM and are priced under the matching MS-DRG, so each has its own row. From October 1, 2026 the FY2027 rule adds MS-DRGs 523 to 525 as spinal fusion triggers; CMS prices them separately from PY2, so count them under the fusion MS-DRG they replaced for now. The badge on each category says whether the spend figure is yours, estimated from public data, or simply the regional target.</p>
+      <p class="help">Annual traditional-Medicare episodes by MS-DRG, and your average episode spend (Part A and B, anchor through 30 days). Spend defaults to the regional target so you only have to move it. Turn off categories you do not perform. Outpatient joint and fusion episodes count in TEAM and are priced under the matching MS-DRG, so each has its own row. From October 1, 2026 the FY2027 rule adds MS-DRGs 523 to 525 as spinal fusion triggers; CMS prices them separately from PY2, so for PY2 and later enter those cases on their own rows; for PY1 use the fusion MS-DRG they replaced. The badge on each category says whether the spend figure is yours, estimated from public data, or simply the regional target.</p>
       <div id="cats" style="display:grid;grid-template-columns:minmax(0,1fr);gap:12px"></div>
     </div>
 
@@ -544,7 +544,7 @@ header.open .menu-tg .l3{transform:translateY(-5px) rotate(-45deg)}
     <div>
       <h3 style="margin-bottom:10px">Calculation order</h3>
       <ol style="margin:0;padding-left:20px;color:var(--muted);display:grid;gap:8px;font-size:.95rem">
-        <li>Regional target per MS-DRG = benchmark × prospective trend × (1 − discount), read from the CMS PY1 workbook (29 MS-DRGs × 9 census divisions).</li>
+        <li>Regional target per MS-DRG = benchmark × prospective trend × (1 − discount), read from the CMS preliminary workbooks: PY1 (29 MS-DRGs × 9 census divisions) and PY2 (32 MS-DRGs × 9, the three new fusion MS-DRGs 523 to 525 added).</li>
         <li>Category target = count-weighted regional target × your risk multiplier. Outpatient joint and fusion rows take the matching MS-DRG price, as the CMS workbook does. Normalization and the retrospective trend are held at 1.00 in the point estimate; the final-price band reruns the result at ±3% on the target.</li>
         <li>Reconciliation amount per category = (target − average spend) × episodes. Low-volume categories (30 or fewer episodes across the three baseline years, flagged automatically when three times the annual count is 30 or fewer) floored at zero.</li>
         <li>Aggregate to the hospital. Track 1 sets a negative aggregate to zero.</li>
@@ -563,7 +563,7 @@ header.open .menu-tg .l3{transform:translateY(-5px) rotate(-45deg)}
         <li>Your actual hospital-specific risk multiplier and normalization factor. CMS sends them in the preliminary target price report.</li>
         <li>The 99th-percentile outlier cap on single episodes (already inside the CMS benchmark). Enter your average spend.</li>
         <li>Episode cancellations, overlap with ACOs and other models, post-episode spending monitoring, beneficiary incentives, SNF three-day waiver effects.</li>
-        <li>Target prices for PY2 to PY5, which CMS has not published. PY1 regional prices are held flat. The FY2027 rule adds MS-DRG and APC update factors to the trend from PY1 (expected in late 2026) and, from PY2, builds the normalization factor from all three baseline years; neither is in the public workbook yet.</li>
+        <li>Target prices for PY3 to PY5, which CMS has not published. They start from the PY2 preliminary prices and move by the regional trend you set. The PY2 prices are preliminary: the FY2027 rule adds MS-DRG and APC update factors to final target prices (the APC factor after the OPPS final rule) and builds the normalization factor from all baseline years, so reconciliation prices will differ. The PY2 workbook also lists an "All" row for each of four episode categories that it does not explain; this tool does not use them.</li>
         <li>The hospital's actual TEAM performance. Prefilled spend and quality come from all-condition public measures and spending patterns, so they show where a hospital's post-discharge habits point, not its surgical episode results. Hospitals should replace them with the category spend in their CMS baseline report; the badge on each category says which it is.</li>
         <li>Interest, discounting and the timing of CMS's true-ups beyond the settlement year shown.</li>
         <li>Medicare Advantage volume (TEAM is traditional Medicare only); the county MA share is shown so you can see how much of your surgical book is in scope.</li>
@@ -580,6 +580,7 @@ header.open .menu-tg .l3{transform:translateY(-5px) rotate(-45deg)}
     <p class="lede">Downloaded October 2026 from cms.gov. If CMS updates a file the calculator says which version it used.</p>
   </div>
   <ul class="srcs">
+    <li><span class="d">2026-11-04</span><span><a href="https://www.cms.gov/priorities/innovation/files/team-py2-prlim-target-prices.xlsx">TEAM PY2 Preliminary Target Prices, DRG-Region level (xlsx)</a><small>Benchmark price, prospective trend factor, discount factor and preliminary target price for each MS-DRG and census division, including new spinal fusion MS-DRGs 523 to 525.</small></span></li>
     <li><span class="d">2025-12-10</span><span><a href="https://www.cms.gov/priorities/innovation/files/team-py1-prlim-target-prices.xlsx">TEAM PY1 Preliminary Target Prices, DRG-Region level (xlsx)</a><small>Benchmark price, prospective trend factor, discount factor and preliminary target price for each MS-DRG and census division. Baseline 2022 to 2024.</small></span></li>
     <li><span class="d">2025-09</span><span><a href="https://www.cms.gov/files/document/team-risk-adj-prelim-target-specs.pdf">TEAM Risk Adjustment and Preliminary Target Price Specifications (PDF)</a><small>Benchmark construction, 17/33/50 baseline-year weights, winsorization, trend, risk adjusters, normalization.</small></span></li>
     <li><span class="d">2025-09</span><span><a href="https://www.cms.gov/files/document/team-qualityscoring-fs.pdf">Quality Scoring in TEAM fact sheet (PDF)</a><small>Scaled measure scores, volume-based weights, CQS adjustment formulas and worked examples by track.</small></span></li>
@@ -633,7 +634,7 @@ header.open .menu-tg .l3{transform:translateY(-5px) rotate(-45deg)}
 </section>
 </div>
 </main>
-<footer><div class="wrap"><span>© 2026 Jay Beatty. Independent educational tool. Not affiliated with CMS.</span><span>Prices: CMS PY1 preliminary target price workbook, 2025-12-10</span></div></footer>
+<footer><div class="wrap"><span>© 2026 Jay Beatty. Independent educational tool. Not affiliated with CMS.</span><span>Prices: CMS PY1 (2025-12-10) and PY2 (2026-11-04) preliminary target price workbooks</span></div></footer>
 <div class="tip" id="tip" role="status" aria-live="polite"></div>
 
 <script>

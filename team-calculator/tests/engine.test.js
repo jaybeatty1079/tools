@@ -6,7 +6,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const ENG = require('../build/engine.js');
-const TP = require('../data/data_target_prices_py1.json');
+const TP = require('../data/data_target_prices.json');
 const E = ENG.createEngine(TP);
 const { CATS, qualityAdj, eligible, leverSavings } = ENG;
 
@@ -14,12 +14,25 @@ const near = (a, b, msg) => assert.ok(Math.abs(a - b) < 1e-6, `${msg || ''} expe
 const state = region => E.defaultState(region || 2);
 const count = (S, key, counts) => Object.assign(S.cats[key].counts, counts);
 
-test('price table: 29 MS-DRGs across 9 census divisions, one row each', () => {
-  assert.equal(new Set(TP.map(r => r.drg)).size, 29);
+test('price table: 32 MS-DRGs across 9 census divisions, one row each; 29 carry a PY1 price and all 32 a PY2 price', () => {
+  assert.equal(new Set(TP.map(r => r.drg)).size, 32);
   assert.equal(new Set(TP.map(r => r.region)).size, 9);
-  assert.equal(TP.length, 261);
+  assert.equal(TP.length, 288);
+  assert.equal(TP.filter(r => r.target > 0).length, 261);
+  assert.equal(TP.filter(r => r.t2 > 0).length, 288);
   const key = r => r.drg + '|' + r.region;
   assert.equal(new Set(TP.map(key)).size, TP.length, 'no duplicate DRG-region rows');
+});
+
+test('PY2 prices: PY1 reads the PY1 workbook, PY2 and later read CMS PY2 preliminary prices, new fusion MS-DRGs 523 to 525 price from PY2 only', () => {
+  near(E.price('470', 2, 1), TP.find(r => r.drg === '470' && r.region === 2).target, 'PY1 470');
+  near(E.price('470', 2, 2), TP.find(r => r.drg === '470' && r.region === 2).t2, 'PY2 470');
+  near(E.price('470', 2, 5), E.price('470', 2, 2), 'PY3 to PY5 hold PY2 flat before trend');
+  assert.equal(E.price('523', 2, 1), 0);
+  assert.ok(E.price('523', 2, 2) > 100000);
+  const S = state(2); S.py = 2; count(S, 'spine', { '523': 10 }); S.cats.spine.spend = E.price('523', 2, 2) * 0.9;
+  const r = E.reconcile(S, { risk: 1 }).rows.find(x => x.c.key === 'spine');
+  near(r.regional, E.price('523', 2, 2), 'reconcile uses the PY2 price when S.py is 2');
 });
 
 test('price lookup: the outpatient joint row prices at MS-DRG 470, unknown DRGs price at zero', () => {

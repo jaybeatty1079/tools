@@ -14,7 +14,9 @@ const num=n=>Math.round(n).toLocaleString('en-US');
 /* ---------- engine (build/engine.js, shared with tests/engine.test.js) ---------- */
 const ENG=window.TEAMEngine,E=ENG.createEngine(TP);
 const {DIVS,DIVSTATES,STATE2DIV,CATS,TRACKS,UNIT,CAP_PER_EPISODE,SETTING,LEVER_DEF,baseDrg,eligible,qualityAdj}=ENG;
-const {price,priceRow,catCalc}=E;
+const priceRow=E.priceRow;
+/* every price lookup follows the performance year chosen on the page (S.py): PY1 reads the PY1 workbook, PY2 and later read CMS's PY2 preliminary prices */
+const price=(d,r,py)=>E.price(d,r,py??S.py),catCalc=(c,st,r,k,sh,py)=>E.catCalc(c,st,r,k,sh,py??S.py);
 function run(opts){return E.reconcile(S,opts);}
 function leverSavings(key,raw){return ENG.leverSavings(S.levers,key,raw);}
 
@@ -159,7 +161,7 @@ function onCatInput(e){const t=e.target;
   else if(t.dataset.lowvol!=null){S.cats[t.dataset.lowvol].lowvol=t.checked;}
   update();}
 function syncSpendDefault(k){const inp=document.querySelector(`[data-spend="${k}"]`);const r=catCalc(CATS.find(c=>c.key===k),Object.assign({},S.cats[k],{spend:null}),S.region,S.risk);inp.placeholder='regional target '+fmtFull(r.regional);}
-function refreshCats(){CATS.forEach(c=>{c.drgs.forEach(x=>{const cell=document.querySelector(`[data-p="${c.key}-${x[0]}"]`);if(cell)cell.textContent=fmtFull(price(x[0],S.region));});syncSpendDefault(c.key);
+function refreshCats(){CATS.forEach(c=>{c.drgs.forEach(x=>{const cell=document.querySelector(`[data-p="${c.key}-${x[0]}"]`);if(cell){const v=price(x[0],S.region);cell.textContent=v?fmtFull(v):'PY2 and later';}});syncSpendDefault(c.key);
   const sl=document.querySelector(`[data-shift="${c.key}"]`);const st=S.cats[c.key];if(st.spend!=null&&sl){const r=catCalc(c,Object.assign({},st,{spend:null}),S.region,S.risk);S.cats[c.key].spend=Math.round(r.target*(1+parseFloat(sl.value)/100));document.querySelector(`[data-spend="${c.key}"]`).value=S.cats[c.key].spend;}});}
 
 
@@ -180,7 +182,7 @@ const bind=(id,out,key,f)=>{const i=$(id);i.addEventListener('input',()=>{S[key]
 bind('risk','riskOut','risk',v=>v.toFixed(2)+'×');
 bind('cqs','cqsOut','cqs',v=>String(Math.round(v)));
 bind('improve','improveOut','improve',v=>pct(v)+'/yr');
-$('py').addEventListener('change',()=>{S.py=+$('py').value;buildTracks();update();});
+$('py').addEventListener('change',()=>{S.py=+$('py').value;buildTracks();refreshCats();update();});
 $('safetyNet').addEventListener('change',()=>{S.sn=$('safetyNet').checked;buildTracks();update();});
 $('ruralType').addEventListener('change',()=>{S.rural=$('ruralType').checked;buildTracks();update();});
 
@@ -293,7 +295,7 @@ function drawLevers(){const svg=$('chLevers');svg.innerHTML='';const W=560,H=250
   $('tblLevers').innerHTML='<table><thead><tr><th>Step</th><th class="n">Change</th><th class="n">Running NPRA</th></tr></thead><tbody>'+steps.map(s=>`<tr><td>${s.lab}</td><td class="n">${s.abs?'':(s.v>=0?'+':'')+fmtFull(s.v)}</td><td class="n">${fmtFull(s.abs?s.v:s.from+s.v)}</td></tr>`).join('')+'</tbody></table>';}
 
 function drawFive(){const svg=$('chFive');svg.innerHTML='';const W=560,H=240,L=64,Rm=16,top=14,bot=30;const R0=run();if(!R0.eps){svg.appendChild(el('text',{x:W/2,y:H/2,'text-anchor':'middle'},'No episodes entered'));$('tblFive').innerHTML='';$('fiveSub').textContent='';return;}
-  const years=[1,2,3,4,5].map(py=>{let t=S.track;if(!eligible(t,py,S.sn,S.rural).ok)t=3;const mult=Math.pow(1+S.improve/100,py-1),tm=Math.pow(1+S.regional/100,py-1);const r=run({track:t,spendMult:mult,targetMult:tm});return {py,t,mult,tm,npra:r.npra,aggT:r.aggT};});
+  const T1=run({py:1,track:3}).aggT;const years=[1,2,3,4,5].map(py=>{let t=S.track;if(!eligible(t,py,S.sn,S.rural).ok)t=3;const mult=Math.pow(1+S.improve/100,py-1),tm=Math.pow(1+S.regional/100,Math.max(0,py-2));const r=run({py,track:t,spendMult:mult,targetMult:tm});return {py,t,mult,tm:T1?r.aggT/T1:1,npra:r.npra,aggT:r.aggT};});
   let cum=0;years.forEach(y=>{cum+=y.npra;y.cum=cum;});
   const all=years.flatMap(y=>[y.npra,y.cum]);let lo=Math.min(0,...all),hi=Math.max(0,...all);if(hi===lo){hi=1;lo=-1;}const pad=(hi-lo)*.1;lo-=pad;hi+=pad;
   const slot=(W-L-Rm)/5,X=i=>L+slot*i+slot/2,Y=v=>top+(hi-v)/(hi-lo)*(H-top-bot);
@@ -303,7 +305,7 @@ function drawFive(){const svg=$('chFive');svg.innerHTML='';const W=560,H=240,L=6
     g.appendChild(el('text',{x:X(i),y:H-12,'text-anchor':'middle',class:'strong'},`PY${y.py} · ${2025+y.py}`));g.appendChild(el('text',{x:X(i),y:H+1,'text-anchor':'middle',style:'font-size:10px'},`${TRACKS[y.t].name} · paid ${2026+y.py}`));
     bindTip(g,`<b>PY${y.py} (${2025+y.py}) · ${TRACKS[y.t].name}</b>Spend ${pct((y.mult-1)*100,1)} vs PY1 · target ${pct((y.tm-1)*100,1)} · NPRA ${fmtFull(y.npra)}, settled in ${2026+y.py}<br>Cumulative ${fmtFull(y.cum)}`);svg.appendChild(g);});
   const d=years.map((y,i)=>(i?'L':'M')+X(i)+' '+Y(y.cum)).join(' ');svg.appendChild(el('path',{d,fill:'none',stroke:C.purple,'stroke-width':2.5}));years.forEach((y,i)=>svg.appendChild(el('circle',{cx:X(i),cy:Y(y.cum),r:4,fill:C.purple})));
-  const last=years[4];$('fiveSub').textContent=`Same volumes every year, your spend changing ${pct(S.improve)} per year and the regional target ${pct(S.regional)} per year as the division improves and the baseline rolls forward${S.levers.on?', levers applied':''}. Each year's amount is settled the following year, after the performance year closes, with a later true-up for trend. Five-year total ${fmtFull(last.cum)}.`;
+  const last=years[4];$('fiveSub').textContent=`Same volumes every year, your spend changing ${pct(S.improve)} per year. PY1 and PY2 use CMS's published preliminary prices; PY3 to PY5 start from the PY2 prices and move ${pct(S.regional)} per year as the division improves and the baseline rolls forward${S.levers.on?', levers applied':''}. Each year's amount is settled the following year, after the performance year closes, with a later true-up for trend. Five-year total ${fmtFull(last.cum)}.`;
   $('tblFive').innerHTML='<table><thead><tr><th>Year</th><th>Track</th><th class="n">Spend vs PY1</th><th class="n">Target vs PY1</th><th class="n">NPRA</th><th>Settled</th><th class="n">Cumulative</th></tr></thead><tbody>'+years.map(y=>`<tr><td>PY${y.py} · ${2025+y.py}</td><td>${TRACKS[y.t].name}</td><td class="n">${pct((y.mult-1)*100,1)}</td><td class="n">${pct((y.tm-1)*100,1)}</td><td class="n">${fmtFull(y.npra)}</td><td>${2026+y.py}</td><td class="n">${fmtFull(y.cum)}</td></tr>`).join('')+'</tbody></table>';}
 
 

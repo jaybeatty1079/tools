@@ -10,6 +10,7 @@ One HTML file, built from a handful of source files and public CMS data. This no
 | `build/engine.js` | The reconciliation engine. Pure: no DOM, no page state. Reference tables (categories, MS-DRGs, tracks, lever defaults), track eligibility, the quality adjustment, lever savings, and `createEngine(TP)`, which binds the price table and returns `price`, `catCalc`, `reconcile(state, opts)` and `defaultState()`. The same file runs in the browser as `window.TEAMEngine` and in Node through `require`. |
 | `build/app.js` | Everything the user touches. The state object, the hospital picker, the public-data prefill (`derivePublic`), the charts (inline SVG), the checks section, the scenario payload, the motion. It never computes a dollar itself; every figure comes from the engine. |
 | `data/data_target_prices_py1.json` | 261 rows: 29 MS-DRGs by 9 census divisions, from the CMS PY1 preliminary target price workbook. |
+| `data/data_target_prices_py2.json` | 288 rows: 32 MS-DRGs by 9 divisions, from the CMS PY2 preliminary workbook (2026-11-04). `assemble.py` joins it to the PY1 rows as `t2`; `data_target_prices.json` is the merged table. The 36 'All' rows are in `data_target_prices_py2_all.json`, unused. |
 | `data/data_participants.json` | The 721 hospitals on the CMS participant list, with CCN, CBSA and state. |
 | `data/data_hospital_slim.json` | About 470 KB of per-hospital metrics derived from thirteen public datasets, embedded in the page so the prefill works offline. |
 | `data/data_cases.json` | The six case hospitals: ids, CCNs, track and prose. Their numbers are derived from the slim file at load time, never stored. |
@@ -37,7 +38,7 @@ flowchart LR
 
 For each of the five categories the engine does the same thing, in `catCalc`:
 
-1. Regional price. The episode-weighted average of the PY1 target prices for the MS-DRGs the user entered, in the hospital's census division. The outpatient joint row prices at MS-DRG 470, as the CMS workbook note says.
+1. Regional price. The episode-weighted average of the target prices for the selected performance year (PY1 workbook for PY1, PY2 workbook for PY2 and later) for the MS-DRGs the user entered, in the hospital's census division. The outpatient joint row prices at MS-DRG 470, as the CMS workbook note says.
 2. Target. Regional price times the risk multiplier.
 3. Spend. The user's number if typed, the derived public estimate if a hospital was picked, or the regional price. A spend shift option sets spend relative to the target for sensitivity lines.
 4. Reconciliation. Target minus spend, times episodes. If the category is flagged low volume and the result is negative, it floors at zero.
