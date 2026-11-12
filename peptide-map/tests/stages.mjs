@@ -12,14 +12,16 @@ function audit(tag) {
   const MIN_FONT = 12, MIN_BODY = {1200: 18, 375: 16}, bad = [], st = document.querySelector('#stage').getBoundingClientRect();
   const vis = el => { const r = el.getBoundingClientRect(), cs = getComputedStyle(el); return r.width > 2 && r.height > 2 && cs.display !== 'none' && cs.visibility !== 'hidden' ? r : null };
   const boxes = {};
-  for (const [name, sel] of [['pinned panel', '#now'], ['window', '.panel.on'], ['pause bar', '#pausebar'], ['door message', '#doors.show .door.r .msg'], ['door name', '#doorName']]) {
-    const el = document.querySelector(sel); if (!el) continue; const r = vis(el); if (!r) continue; boxes[name] = r;
+  const things = [['pinned panel', document.querySelector('#now')], ...[...document.querySelectorAll('.panel.on')].map(e => ['window ' + (+e.dataset.step + 1), e]), ['pause bar', document.querySelector('#pausebar')], ['door message', document.querySelector('#doors.show .door.r .msg')], ['door name', document.querySelector('#doorName')]];   // up to four windows are up at once now, one per step of the wall
+  for (const [name, el] of things) {
+    if (!el) continue; const r = vis(el); if (!r) continue; boxes[name] = r;
     if (r.left < st.left - 1 || r.right > st.right + 1 || r.top < st.top - 1 || r.bottom > st.bottom + 1) bad.push(name + ' leaves the stage');
     if (name !== 'door name' && el.scrollHeight > el.clientHeight + 1 || // a one-line wood-type title: glyph boxes run past the line box, width is what matters
          el.scrollWidth > el.clientWidth + 3) bad.push(name + ' is clipped or scrolls');
     for (let p = el; p && p !== document.body; p = p.parentElement) if (+getComputedStyle(p).opacity < 0.99) bad.push(name + ' is not fully opaque (' + getComputedStyle(p).opacity + ')');
     el.querySelectorAll('*').forEach(c => { if (!c.childNodes.length) return; const own = [...c.childNodes].some(n => n.nodeType === 3 && n.textContent.trim()); if (!own) return; const fs = parseFloat(getComputedStyle(c).fontSize); if (fs < MIN_FONT) bad.push(name + ' text under ' + MIN_FONT + 'px: ' + c.textContent.trim().slice(0, 30) + ' (' + fs + ')') });
   }
+  const nowEl = document.querySelector('#now'); if (nowEl && nowEl.classList.contains('on')) nowEl.querySelectorAll('.tabs button').forEach(b => { const r = b.getBoundingClientRect(); if (r.width < 24 || r.height < 24) bad.push('tab ' + b.textContent + ' is under 24 px') });   // WCAG 2.2 target size, minimum
   const names = Object.keys(boxes);
   for (let i = 0; i < names.length; i++) for (let j = i + 1; j < names.length; j++) { const a = boxes[names[i]], b = boxes[names[j]]; if (a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom) bad.push(names[i] + ' overlaps ' + names[j]) }
   const body = document.querySelector('#now p'); if (body && parseFloat(getComputedStyle(body).fontSize) < MIN_BODY[innerWidth > 820 ? 1200 : 375]) bad.push('pinned panel body under ' + MIN_BODY[innerWidth > 820 ? 1200 : 375] + 'px');
