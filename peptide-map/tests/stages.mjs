@@ -12,7 +12,7 @@ function audit(tag) {
   const MIN_FONT = 12, MIN_BODY = {1200: 18, 375: 16}, bad = [], st = document.querySelector('#stage').getBoundingClientRect();
   const vis = el => { const r = el.getBoundingClientRect(), cs = getComputedStyle(el); return r.width > 2 && r.height > 2 && cs.display !== 'none' && cs.visibility !== 'hidden' ? r : null };
   const boxes = {};
-  const things = [['pinned panel', document.querySelector('#now')], ...[...document.querySelectorAll('.panel.on')].map(e => ['window ' + (+e.dataset.step + 1), e]), ['pause bar', document.querySelector('#pausebar')], ['door message', document.querySelector('#doors.show .door.r .msg')], ['door name', document.querySelector('#doorName')]];   // up to four windows are up at once now, one per step of the wall
+  const things = [['pinned panel', document.querySelector('#now')], ...[...document.querySelectorAll('.panel.on')].map(e => ['window ' + (+e.dataset.step + 1), e]), ['feature caption', document.querySelector('#feat')], ['pause bar', document.querySelector('#pausebar')], ['door message', document.querySelector('#doors.show .door.r .msg')], ['door name', document.querySelector('#doorName')]];   // up to four windows are up at once now, one per step of the wall
   for (const [name, el] of things) {
     if (!el) continue; const r = vis(el); if (!r) continue; boxes[name] = r;
     if (r.left < st.left - 1 || r.right > st.right + 1 || r.top < st.top - 1 || r.bottom > st.bottom + 1) bad.push(name + ' leaves the stage');
@@ -46,6 +46,9 @@ for (const [label, w, h] of SIZES) for (const id of ids) {
     await page.evaluate(() => window.ride.pause()); await page.waitForTimeout(250);
     await shoot(String(k + 1).padStart(2, '0') + '-step');
     await page.evaluate(() => window.ride.resume());
+    if (k === 3 && await page.evaluate(i => window.ride.cardFeature(i), id)) {   // the swoop after wall one: the tunnel's or the loop's caption, up on screen
+      await page.waitForFunction(() => window.ride.state().fx, null, {timeout: 240000, polling: 'raf'}); await page.evaluate(() => window.ride.pause()); await page.waitForTimeout(250);
+      await shoot('04b-feature'); await page.evaluate(() => window.ride.resume()) }
   }
   await page.waitForFunction(() => window.ride.state().readout, null, {timeout: 240000}); await page.waitForTimeout(900);
   await shoot('99-standing'); if (errors.some(e => !/404/.test(e))) { fails++; console.log('FAIL console', id, label, errors) }

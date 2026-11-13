@@ -425,7 +425,11 @@ def standing_of(c):
     if not radar: return 'orange'
     return 'yellow'
 for c in CARDS + MORE_CARDS: c['standing'] = standing_of(c)
+# what the standing does to the swoop after wall one (the ride's own rule, one line): yellow loops, on FDA's radar; orange and red go through a tunnel, in the dark; green runs clear
+FEATURE = {'yellow': 'loop', 'orange': 'tunnel', 'red': 'tunnel'}
+for c in CARDS + MORE_CARDS: c['feature'] = FEATURE.get(c['standing'])
 from collections import Counter
+print('features:', dict(Counter(c['feature'] for c in CARDS + MORE_CARDS)))
 print('standing colours:', dict(Counter(c['standing'] for c in CARDS + MORE_CARDS)), '| orange:', [c['id'] for c in CARDS + MORE_CARDS if c['standing'] == 'orange'])
 ride = {'asOf': AS_OF, 'cards': CARDS + MORE_CARDS, 'hhsUrl': HHS['url']}
 # ---------- the glossary page ----------

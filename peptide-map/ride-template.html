@@ -125,6 +125,15 @@ a{color:var(--tol)}
 #now .tabs button[aria-pressed=true]{background:#2a211a;color:#f7f1e4}
 #now .tabs button:disabled{opacity:.35;cursor:default}
 #now .tabs button:focus-visible{outline:3px solid var(--tol);outline-offset:2px}
+/* what the standing does to the track, said once at the tunnel's mouth or the loop's foot, in the colour key's own words */
+#feat{position:absolute;left:50%;bottom:12px;z-index:3;display:none;width:min(calc(100% - 2*(clamp(176px,21%,250px) + 24px)),640px);transform:translateX(-50%);background:#f7f1e4;border:3px solid #2a211a;border-radius:8px;overflow:hidden;color:var(--cinkd);box-shadow:0 8px 22px rgba(40,25,10,.4)}
+#feat.on{display:block}
+#feat .hd{display:block;font:600 14px/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:8px 14px;color:#2a211a;background:#d8ccb4}
+#feat.c-yellow .hd{background:#d4b23a}#feat.c-orange .hd{background:#d98a3c}#feat.c-red .hd{background:#b8303c;color:#f7f1e4}
+#feat .nm{display:block;font-family:"Rye",Georgia,serif;font-size:28px;line-height:1.1;padding:10px 14px 0}
+#feat p{margin:0;padding:6px 14px 12px;font-size:18px;line-height:1.4;font-weight:500}
+@media (max-width:820px){#feat{width:min(calc(100% - 24px),640px)}}
+@media (max-width:480px){#feat{left:0;right:0;bottom:0;width:auto;transform:none;border-width:3px 0 0;border-radius:0}#feat .nm{font-size:24px}#feat p{font-size:16px}}
 #now .hd{display:block;font-family:var(--mono);font-weight:600;font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:#f7f1e4;background:#2a211a;padding:8px 14px}
 #now.s-ok .hd{background:#4f6b4a}#now.s-cond .hd{background:#a46f1a}#now.s-no .hd{background:#8f2b2b}#now.s-brand .hd{background:#2f4f8f}
 #now .nm{display:block;font-family:"Rye",Georgia,serif;font-size:28px;line-height:1.1;padding:10px 14px 0}
@@ -195,13 +204,14 @@ a{color:var(--tol)}
   <div id="flash"></div>
   <div id="hud"></div>
   <div id="now" role="region" aria-label="This step" aria-live="polite"></div>
+  <div id="feat"></div>
   <div id="pausebar" hidden><span id="pausedTag" hidden>Paused</span><button type="button" id="pauseBtn" aria-pressed="false" aria-keyshortcuts="Space">Pause<span class="k">Space</span></button></div>
   <div id="live" class="sr" role="status" aria-live="assertive"></div>
   <div id="fade"></div>
   <div id="readout"><div class="plate" id="plate"></div></div>
 </div>
 <div class="below">
-  <div><h2>How to read the ride</h2><p>Three walls, four steps to a wall, one wall at the top of each lift. As you climb toward a wall its four windows open one by one, two on the left and two on the right, and the panel at the bottom puts the step in front of you into words. Tap a number in that panel, or a window, to read any of the four; press Space, or the Pause button, to stop and read, and again to go on. The top of each window is green where the rules permit the step, amber with conditions, red where the gate is closed, blue for an approved product. Where the answer is yes the cart goes through the wall. Where it is no, the wall holds and the cart stops in front of it; where there is no lawful route at all, the cart is shunted onto the research-use-only siding. After the third wall the cart parks at the terminal and the standing comes up, coloured green, yellow, orange or red by evidence and oversight.</p></div>
+  <div><h2>How to read the ride</h2><p>Three walls, four steps to a wall, one wall at the top of each lift. As you climb toward a wall its four windows open one by one, two on the left and two on the right, and the panel at the bottom puts the step in front of you into words. Tap a number in that panel, or a window, to read any of the four; press Space, or the Pause button, to stop and read, and again to go on. The top of each window is green where the rules permit the step, amber with conditions, red where the gate is closed, blue for an approved product. Where the answer is yes the cart goes through the wall. Where it is no, the wall holds and the cart stops in front of it; where there is no lawful route at all, the cart is shunted onto the research-use-only siding. Between the first and second walls the standing picks the track: green runs clear, yellow goes round a loop (on FDA's radar), orange and red go into a tunnel (nobody looking, no human evidence). After the third wall the cart parks at the terminal and the standing comes up, coloured green, yellow, orange or red by evidence and oversight.</p></div>
   <div><h2>Where the facts come from</h2><p>Every status and date in a standing is a row in the federal register behind this tool: FDA's lists and letters, the Federal Register, Regulations.gov, the courts. The <a href="map.html">map</a> holds the register, the 503B facilities and the documented supply routes; the <a href="glossary.html">glossary</a> holds the words.</p></div>
   <div><h2>What it is not</h2><p>Not legal advice, and not a statement that any peptide is safe or works. "Tolerated" means FDA or HHS says it does not intend to act while conditions are met. It is never approval. The hills are the Pennsylvania countryside the ride is set in; the equipment in the windows is drawn to type, not from any named plant, and the making of a peptide is told as the trade generally does it, not as any one maker does. Barns, silos, the water tower, the factory, the truck and the pines are CC0 models by Quaternius and CreativeTrio via Poly Pizza.</p></div>
 </div>
@@ -329,16 +339,15 @@ function flash(){const f=$('#flash');f.style.transition='none';f.style.opacity=.
 /* the steel track: tubular rails on box-section supports, maroon like the picture */
 const steel=new THREE.MeshStandardMaterial({color:0x6e2f2f,roughness:.42,metalness:.55,envMap:ENV,envMapIntensity:.6}),steelDark=new THREE.MeshStandardMaterial({color:0x4a2222,roughness:.6,metalness:.4});
 const up=new THREE.Vector3(0,1,0);
-function rails(curve,n,supports){const L=[],R=[];for(let i=0;i<=n;i++){const t=i/n,p=curve.getPointAt(t),tan=curve.getTangentAt(t),side=new THREE.Vector3().crossVectors(tan,up).normalize().multiplyScalar(.95);L.push(p.clone().add(side));R.push(p.clone().sub(side))}
+function rails(curve,n,supports,t0=0,t1=1){const L=[],R=[],Cc=[],at=i=>t0+(t1-t0)*i/n;for(let i=0;i<=n;i++){const t=at(i),p=curve.getPointAt(t),tan=curve.getTangentAt(t),side=new THREE.Vector3().crossVectors(tan,up).normalize().multiplyScalar(.95);L.push(p.clone().add(side));R.push(p.clone().sub(side));Cc.push(p)}
   const g=new THREE.Group();for(const pts of [L,R]){const m=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),n,.16,8,false),steel);m.castShadow=!mobile;g.add(m)}
-  const spine=new THREE.Mesh(new THREE.TubeGeometry(curve,n,.32,8,false),steelDark);spine.position.y=-.55;g.add(spine);
+  const spine=new THREE.Mesh(new THREE.TubeGeometry(t0===0&&t1===1?curve:new THREE.CatmullRomCurve3(Cc),n,.32,8,false),steelDark);spine.position.y=-.55;g.add(spine);
   const ties=new THREE.InstancedMesh(new THREE.BoxGeometry(2.4,.12,.4),steelDark,Math.round(n/2)),o=new THREE.Object3D();let k=0;
-  for(let i=0;i<n;i+=2){const t=i/n,p=curve.getPointAt(t),tan=curve.getTangentAt(t);o.position.copy(p);o.lookAt(p.clone().add(tan));o.rotateY(Math.PI/2);o.scale.set(1,1,1);o.updateMatrix();ties.setMatrixAt(k++,o.matrix)}ties.count=k;g.add(ties);
+  for(let i=0;i<n;i+=2){const t=at(i),p=curve.getPointAt(t),tan=curve.getTangentAt(t);o.position.copy(p);o.lookAt(p.clone().add(tan));o.rotateY(Math.PI/2);o.scale.set(1,1,1);o.updateMatrix();ties.setMatrixAt(k++,o.matrix)}ties.count=k;g.add(ties);
   if(supports){const col=new THREE.InstancedMesh(new THREE.BoxGeometry(.9,1,.9),steelDark,Math.round(n/4)+2),foot=new THREE.InstancedMesh(new THREE.BoxGeometry(2.4,.5,2.4),steelDark,Math.round(n/4)+2);let q=0;
-    for(let i=0;i<=n;i+=4){const t=i/n,p=curve.getPointAt(t),gy=terrainH(p.x,p.z);const h=p.y-.6-gy;if(h<1.5)continue;o.position.set(p.x,gy+h/2,p.z);o.rotation.set(0,0,0);o.scale.set(1,h,1);o.updateMatrix();col.setMatrixAt(q,o.matrix);o.position.set(p.x,gy+.2,p.z);o.scale.set(1,1,1);o.updateMatrix();foot.setMatrixAt(q,o.matrix);q++}
+    for(let i=0;i<=n;i+=4){const t=at(i),p=curve.getPointAt(t),gy=terrainH(p.x,p.z);const h=p.y-.6-gy;if(h<1.5)continue;o.position.set(p.x,gy+h/2,p.z);o.rotation.set(0,0,0);o.scale.set(1,h,1);o.updateMatrix();col.setMatrixAt(q,o.matrix);o.position.set(p.x,gy+.2,p.z);o.scale.set(1,1,1);o.updateMatrix();foot.setMatrixAt(q,o.matrix);q++}
     col.count=foot.count=q;col.castShadow=!mobile;g.add(col);g.add(foot)}
   return g}
-scene.add(rails(MAIN,640,true));
 function tAt(x,y,z){const q=new THREE.Vector3(x,y,z);let best=0,bd=1e9;for(let i=0;i<=2400;i++){const d=MAIN.getPointAt(i/2400).distanceTo(q);if(d<bd){bd=d;best=i/2400}}return best}
 /* arc-length table so the cart moves by distance, not by curve parameter */
 const ARC=(()=>{const n=1200,s=[0];let acc=0,prev=MAIN.getPointAt(0);for(let i=1;i<=n;i++){const p=MAIN.getPointAt(i/n);acc+=p.distanceTo(prev);s.push(acc);prev=p}return {n,s,total:acc}})();
@@ -353,6 +362,9 @@ const RV=WALLS.flatMap(W=>FR.map(f=>W.s0+(W.s-W.s0)*f)),T=RV.map(sToT); // how f
 const SIDING_AT=6,SIDING_T=sToT(RV[SIDING_AT]+10); // the research-use-only siding leaves the line just after the border step opens
 const SIDING=(()=>{const p=MAIN.getPointAt(SIDING_T);return new THREE.CatmullRomCurve3([p.clone(),new THREE.Vector3(p.x-6,p.y+1,p.z-16),new THREE.Vector3(p.x-18,p.y+1.5,p.z-34),new THREE.Vector3(p.x-30,p.y+1.2,p.z-50),new THREE.Vector3(p.x-36,p.y+1,p.z-60)])})();
 const siding=rails(SIDING,80,true);siding.visible=false;scene.add(siding);
+/* the swoop after wall one carries the experience the standing picks: a loop, or a tunnel. FS, as distances from the first crest: the tunnel's span, the stretch of track a loop replaces (b0 to b1) and the loop's foot (p0) */
+const SC=tToS(LIFTS[0][1]),FS={t0:SC+54,t1:SC+110,b0:SC+68,p0:SC+82,b1:SC+98};
+const RAILS=(()=>{const tb0=sToT(FS.b0),tb1=sToT(FS.b1),N=640,a=Math.round(N*tb0),b=Math.max(8,Math.round(N*(tb1-tb0)));return {A:rails(MAIN,a,true,0,tb0),B:rails(MAIN,b,true,tb0,tb1),C:rails(MAIN,N-a-b,true,tb1,1)}})();scene.add(RAILS.A,RAILS.B,RAILS.C);
 
 /* the station platform, the terminal, the dead end */
 const cream=new THREE.MeshStandardMaterial({color:0xe9dcc2,roughness:.9}),dark=new THREE.MeshStandardMaterial({color:0x3a2c22,roughness:.8}),barnRed=new THREE.MeshStandardMaterial({color:0x8e3b2f,roughness:.85});
@@ -572,6 +584,46 @@ for(const W of WALLS){const p=MAIN.getPointAt(W.t),tan=MAIN.getTangentAt(W.t),fa
   W.closed=board('Closed',10,3.4);W.closed.position.set(0,3.9,1.1);W.closed.visible=false;g.add(W.closed)}
 WALLS.forEach(resetWall); // the bricks stand
 document.fonts.ready.then(()=>frames.forEach((F,i)=>paintFrame(i,F.lit?ride.card:null,F.lit))); // painted before the wood-type face arrives, so paint them again
+
+/* ---------- the tunnel and the loop. The standing picks one for the swoop after wall one: yellow a loop, orange and red a tunnel, green a clear run ---------- */
+const FEAT={tunnel:new THREE.Group(),loop:new THREE.Group()};scene.add(FEAT.tunnel,FEAT.loop);FEAT.tunnel.visible=FEAT.loop.visible=false;
+const FXSIGN={yellow:"On FDA's radar",orange:'Nobody looking',red:'No human evidence'}; // the colour key's own words
+const FXTXT={yellow:['A loop for yellow',"Named in FDA's lists, votes or letters, with thinner human evidence."],orange:['Into the dark for orange','Some human evidence, and no FDA list, vote or letter in the register names it.'],red:['Into the dark for red','No human evidence found in the indexes searched.']};
+const _o2=new THREE.Object3D(),_M4=new THREE.Matrix4(),atS=s=>MAIN.getPointAt(sToT(s)),hz=v=>new THREE.Vector3(v.x,0,v.z).normalize();
+{ /* the tunnel: a dark tube round the track with ribs and flickering lamps, and a stone portal at each end, the name of the standing over the first */
+  const pts=[];for(let s=FS.t0;s<=FS.t1+.01;s+=2)pts.push(atS(s).add(new THREE.Vector3(0,1.6,0)));const cv=new THREE.CatmullRomCurve3(pts);
+  const tube=new THREE.Mesh(new THREE.TubeGeometry(cv,56,5.4,16,false),new THREE.MeshBasicMaterial({color:0x1b1511,side:THREE.DoubleSide}));tube.castShadow=!mobile;FEAT.tunnel.add(tube);
+  const NR=14,LAMP=new THREE.MeshBasicMaterial({color:new THREE.Color(2.4,1.7,.8)}),ribs=new THREE.InstancedMesh(new THREE.TorusGeometry(5.45,.3,6,28),new THREE.MeshBasicMaterial({color:0x3a2c22}),NR),lamps=new THREE.InstancedMesh(new THREE.SphereGeometry(.36,8,6),LAMP,NR);FEAT.lamp=LAMP;
+  for(let i=0;i<NR;i++){const u=(i+.5)/NR,p=cv.getPointAt(u),tn=cv.getTangentAt(u);_o2.position.copy(p);_o2.lookAt(p.clone().add(tn));_o2.updateMatrix();ribs.setMatrixAt(i,_o2.matrix);_o2.position.copy(p);_o2.position.y+=4.7;_o2.rotation.set(0,0,0);_o2.updateMatrix();lamps.setMatrixAt(i,_o2.matrix)}
+  ribs.frustumCulled=lamps.frustumCulled=false;FEAT.tunnel.add(ribs,lamps);
+  const portal=(s,sign)=>{const p=atS(s),tn=MAIN.getTangentAt(sToT(s)),face=Math.atan2(-tn.x,-tn.z),g=new THREE.Group();g.position.copy(p);g.rotation.y=face;
+    const sh=new THREE.Shape();sh.moveTo(-9,-10);sh.lineTo(9,-10);sh.lineTo(9,13);sh.lineTo(-9,13);sh.closePath();const hole=new THREE.Path();hole.absarc(0,1.6,5.7,0,Math.PI*2,true);sh.holes.push(hole);
+    const geo=new THREE.ExtrudeGeometry(sh,{depth:3.2,bevelEnabled:false,curveSegments:32});geo.translate(0,0,-1.6);const slab=new THREE.Mesh(geo,stone(1,1));slab.castShadow=!mobile;slab.receiveShadow=true;g.add(slab); // a stone wall with a round mouth
+    if(sign){const b=board(' ',9,4.5);b.position.set(0,10.2,1.75);g.add(b);FEAT.sign=b}FEAT.tunnel.add(g)};
+  portal(FS.t0,true);portal(FS.t1,false)}
+const LOOP=(()=>{ /* the loop: a vertical circle in the line of the track, drifting sideways by 4 units so the way out clears the way in, with lead-ins on the main line either side */
+  const R=12,W=4,P0=atS(FS.p0),d=hz(MAIN.getTangentAt(sToT(FS.p0))),w=new THREE.Vector3().crossVectors(d,up).normalize(),ease=k=>k*k*(3-2*k),pts=[];
+  for(let s=FS.b0;s<FS.p0-1;s+=2)pts.push(atS(s).addScaledVector(w,-W/2*ease((s-FS.b0)/(FS.p0-FS.b0))));
+  const NN=48;for(let i=0;i<=NN;i++){const th=2*Math.PI*i/NN;pts.push(P0.clone().addScaledVector(w,-W/2+W*th/(2*Math.PI)).addScaledVector(d,R*Math.sin(th)).addScaledVector(up,R*(1-Math.cos(th))))}
+  for(let s=FS.p0+2;s<FS.b1-1;s+=2)pts.push(atS(s).addScaledVector(w,W/2*(1-ease((s-FS.p0)/(FS.b1-FS.p0)))));pts.push(atS(FS.b1));
+  const curve=new THREE.CatmullRomCurve3(pts),NA=800,as=[0];let acc=0,prev=curve.getPointAt(0);for(let i=1;i<=NA;i++){const p=curve.getPointAt(i/NA);acc+=p.distanceTo(prev);as.push(acc);prev=p}
+  // the frame (forward, and the rider's up) is carried along the curve, not worked out from the world's up: that is what lets the camera go over the top without flipping
+  const NS=600,FT=[],FN=[];let N=up.clone();for(let i=0;i<=NS;i++){const T=curve.getTangentAt(i/NS);if(i)N.applyQuaternion(_q.setFromUnitVectors(FT[i-1],T));N.addScaledVector(T,-N.dot(T)).normalize();FT.push(T.clone());FN.push(N.clone())}
+  const frame=u=>{const x=Math.min(NS-1e-6,Math.max(0,u*NS)),i=Math.floor(x),f=x-i;return {T:FT[i].clone().lerp(FT[i+1],f).normalize(),N:FN[i].clone().lerp(FN[i+1],f).normalize()}};
+  const uOf=dist=>{let lo=0,hi=NA;while(lo<hi){const m=(lo+hi)>>1;if(as[m]<dist)lo=m+1;else hi=m}const i=Math.max(1,lo),f=(dist-as[i-1])/Math.max(1e-6,as[i]-as[i-1]);return Math.min(1,(i-1+f)/NA)};
+  return {curve,frame,uOf,len:acc,R,d,w,P0}})();
+{ const {curve,frame}=LOOP,n=Math.round(LOOP.len/1.6),L=[],Rr=[],S=[],g=FEAT.loop,Bx=u=>{const f=frame(u);return new THREE.Vector3().crossVectors(f.T,f.N).normalize()};
+  for(let i=0;i<=n;i++){const u=i/n,p=curve.getPointAt(u),f=frame(u),B=Bx(u);L.push(p.clone().addScaledVector(B,.95));Rr.push(p.clone().addScaledVector(B,-.95));S.push(p.clone().addScaledVector(f.N,-.55))}
+  for(const pp of [L,Rr]){const m=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pp),n,.16,8,false),steel);m.castShadow=!mobile;g.add(m)}
+  g.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(S),n,.32,8,false),steelDark));
+  const ties=new THREE.InstancedMesh(new THREE.BoxGeometry(2.4,.12,.4),steelDark,Math.ceil(n/2)+1);let k=0;
+  for(let i=0;i<=n;i+=2){const u=i/n,f=frame(u);_M4.makeBasis(Bx(u),f.N,f.T.clone().negate());_o2.quaternion.setFromRotationMatrix(_M4);_o2.position.copy(curve.getPointAt(u));_o2.scale.set(1,1,1);_o2.updateMatrix();ties.setMatrixAt(k++,_o2.matrix)}ties.count=k;ties.frustumCulled=false;g.add(ties);
+  const sup=[];for(let i=0;i<=n;i+=12){const p=curve.getPointAt(i/n),gy=terrainH(p.x,p.z),h=p.y-.6-gy;if(h>1.5&&p.y<LOOP.P0.y+LOOP.R*1.3)sup.push([p.x,gy,p.z,h])} // legs to the ground at the sides; the upper half hangs from the rails, so nothing stands in the middle of the circle
+  const col=new THREE.InstancedMesh(new THREE.BoxGeometry(.7,1,.7),steelDark,sup.length);sup.forEach(([x,gy,z,h],i)=>{_o2.position.set(x,gy+h/2,z);_o2.rotation.set(0,0,0);_o2.scale.set(1,h,1);_o2.updateMatrix();col.setMatrixAt(i,_o2.matrix)});col.castShadow=!mobile;col.frustumCulled=false;g.add(col);
+  { // the sign on its own post, to the left of the track before the loop, facing the cart
+    const s0=FS.b0-8,p=atS(s0),tn=MAIN.getTangentAt(sToT(s0)),face=Math.atan2(-tn.x,-tn.z),sd=new THREE.Vector3().crossVectors(tn,up).normalize(),x=p.x-sd.x*8,z=p.z-sd.z*8,gy=terrainH(x,z),sy=p.y+5;
+    const post=new THREE.Mesh(new THREE.BoxGeometry(.3,sy-gy,.3),dark);post.position.set(x,(sy+gy)/2,z);g.add(post);const b=board(' ',8,4.5);b.position.set(x,sy,z);b.rotation.y=face;g.add(b);FEAT.sign2=b}}
+
 function setBoard(sb,text){if(sb){sb.children[1].material.map=signTex(text,4.5);sb.children[1].material.needsUpdate=true}}
 
 /* you, in the front seat: the lap bar, your hands, the wheel assembly, all in camera space */
@@ -585,9 +637,9 @@ function setBoard(sb,text){if(sb){sb.children[1].material.map=signTex(text,4.5);
 /* ---------- running the ride ---------- */
 /* one clock the ride keeps (vclock, ms) and timers that run on it, so Pause stops the lot: motion, weather, the windows' scenes, the door hold and the end-of-ride waits */
 let vclock=0,paused=false,held=[];const timers=new Set(),after=(ms,fn)=>{const t={at:vclock+ms,fn};timers.add(t);return t},cancel=t=>timers.delete(t);
-const ride={t:0,s:0,v:0,on:'main',card:null,phase:'idle',roll:0,side:0,sideT:0,bang:0,manual:-1,focus:-1};const ROLL_MAX=.2618,ROLL_GAIN=.5,ROLL_TAU=.4,ROLL_DWELL=1.5,SHAKE_TAU=.08,SH={x:0,y:0};
-const G=9.8,LIFT_V=6.5,SURGE_V=15.5,SURGE=12,HOLD_GAP=15; // a slow climb to read in, a run at the wall, and where the wall holds the cart stops 15 units short of it, far enough to see the whole wall
-function placeCam(dt=0){ride.bang*=Math.exp(-dt*3.2);const c=ride.on==='main'?MAIN:SIDING,t=Math.min(ride.t,1),p=c.getPointAt(t),q=c.getPointAt(Math.min(t+.01,1)),q2=c.getPointAt(Math.min(t+.03,1));
+const ride={t:0,s:0,v:0,on:'main',card:null,phase:'idle',roll:0,side:0,sideT:0,bang:0,manual:-1,focus:-1,looped:false,fx:false,ls:0};const ROLL_MAX=.2618,ROLL_GAIN=.5,ROLL_TAU=.4,ROLL_DWELL=1.5,SHAKE_TAU=.08,SH={x:0,y:0};
+const G=9.8,LIFT_V=6.5,SURGE_V=15.5,SURGE=12,HOLD_GAP=15,LOOP_V=20; // a slow climb to read in, a run at the wall, and where the wall holds the cart stops 15 units short of it, far enough to see the whole wall
+function placeCam(dt=0){ride.bang*=Math.exp(-dt*3.2);if(ride.on==='loop')return placeLoopCam(dt);const c=ride.on==='main'?MAIN:SIDING,t=Math.min(ride.t,1),p=c.getPointAt(t),q=c.getPointAt(Math.min(t+.01,1)),q2=c.getPointAt(Math.min(t+.03,1));
   const tan=new THREE.Vector3().subVectors(q,p).normalize(),tan2=new THREE.Vector3().subVectors(q2,q).normalize();const turn=new THREE.Vector3().crossVectors(tan,tan2).y;
   let roll=ROLL_MAX*Math.tanh(-turn*ride.v*ROLL_GAIN/ROLL_MAX); // curvature sets the target, soft-capped at 15 degrees
   if(ride.sideT+=dt,Math.abs(ride.roll)>.0175&&Math.sign(ride.roll)!==ride.side){ride.side=Math.sign(ride.roll);ride.sideT=0}
@@ -597,6 +649,14 @@ function placeCam(dt=0){ride.bang*=Math.exp(-dt*3.2);const c=ride.on==='main'?MA
   const shake=(ride.v>12?(ride.v-12)*.004:0)+WX.wind*.006+ride.bang*.5,ks=dt?1-Math.exp(-dt/SHAKE_TAU):0,kg=ks?Math.sqrt((2-ks)/ks):0; // one-pole low-passed noise, rescaled to the old amplitude
   SH.x+=((Math.random()-.5)*kg-SH.x)*ks;SH.y+=((Math.random()-.5)*kg-SH.y)*ks;camera.position.set(p.x+SH.x*shake,p.y+1.9+SH.y*shake,p.z);camera.lookAt(q.x,q.y+1.55,q.z);camera.rotateZ(ride.roll);
   sun.target.position.copy(p);camera.fov=66+Math.min(10,ride.v*.35);camera.updateProjectionMatrix()}
+function placeLoopCam(dt){const u=Math.min(ride.t,1),p=LOOP.curve.getPointAt(u),fr=LOOP.frame(u);ride.roll*=Math.exp(-dt/ROLL_TAU); // whatever bank the swoop left eases out
+  const shake=(ride.v>12?(ride.v-12)*.004:0)+WX.wind*.006+ride.bang*.5,ks=dt?1-Math.exp(-dt/SHAKE_TAU):0,kg=ks?Math.sqrt((2-ks)/ks):0;SH.x+=((Math.random()-.5)*kg-SH.x)*ks;SH.y+=((Math.random()-.5)*kg-SH.y)*ks;
+  const f=fr.T.clone().multiplyScalar(12).addScaledVector(fr.N,-.35).normalize(),upv=fr.N.clone().addScaledVector(f,-fr.N.dot(f)).normalize(),rt=new THREE.Vector3().crossVectors(f,upv); // forward and the rider's up come from the carried frame, so over the top the world turns and the camera does not flip
+  camera.position.copy(p).addScaledVector(fr.N,1.9+SH.y*shake).addScaledVector(rt,SH.x*shake);camera.quaternion.setFromRotationMatrix(_M4.makeBasis(rt,upv,f.clone().negate()));camera.rotateZ(ride.roll);
+  sun.target.position.copy(p);camera.fov=66+Math.min(10,ride.v*.35);camera.updateProjectionMatrix()}
+function setFeature(c){FEAT.tunnel.visible=c.feature==='tunnel';FEAT.loop.visible=c.feature==='loop';RAILS.B.visible=c.feature!=='loop';ride.looped=false;ride.fx=false;const el=$('#feat');el.className='';el.innerHTML='';
+  if(c.feature){const [nm,tx]=FXTXT[c.standing];el.className='c-'+c.standing;el.innerHTML=`<b class="hd">${esc(CAT[c.standing])}</b><span class="nm">${esc(nm)}</span><p>${esc(tx)}</p>`;
+    if(c.feature==='tunnel'){FEAT.base=c.standing==='red'?[2.2,.35,.25]:[2.4,1.7,.8];FEAT.lamp.color.setRGB(...FEAT.base);setBoard(FEAT.sign,FXSIGN[c.standing])}else setBoard(FEAT.sign2,FXSIGN[c.standing])}}
 const boardText=(i,c)=>i===2?{spps:'Synthesis plant',bio:'Bioreactor hall',extract:'Extraction plant',small:'Chemistry plant'}[c.route]:i===7?({brand:'Manufacturer, cGMP',component:'503B facility',closed:'Gate closed',none:'Gate closed'}[c.track]||'503A pharmacy'):BUILD[i];
 const clearWindows=()=>document.querySelectorAll('.panel').forEach(p=>{p.className='panel';p.onclick=null});
 function showWindow(i,c){const k=i&3,[s,n]=c.steps[i];if(!k)clearWindows();const el=$('#p'+k);el.className='panel';void el.offsetWidth;el.className='panel on s-'+s;el.dataset.step=i;el.onclick=()=>focusStep(i,c,true);
@@ -616,7 +676,7 @@ function holdWall(W){W.held=true;W.closed.visible=true;bang(.35)}
 function debrisStep(dt){for(const W of WALLS){const d=W.debris;if(!d)continue;d.t+=dt;const k=Math.max(0,Math.min(1,(2.8-d.t)/.8));W.base.forEach((b,i)=>{const P=d.p[i],V=d.v[i],R=d.r[i],A=d.a[i];V[1]-=20*dt;P[0]+=V[0]*dt;P[1]+=V[1]*dt;P[2]+=V[2]*dt;R[0]+=A[0]*dt;R[1]+=A[1]*dt;R[2]+=A[2]*dt;_v.set(P[0],P[1],P[2]);_q.setFromEuler(_e.set(R[0],R[1],R[2]));_s.set(b.w-.08,RH-.08,BD).multiplyScalar(k);_m.compose(_v,_q,_s);W.bricks.setMatrixAt(i,_m)});W.bricks.instanceMatrix.needsUpdate=true;if(d.t>2.8){W.bricks.visible=false;W.debris=null}}}
 let shown=-1;
 function start(c,skip){setPaused(false);ride.card=c;$('#counter').classList.add('off');$('#readout').classList.remove('on');
-  WALLS.forEach(resetWall);frames.forEach((F,i)=>paintFrame(i,c,false));ride.manual=-1;ride.focus=-1;MINI.forEach(m=>m.set(c));
+  WALLS.forEach(resetWall);frames.forEach((F,i)=>paintFrame(i,c,false));ride.manual=-1;ride.focus=-1;setFeature(c);MINI.forEach(m=>m.set(c));
   [2,7].forEach(i=>setBoard(sites[i].sb,boardText(i,c)));
   siding.visible=siding.userData.buffer.visible=siding.userData.label.visible=c.track==='none';setWeather(reduce?0:c.weather);
   if(skip||reduce){document.querySelectorAll('.panel').forEach(p=>p.className='panel');plate(c);return}
@@ -635,7 +695,7 @@ function fitName(){const dn=$('#doorName');if(!$('#doors').classList.contains('s
 $('#doors').addEventListener('click',()=>{if(performance.now()-doorsAt>400)openDoors()});addEventListener('resize',fitName);document.fonts.ready.then(fitName); // measured again once the wood-type face is in, so the name is fitted to the real letters
 /* Pause: the clock, the timers and the weather stop; transitions that are mid-way finish at once (so the text on screen is whole and sharp), looping animations hold, and the doors hold where they are */
 const pbar=$('#pausebar'),pbtn=$('#pauseBtn'),ptag=$('#pausedTag'),liveEl=$('#live');
-const active=()=>!!ride.card&&['doors','lift','run','siding','stopped'].includes(ride.phase);
+const active=()=>!!ride.card&&['doors','lift','run','siding','stopped','loop'].includes(ride.phase);
 function setPaused(p){if(p===paused||(p&&!active()))return;paused=p;
   if(p){for(const a of document.getAnimations()){try{const tg=a.effect&&a.effect.target;if((tg&&tg.closest&&tg.closest('#doors'))||(a.effect&&a.effect.getComputedTiming().iterations===Infinity)){a.pause();held.push(a)}else a.finish()}catch(e){}}}
   else{held.forEach(a=>{try{a.play()}catch(e){}});held=[]}
@@ -646,19 +706,21 @@ addEventListener('keydown',e=>{if(e.code!=='Space'||e.repeat||e.ctrlKey||e.metaK
 addEventListener('keyup',e=>{if(e.code==='Space'&&active())e.preventDefault()}); // a focused button would otherwise click on key-up
 function step(dt){const c=ride.card;if(!c||ride.phase==='idle'||ride.phase==='done'||ride.phase==='doors'||ride.phase==='stopped')return;
   if(ride.phase==='siding'){ride.t+=ride.v*dt/70;if(ride.t>=1){ride.t=1;ride.phase='done';ride.v=0;after(1200,()=>end(c))}return}
+  if(ride.phase==='loop'){ride.v+=(LOOP_V-ride.v)*Math.min(1,dt*3);ride.ls+=ride.v*dt;ride.t=LOOP.uOf(ride.ls);if(ride.t>=1){ride.on='main';ride.s=FS.b1;ride.t=sToT(FS.b1);ride.phase='run'}return} // round the loop on its own curve, then back onto the main line
   const li=LIFTS.findIndex(([a,b])=>ride.t>=a&&ride.t<=b),W=WALLS[li],hold=c.stopStep!=null?c.stopStep>>2:-1;let v;
   if(li>=0){v=LIFT_V;if(li===hold)v=Math.max(.8,Math.min(LIFT_V,(W.s-HOLD_GAP-ride.s)*.7));else if(ride.s>W.s-SURGE)v=SURGE_V; // ease up to a wall that holds; run at one that will break
     if(ride.phase!=='lift'){ride.phase='lift';$('#hud').textContent=c.name+' · '+(li?'the next wall':'leaving the station')}}
   else{const y=MAIN.getPointAt(ride.t).y,H=Math.max(y,...LIFTS.filter(([a,b])=>b<=ride.t).map(([a,b])=>MAIN.getPointAt(b).y))+1.5;v=Math.max(6,Math.sqrt(Math.max(1,2*G*(H-y)))*1.1);if(ride.t>.962)v=Math.max(2,v*(1-(ride.t-.962)/.038));
     if(ride.phase!=='run'){ride.phase='run';$('#hud').textContent=c.name+' · '+(ride.t>crestT?'into the terminal':'over the crest');$('#now').classList.remove('on');clearWindows()}}
   ride.v+=(v-ride.v)*Math.min(1,dt*4);ride.s+=ride.v*dt;ride.t=sToT(ride.s);
+  if(c.feature){const on=ride.s>=FS.t0-8&&ride.s<FS.t1+6;if(on!==ride.fx){ride.fx=on;$('#feat').classList.toggle('on',on)}if(c.feature==='loop'&&!ride.looped&&ride.s>=FS.b0){ride.looped=true;ride.on='loop';ride.phase='loop';ride.ls=0;ride.t=0;return}} // what the standing does to the swoop
   for(let i=0;i<NSTEP;i++)if(ride.s>=RV[i]&&shown<i){shown=i;light(i,c)}
   if(c.sidingStep!=null&&ride.t>=SIDING_T-.002){ride.on='siding';ride.t=0;ride.phase='siding';ride.v=5;for(let i=c.sidingStep+1;i<NSTEP;i++)paintFrame(i,c,true);$('#hud').textContent=c.name+' · shunted onto the research-use-only siding';return} // the steps nobody can reach light red and flash
   if(li>=0&&li===hold&&!W.held&&ride.s>=W.s-HOLD_GAP-.2){ride.phase='stopped';ride.v=0;holdWall(W);for(let i=shown+1;i<=c.stopStep;i++){shown=i;light(i,c)}$('#hud').textContent=c.name+' · the wall holds';after(3200,()=>end(c));return}
   if(li>=0&&li!==hold&&!W.broken&&ride.s>=W.s-2.4)breakWall(W);
   if(ride.t>=.999){ride.phase='done';ride.v=0;after(600,()=>end(c))}}
-function end(c){setPaused(false);ride.phase='done';$('#hud').style.display='none';$('#now').classList.remove('on');document.querySelectorAll('.panel').forEach(p=>p.className='panel');plate(c)}
-function reset(){setPaused(false);setWeather(0);$('#fade').classList.remove('on');ride.phase='idle';ride.t=.02;ride.s=0;ride.v=0;ride.on='main';ride.roll=0;ride.side=0;ride.sideT=0;SH.x=SH.y=0;cancel(doorT);cancel(doorT2);$('#doors').classList.remove('show','open');placeCam();$('#readout').classList.remove('on');$('#hud').style.display='none';$('#now').classList.remove('on');document.querySelectorAll('.panel').forEach(p=>p.className='panel');WALLS.forEach(resetWall);frames.forEach((F,i)=>paintFrame(i,null,false));ride.bang=0;$('#now').className='';$('#counter').classList.remove('off')}
+function end(c){setPaused(false);ride.phase='done';$('#feat').classList.remove('on');$('#hud').style.display='none';$('#now').classList.remove('on');document.querySelectorAll('.panel').forEach(p=>p.className='panel');plate(c)}
+function reset(){setPaused(false);setWeather(0);$('#fade').classList.remove('on');ride.phase='idle';ride.t=.02;ride.s=0;ride.v=0;ride.on='main';ride.roll=0;ride.side=0;ride.sideT=0;SH.x=SH.y=0;cancel(doorT);cancel(doorT2);$('#doors').classList.remove('show','open');placeCam();$('#readout').classList.remove('on');$('#hud').style.display='none';$('#now').classList.remove('on');document.querySelectorAll('.panel').forEach(p=>p.className='panel');WALLS.forEach(resetWall);frames.forEach((F,i)=>paintFrame(i,null,false));ride.bang=0;FEAT.tunnel.visible=FEAT.loop.visible=false;RAILS.B.visible=true;ride.looped=false;ride.fx=false;$('#feat').classList.remove('on');$('#now').className='';$('#counter').classList.remove('off')}
 $('#board').onclick=()=>picked&&start(picked,false);$('#skipRide').onclick=()=>picked&&start(picked,true);
 ride.t=.02;placeCam();
 
@@ -674,7 +736,7 @@ let last=performance.now();
 function loop(ts){const dt=Math.max(0,Math.min(.05,(ts-last)/1000));last=ts; /* the first frame can be stamped before last, and a negative dt turns the shake into NaN */if(!document.hidden&&host.clientWidth){
   const act=active();if(pbar.hidden===act)pbar.hidden=!act;if(!act&&paused)setPaused(false);
   if(!paused){vclock+=dt*1000;const now=vclock;for(const t of [...timers])if(vclock>=t.at){timers.delete(t);t.fn()}
-  if(ride.phase==='idle'){ride.t=.02+Math.sin(now/4000)*.004}else step(dt);placeCam(dt);debrisStep(dt);
+  if(ride.phase==='idle'){ride.t=.02+Math.sin(now/4000)*.004}else step(dt);placeCam(dt);debrisStep(dt);if(FEAT.tunnel.visible&&FEAT.base){const f=.78+.22*Math.sin(now/83)*Math.sin(now/31+1);FEAT.lamp.color.setRGB(FEAT.base[0]*f,FEAT.base[1]*f,FEAT.base[2]*f)}
   const rig=camera.userData.rig;if(rig)rig.userData.wheel.rotation.z+=ride.v*dt*2.4;
   if(!reduce){leafStep(dt);weatherStep(dt,now)}ferris.rotation.z+=dt*.12;windmill.userData.wheel.rotation.z+=dt*(.6+WX.wind*.5);pennants.forEach((f,k)=>{f.rotation.y=Math.sin(now/260+k)*.5*(1+WX.wind*.4);f.scale.x=.8+.2*Math.sin(now/140+k)});for(const p of puffs){p.t+=dt*.5;if(p.t>3.5)p.t=0;p.m.position.set(p.x+p.t*1.4,22+p.t*4,-2);p.m.scale.setScalar(.6+p.t*.5);p.m.material.opacity=.7*(1-p.t/3.5)}
   if(ride.card&&ride.card.track==='none'&&ride.on==='siding'){const on=Math.floor(now/300)%2;frames.forEach((F,i)=>{if(i>SIDING_AT)F.m.color.setScalar(on?1:.35)})} // the walls ahead blink red: no way through
@@ -682,7 +744,7 @@ function loop(ts){const dt=Math.max(0,Math.min(.05,(ts-last)/1000));last=ts; /* 
   }
   composer.render();renderMinis();labels.render(scene,camera)}requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
-window.ride={stopStep:id=>{const c=D.cards.find(c=>c.id===id);return c.stopStep??c.sidingStep},pause:()=>setPaused(true),resume:()=>setPaused(false),toggle:()=>setPaused(!paused),paused:()=>paused,clock:()=>vclock,roll:()=>ride.roll,start:(id,skip)=>start(D.cards.find(c=>c.id===id),!!skip),state:()=>({shown,t:ride.t,v:ride.v,on:ride.on,phase:ride.phase,card:ride.card&&ride.card.id,readout:$('#readout').classList.contains('on'),lit:frames.map(f=>f.lit),walls:WALLS.map(W=>({broken:W.broken,held:W.held})),windows:[...document.querySelectorAll('.panel.on')].map(e=>+e.dataset.step),focus:ride.focus}),jump:(t,phase)=>{ride.phase=phase||'run';ride.t=t;ride.s=tToS(t)},T,RV,crestT,LIFTS,WALLS:WALLS.map(W=>({s:W.s,t:W.t})),debris:()=>WALLS.map(W=>W.debris?W.debris.p[0].slice():null),dbg:{halo,sunDisc,camera,scene,bloom}}; // test hook
+window.ride={stopStep:id=>{const c=D.cards.find(c=>c.id===id);return c.stopStep??c.sidingStep},pause:()=>setPaused(true),resume:()=>setPaused(false),toggle:()=>setPaused(!paused),paused:()=>paused,clock:()=>vclock,roll:()=>ride.roll,start:(id,skip)=>start(D.cards.find(c=>c.id===id),!!skip),state:()=>({shown,t:ride.t,v:ride.v,on:ride.on,phase:ride.phase,card:ride.card&&ride.card.id,readout:$('#readout').classList.contains('on'),lit:frames.map(f=>f.lit),walls:WALLS.map(W=>({broken:W.broken,held:W.held})),windows:[...document.querySelectorAll('.panel.on')].map(e=>+e.dataset.step),focus:ride.focus,fx:ride.fx,tunnel:FEAT.tunnel.visible,loop:FEAT.loop.visible,railB:RAILS.B.visible}),jump:(t,phase)=>{ride.phase=phase||'run';ride.t=t;ride.s=tToS(t)},T,RV,crestT,LIFTS,MAIN,sToT,tToS,terrainH,FS,loopLen:LOOP.len,cardFeature:id=>D.cards.find(c=>c.id===id).feature,camUp:()=>{const v=new THREE.Vector3(0,1,0).applyQuaternion(camera.quaternion);return [v.x,v.y,v.z]},WALLS:WALLS.map(W=>({s:W.s,t:W.t})),debris:()=>WALLS.map(W=>W.debris?W.debris.p[0].slice():null),dbg:{halo,sunDisc,camera,scene,bloom}}; // test hook
 </script>
 </body>
 </html>
