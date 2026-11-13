@@ -32,15 +32,19 @@ RULE = ('How the ruling is made, in two tests. A lawful path today that is an ap
         'This is the tool\'s ruling from public records, not FDA\'s, and not a statement that any peptide is safe or works.')
 
 
+WL = 'https://www.fda.gov/inspections-compliance-enforcement-and-criminal-investigations/compliance-actions-and-activities/warning-letters'
+RUNG = {'closed': 0, 'none': 0, 'tolerated': 1, 'listed': 1, 'component': 1, 'mixed': 1, 'brand': 2}   # where the track sits: no path, a tolerance, an approval
+
+
 def link(label, url): return [label, url]
 
 
 def path_links(c, urls):
     """the sources for the lawful-path claim: the card's own dated register rows where it has them, else where the claim can be checked"""
+    if c['track'] == 'brand':   # the approval itself first; any register rows (about compounded copies) follow as context
+        m = re.search(r'An approved drug \(([^)]+)\)', c['a']); nm = urllib.parse.quote((m.group(1) if m else c['name'].split(' (')[0]).split(',')[0].strip())
+        return [link('Approved labels, DailyMed', 'https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=' + nm)] + [link(d['date'] + ': ' + d['what'], d['url']) for d in c['dates'][-2:]]
     if c['dates']: return [link(d['date'] + ': ' + d['what'], d['url']) for d in c['dates'][-3:]]
-    if c['track'] == 'brand':
-        m = re.search(r'An approved drug \(([^)]+)\)', c['a']); nm = urllib.parse.quote(m.group(1) if m else c['name'].split(' (')[0])
-        return [link('Approved labels, DailyMed', 'https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=' + nm)]
     if c['track'] in ('closed', 'listed', 'component'):
         return [link('FDA 503A categories (page of 2026-05-14)', urls['a']), link('FDA 503B list (page of 2025-03-21)', urls['b'])]
     return []   # nothing in the register names it: the row says Not found
@@ -59,11 +63,11 @@ def evidence_test(c, ev, grade_text):
     g = c['grade']; txt = grade_text[g]
     return {'id': 'evidence', 'q': 'Is there human evidence?', 'state': EV_STATE[ev],
             'say': 'Grade %s, %s. %s' % (g, txt[0].lower() + txt[1:], counts_text(c)),
-            'links': top, 'more': 'The other counts and the papers are in the record below.'}
+            'links': top, 'grade': g, 'more': 'The other counts and the papers are in the record below.'}
 
 
 def path_test(c, urls):
-    return {'id': 'path', 'q': 'Can it lawfully reach a patient today?', 'state': PATH_STATE[c['track']], 'say': PATH_SAY[c['track']], 'links': path_links(c, urls)}
+    return {'id': 'path', 'q': 'Can it lawfully reach a patient today?', 'state': PATH_STATE[c['track']], 'say': PATH_SAY[c['track']], 'links': path_links(c, urls), 'rung': RUNG[c['track']]}
 
 
 def watch_row(c, urls, over, radar):
@@ -78,9 +82,40 @@ def watch_row(c, urls, over, radar):
     return {'id': 'watch', 'q': 'Is a regulator looking?', 'state': 'info', 'say': say, 'links': path_links(c, urls)}
 
 
-def enforce_row(c):
+ISO = re.compile(r'\d{4}-\d{2}-\d{2}')
+MONTH = re.compile(r'(%s) (\d{4})' % '|'.join(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']))
+MONTHNO = {m: i for i, m in enumerate(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'], 1)}
+TELE = ('2026-03-03', 'FDA warns 30 telehealth companies against illegal marketing of compounded GLP-1s', 'https://www.fda.gov/news-events/press-announcements/fda-warns-30-telehealth-companies-against-illegal-marketing-compounded-glp-1s')   # FDA's own release, read 2026-11-13
+
+
+def short(r):
+    t = r['what_it_decides'].replace('\n', ' '); i = t.find(':')
+    return (t[:i] if 0 < i < 110 else t[:90]).strip()
+
+
+def enforce_links(said, reg):
+    """a link for each dated fact in the sentence, from the register: a date named outright is that day's FDA row; the research-use-only sentence names months, which are FDA's research-label letters of those months; the telehealth letters are FDA's own release"""
+    fda = [r for r in reg if r['body'] == 'FDA' and r['url']]; out = []
+    def add(date, text, url):
+        if url not in [u for _, u in out]: out.append(link(date + ': ' + text, url))
+    for d in ISO.findall(said):
+        for r in fda:
+            if r['date_in_effect'][:10] == d: add(d, short(r), r['url'])
+    if said.startswith('Research-use-only sellers of peptides drew'):
+        for mo, yr in MONTH.findall(said):
+            for r in fda:
+                if r['date_in_effect'].startswith('%s-%02d' % (yr, MONTHNO[mo])) and 'research' in r['what_it_decides'].lower(): add(r['date_in_effect'][:10], short(r), r['url'])
+    if 'telehealth' in said: add(*TELE)
+    return out
+
+
+def enforce_row(c, reg):
     said = c['enforce']; unchecked = said.startswith('Letters naming this compound were not checked')
-    ls = [link(d['date'] + ': ' + d['what'], d['url']) for d in c['dates'] if 'letter' in d['what'].lower()]
+    ls = enforce_links(said, reg)
+    for d in c['dates']:   # the card's own letter rows that the sentence did not already cover
+        if 'letter' in d['what'].lower() and d['url'] not in [u for _, u in ls]: ls.append(link(d['date'] + ': ' + d['what'], d['url']))
+    ls.sort(key=lambda l: l[0])   # every label starts with its date, so the sources read in the order things happened
+    if not ls and not unchecked: ls = [link("FDA's warning-letter table (where we looked)", WL)]   # an absence claim: the table it was checked against
     return {'id': 'enforce', 'q': 'Has FDA acted against sellers?', 'state': 'info', 'say': 'Not checked for this entry.' if unchecked else said, 'links': ls, 'unchecked': unchecked}
 
 
@@ -104,10 +139,10 @@ def verdict_line(c, t1, t2, v):
     return '%s: %s, never approval; %s. The jury is still out.' % (n, PATH_SHORT.get(c['track'], 'lawful only in part'), ev)
 
 
-def add_scores(cards, ev_of, oversight_of, urls, up, grade_text):
+def add_scores(cards, ev_of, oversight_of, urls, up, grade_text, reg):
     for c in cards:
         ev = ev_of(c) if c['menu'] == 'more' else GRADE_EV[c['grade']]; over, radar = oversight_of(c)
         t1, t2 = path_test(c, urls), evidence_test(c, ev, grade_text)
         v = 'fail' if 'fail' in (t1['state'], t2['state']) else 'pass' if t1['state'] == t2['state'] == 'pass' else 'out'
-        c['score'] = {'verdict': v, 'word': WORDS[v], 'line': verdict_line(c, t1, t2, v), 'tests': [t1, t2], 'info': [watch_row(c, urls, over, radar), enforce_row(c)], 'next': next_rows(c, up)}
+        c['score'] = {'verdict': v, 'word': WORDS[v], 'line': verdict_line(c, t1, t2, v), 'tests': [t1, t2], 'info': [watch_row(c, urls, over, radar), enforce_row(c, reg)], 'next': next_rows(c, up)}
     return {'rule': RULE, 'watchedOn': up['watchedOn'], 'watch': up['watch'], 'watchNote': up['watchNote']}

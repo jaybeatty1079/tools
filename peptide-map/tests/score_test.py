@@ -36,6 +36,15 @@ for i, c in cards.items():
     # a claim with no link must be one the page marks as missing, never silently bare
     if not t1['links']: check(c['track'] in ('none',) and 'dates' in c and not c['dates'], i + ': a path claim with no link should be a no-route compound with no register row')
 
+# the sources of the claims, not only their presence: every dated fact in an enforcement sentence has its own link, and an approval cites the label
+ISO = re.compile(r'\d{4}-\d{2}-\d{2}')
+for i, c in cards.items():
+    said = c['enforce']; labels = [l for l, _ in c['score']['info'][1]['links']]
+    for d in ISO.findall(said): check(any(l.startswith(d) for l in labels), i + ': the enforcement sentence names ' + d + ' and no link carries that date')
+    if said.startswith('Research-use-only sellers of peptides drew'): check([l[:7] for l in labels][:3] == ['2024-12', '2026-03', '2026-08'], i + ': the research-use-only letters of the three months it names are linked, got ' + str(labels[:3]))
+    if 'telehealth' in said: check(any(l.startswith('2026-03-03') for l in labels), i + ": the telehealth letters need FDA's own release linked")
+    if c['track'] == 'brand': check(c['score']['tests'][0]['links'][0][1].startswith('https://dailymed.nlm.nih.gov/'), i + ': an approval claim cites the approved label first')
+
 # 3. the upcoming items and the watch list
 up = {}
 for c in cards.values():

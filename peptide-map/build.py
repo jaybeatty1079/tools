@@ -30,6 +30,10 @@ for r in csv.DictReader(open(os.path.join(VAULT, 'data/503b-facilities.csv'))):
 # the federal register, whole, and the timeline picked from it by date
 reg = list(csv.DictReader(open(os.path.join(VAULT, 'data/register.csv'))))
 for r in reg: r['url'] = first_url(r['source_url'])
+prev = ''
+for r in reg:   # a row whose source says 'same' means the page of the row above it (the GLP-1 shortage updates share one FDA page); an empty link was a bare 'source' that went nowhere
+    if r['url']: prev = r['url']
+    elif r['source_url'].strip().lower().startswith('same') and prev: r['url'] = prev
 def row(date_prefix, body_prefix=''):
     for r in reg:
         if r['date_in_effect'].startswith(date_prefix) and r['body'].startswith(body_prefix): return r
@@ -436,7 +440,7 @@ print('features:', dict(Counter(c['feature'] for c in CARDS + MORE_CARDS)))
 # the ruling and the scorecard (score.py): PASS, FAIL or JURY STILL OUT from two tests, and the links behind every row; upcoming changes and the watch list from data/upcoming.json
 from score import add_scores
 UP = json.load(open(os.path.join(HERE, 'data', 'upcoming.json')))
-SCORE = add_scores(CARDS + MORE_CARDS, ev_of, oversight_of, {'a': MAY26['url'], 'b': B503['url']}, UP, GRADE_TEXT)
+SCORE = add_scores(CARDS + MORE_CARDS, ev_of, oversight_of, {'a': MAY26['url'], 'b': B503['url']}, UP, GRADE_TEXT, reg)
 print('rulings:', dict(Counter(c['score']['verdict'] for c in CARDS + MORE_CARDS)))
 print('standing colours:', dict(Counter(c['standing'] for c in CARDS + MORE_CARDS)), '| orange:', [c['id'] for c in CARDS + MORE_CARDS if c['standing'] == 'orange'])
 ride = {'asOf': AS_OF, 'cards': CARDS + MORE_CARDS, 'hhsUrl': HHS['url'], 'score': SCORE}

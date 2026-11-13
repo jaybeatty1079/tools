@@ -172,6 +172,69 @@ a{color:var(--tol)}
 .shared{margin:0 0 14px;border:1px solid var(--crule);padding:8px 12px}.shared summary{cursor:pointer;font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--cink2)}.shared .grid3{margin:10px 0 2px}
 #readout a{color:var(--tol)}
 .plate{max-width:900px;margin:0 auto;border-top:1.5px solid var(--cinkd);padding-top:12px}
+/* the scorecard: the ruling in big letters at the top right, two tests with their sources, what could change, and the record underneath */
+.plate{border-top:0;padding-top:0}
+.sc{max-width:900px;margin:0 auto;border-top:1.5px solid var(--cinkd);padding-top:12px}
+.sctop{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:start}
+.plate .sc h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.7rem,3.4vw,2.7rem);margin:0;line-height:1.05}.plate .sc .eyebrow{margin-bottom:6px;line-height:1.5}.plate .sc .cat{margin-top:8px}
+.plate .sc .aka{margin:8px 0 0;color:var(--cink2);font-size:.95rem}
+.stampw{display:grid;justify-items:center;gap:8px;padding-top:4px}
+.stamp{display:flex;align-items:center;gap:12px;padding:12px 20px 12px 16px;border:4px solid #2a211a;border-radius:10px;color:#f7f1e4;transform:rotate(-3deg);box-shadow:0 5px 0 rgba(42,33,26,.3)}
+.stamp svg{width:46px;height:46px;flex:none;fill:none;stroke:#f7f1e4;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
+.stamp b{font-family:"Rye",Georgia,serif;font-weight:400;font-size:clamp(2rem,4.6vw,3.3rem);line-height:1;letter-spacing:.02em;white-space:nowrap}
+.v-pass .stamp{background:#3f5c3a}.v-out .stamp{background:#8a5d12}.v-fail .stamp{background:#8f2b2b}
+.stampw small{font:600 11px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--cink2)}
+.ruling{font-family:var(--serif);font-weight:600;font-size:clamp(1.15rem,2.3vw,1.6rem);line-height:1.3;margin:16px 0 4px;padding-left:14px;border-left:6px solid #2a211a}
+.v-pass .ruling{border-left-color:#3f5c3a}.v-out .ruling{border-left-color:#8a5d12}.v-fail .ruling{border-left-color:#8f2b2b}
+.tests,.infos,.nx{list-style:none;padding:0;margin:0}
+.tests{display:grid;gap:10px;margin:14px 0 0}
+.t{display:grid;grid-template-columns:52px minmax(0,1fr);gap:14px;align-items:start;background:var(--cream);border:2px solid var(--cinkd);border-left-width:10px;padding:12px 14px}
+.t-pass{border-left-color:#3f5c3a}.t-open{border-left-color:#8a5d12}.t-fail{border-left-color:#8f2b2b}
+.ico{display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:#5a4a3c;flex:none}
+.ico svg{width:30px;height:30px;fill:none;stroke:#f7f1e4;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
+.t-pass .ico{background:#3f5c3a}.t-open .ico{background:#8a5d12}.t-fail .ico{background:#8f2b2b}
+.t h3{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 12px;font-family:var(--serif);font-weight:600;font-size:clamp(1.1rem,2vw,1.4rem);line-height:1.2;margin:0 0 4px;color:var(--cinkd)}
+.t .st{font:600 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;padding:5px 9px;border-radius:4px;color:#f7f1e4}
+.t-pass .st{background:#3f5c3a}.t-open .st{background:#8a5d12}.t-fail .st{background:#8f2b2b}
+.ladder{display:flex;gap:3px;margin:0 0 8px}
+.ladder{flex-wrap:wrap}.ladder i{white-space:nowrap;font:600 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;font-style:normal;padding:6px 10px;border:1.5px solid var(--cinkd);color:var(--cink2);background:transparent}
+.ladder.g i{padding:6px 11px}
+.ladder i.on{color:#f7f1e4;background:#2a211a}
+.t-pass .ladder i.on{background:#3f5c3a;border-color:#3f5c3a}.t-open .ladder i.on{background:#8a5d12;border-color:#8a5d12}.t-fail .ladder i.on{background:#8f2b2b;border-color:#8f2b2b}
+.t p,.infos p,.nx p{margin:0 0 6px;font-size:1.02rem;line-height:1.45;color:var(--cinkd)}
+.src{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;font-size:.86rem}
+.src>span:first-child{font:600 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--cink2)}
+.src a{color:var(--cinkd);text-underline-offset:2px}.src em{color:var(--cink2);font-style:normal;font-size:.8rem}
+.nf{font:600 11px/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--cink2);background:#ece3cf;border:1px solid var(--crule);padding:3px 7px;border-radius:3px}
+.infos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:10px 0 0}
+.infos li{display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;align-items:start;background:rgba(247,241,228,.7);border:1.5px solid var(--cinkd);padding:10px 12px}
+.infos .ico{width:30px;height:30px}.infos .ico svg{width:16px;height:16px}
+.infos h3,.next h3{font:600 .72rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--cink2);margin:0 0 4px}
+.infos p{font-size:.94rem}
+.next{margin:14px 0 0;background:var(--cream);border:2px solid var(--cinkd);padding:12px 14px}
+.nx{display:grid;gap:10px}
+.nx li{display:grid;grid-template-columns:150px minmax(0,1fr);gap:14px;align-items:start;border-top:1px solid var(--crule);padding-top:10px}
+.nx li:first-child{border-top:0;padding-top:0}
+.nx .when{font:600 12px/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--cinkd);background:#ece3cf;border:1px solid var(--crule);padding:5px 8px;border-radius:3px;text-align:center}
+.nx .when.d{background:#f3d98a;border-color:#8a5d12}
+.nfrow{margin:0;font-size:.98rem}
+.how{margin:12px 0 0;border:1px solid var(--crule);padding:8px 12px}.how summary{cursor:pointer;font:600 .72rem/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--cink2)}.how p{margin:8px 0 2px;font-size:.9rem;color:var(--cinkd)}
+.record{max-width:900px;margin:22px auto 0;border-top:1.5px solid var(--cinkd);padding-top:12px}
+.record>.k:first-child{font-size:.8rem;margin-bottom:8px}
+.watch{margin:0 0 22px}
+.watch ul{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.watch li{background:var(--cream);border:1px solid var(--crule);padding:8px 10px}
+.watch b{font-weight:600;font-size:1.05rem}.watch li>span{display:block;font:500 .7rem/1.3 var(--mono);color:var(--cink2)}
+.watch p{margin:4px 0 4px;font-size:.86rem;line-height:1.35;color:var(--cinkd)}.watch a{font-size:.8rem;color:var(--cinkd)}
+@keyframes slam{0%{opacity:0;transform:scale(1.6) rotate(-10deg)}55%{opacity:1;transform:scale(.95) rotate(-2deg)}100%{opacity:1;transform:scale(1) rotate(-3deg)}}
+@keyframes rise{from{opacity:0;transform:translateY(12px);filter:blur(3px)}to{opacity:1;transform:none;filter:none}}
+#readout.on .stamp{animation:slam .5s cubic-bezier(.34,1.36,.64,1) .15s both}
+#readout.on .ruling,#readout.on .t,#readout.on .infos li,#readout.on .next{animation:rise .5s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(.45s + var(--i,0)*.07s)}
+#readout.on .ruling{animation-delay:.4s}#readout.on .next{animation-delay:.9s}
+#readout.on .t .ico path,#readout.on .t .ico circle{stroke-dasharray:40;stroke-dashoffset:40;animation:draw .5s ease-out .7s forwards}
+@media (prefers-reduced-motion:reduce){#readout.on .stamp,#readout.on .ruling,#readout.on .t,#readout.on .infos li,#readout.on .next,#readout.on .t .ico path{animation:none!important;stroke-dashoffset:0!important}}
+@media (max-width:700px){.sctop{grid-template-columns:minmax(0,1fr)}.stampw{order:-1;justify-items:start}.infos{grid-template-columns:1fr}.nx li{grid-template-columns:1fr;gap:6px}.nx .when{justify-self:start}.watch ul{grid-template-columns:1fr}}
+@media (max-width:480px){.ladder i{padding:6px 7px;font-size:10px}.t{grid-template-columns:40px minmax(0,1fr);gap:10px;padding:10px}.ico{width:38px;height:38px}.ico svg{width:24px;height:24px}.stamp b{font-size:2.1rem;white-space:normal;line-height:1.04}.stamp{max-width:calc(100% - 10px);margin-left:5px}.stamp svg{width:36px;height:36px}}
 .plate h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.5rem,2.8vw,2.2rem);margin:0;line-height:1.1}
 .plate .aka,.plate .eyebrow{color:var(--cink2)}.plate .aka{margin:2px 0 12px}
 .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 20px;margin:0 0 14px}
@@ -203,7 +266,7 @@ a{color:var(--tol)}
       <ol class="steps"><li><b>1</b><span><strong>Order at the counter.</strong> Sixty-five peptides and GLP-1s, on two menus.</span></li><li><b>2</b><span><strong>Ride three walls, four steps to a wall.</strong> How it is made, from the sequence on paper to the vial, and whether the rules allow each step. About a minute and a half.</span></li><li><b>3</b><span><strong>Roll into Mount Evidence, and read its standing.</strong> Where it sits under today's US rules, dated and sourced, on a card coloured like this:</span></li></ol>
       <div class="catkey"><span class="c-green"><b>Green</b>solid human evidence, with oversight</span><span class="c-yellow"><b>Yellow</b>thinner evidence, on FDA's radar</span><span class="c-orange"><b>Orange</b>some human evidence, nobody looking</span><span class="c-red"><b>Red</b>no human evidence</span></div>
       <div class="acts"><button class="btn" id="board" disabled>Board the cart</button><button class="btn ghost" id="skipRide" disabled>Skip the ride, show the standing</button></div>
-      <p class="note">The weather follows the standing: sunny with oversight and evidence, overcast where the evidence is thin, rain to blizzard only where there is no oversight at all. Maps public guidance as of the date above. Not legal advice. The HHS policy of 2026-10-30 is a draft under comment until 2026-11-13.</p></div>
+      <p class="note">The weather follows the standing: sunny with oversight and evidence, overcast where the evidence is thin, rain to blizzard only where there is no oversight at all. Maps public guidance as of the date above. Not legal advice. The HHS policy of 2026-10-30 is a draft; its comment period closes 2026-11-13.</p></div>
     <div id="menus"></div>
   </div>
   <div id="doors"><button type="button" class="skip" id="boardNow">Board now</button><div class="door l"><div class="field t"></div><div class="field b"></div><div class="word" id="doorName">The Peptide Ride</div><div class="small">The Peptide Ride · Lebanon Valley</div><div class="port"></div><div class="bar"></div><svg class="kiss" viewBox="0 0 100 118" aria-hidden="true"><defs><linearGradient id="foil" x1="0" x2="1"><stop offset="0" stop-color="#eef1f4"/><stop offset=".3" stop-color="#a9b2bb"/><stop offset=".55" stop-color="#f6f8fa"/><stop offset=".8" stop-color="#9aa3ac"/><stop offset="1" stop-color="#c9d0d6"/></linearGradient></defs><ellipse cx="50" cy="109" rx="44" ry="6" fill="#2a1512" opacity=".55"/><path d="M50 16 C 60 44, 84 72, 93 106 L 7 106 C 16 72, 40 44, 50 16 Z" fill="url(#foil)" stroke="#6d7580" stroke-width="1.5"/><path d="M50 16 C 55 34, 62 50, 70 66 M50 16 C 45 34, 38 50, 30 66 M50 16 C 51 40, 52 64, 52 92" stroke="#fff" stroke-opacity=".55" stroke-width="1.2" fill="none"/><path d="M49 16 C 50 6, 56 1, 66 3 C 61 6, 57 11, 57 19 Z" fill="#f6f3ec" stroke="#9aa0a6" stroke-width="1"/></svg><svg class="kiss sm" viewBox="0 0 100 118" aria-hidden="true"><defs><linearGradient id="foil" x1="0" x2="1"><stop offset="0" stop-color="#eef1f4"/><stop offset=".3" stop-color="#a9b2bb"/><stop offset=".55" stop-color="#f6f8fa"/><stop offset=".8" stop-color="#9aa3ac"/><stop offset="1" stop-color="#c9d0d6"/></linearGradient></defs><ellipse cx="50" cy="109" rx="44" ry="6" fill="#2a1512" opacity=".55"/><path d="M50 16 C 60 44, 84 72, 93 106 L 7 106 C 16 72, 40 44, 50 16 Z" fill="url(#foil)" stroke="#6d7580" stroke-width="1.5"/><path d="M50 16 C 55 34, 62 50, 70 66 M50 16 C 45 34, 38 50, 30 66 M50 16 C 51 40, 52 64, 52 92" stroke="#fff" stroke-opacity=".55" stroke-width="1.2" fill="none"/><path d="M49 16 C 50 6, 56 1, 66 3 C 61 6, 57 11, 57 19 Z" fill="#f6f3ec" stroke="#9aa0a6" stroke-width="1"/></svg></div><div class="door r"><div class="field t"></div><div class="field b"></div><div class="msg" id="doorMsg"></div><div class="small">Twelve steps · one standing</div><div class="port"></div><div class="bar"></div><svg class="kiss" viewBox="0 0 100 118" aria-hidden="true"><defs><linearGradient id="foil" x1="0" x2="1"><stop offset="0" stop-color="#eef1f4"/><stop offset=".3" stop-color="#a9b2bb"/><stop offset=".55" stop-color="#f6f8fa"/><stop offset=".8" stop-color="#9aa3ac"/><stop offset="1" stop-color="#c9d0d6"/></linearGradient></defs><ellipse cx="50" cy="109" rx="44" ry="6" fill="#2a1512" opacity=".55"/><path d="M50 16 C 60 44, 84 72, 93 106 L 7 106 C 16 72, 40 44, 50 16 Z" fill="url(#foil)" stroke="#6d7580" stroke-width="1.5"/><path d="M50 16 C 55 34, 62 50, 70 66 M50 16 C 45 34, 38 50, 30 66 M50 16 C 51 40, 52 64, 52 92" stroke="#fff" stroke-opacity=".55" stroke-width="1.2" fill="none"/><path d="M49 16 C 50 6, 56 1, 66 3 C 61 6, 57 11, 57 19 Z" fill="#f6f3ec" stroke="#9aa0a6" stroke-width="1"/></svg><svg class="kiss sm" viewBox="0 0 100 118" aria-hidden="true"><defs><linearGradient id="foil" x1="0" x2="1"><stop offset="0" stop-color="#eef1f4"/><stop offset=".3" stop-color="#a9b2bb"/><stop offset=".55" stop-color="#f6f8fa"/><stop offset=".8" stop-color="#9aa3ac"/><stop offset="1" stop-color="#c9d0d6"/></linearGradient></defs><ellipse cx="50" cy="109" rx="44" ry="6" fill="#2a1512" opacity=".55"/><path d="M50 16 C 60 44, 84 72, 93 106 L 7 106 C 16 72, 40 44, 50 16 Z" fill="url(#foil)" stroke="#6d7580" stroke-width="1.5"/><path d="M50 16 C 55 34, 62 50, 70 66 M50 16 C 45 34, 38 50, 30 66 M50 16 C 51 40, 52 64, 52 92" stroke="#fff" stroke-opacity=".55" stroke-width="1.2" fill="none"/><path d="M49 16 C 50 6, 56 1, 66 3 C 61 6, 57 11, 57 19 Z" fill="#f6f3ec" stroke="#9aa0a6" stroke-width="1"/></svg></div></div>
@@ -261,17 +324,30 @@ for(const [key,title,sub] of [['named','Named by the regulators','On FDA\'s list
     b.innerHTML=`<b>${esc(c.name)}${c.grade?`<span class="g">${GRADE[c.grade]}</span>`:''}</b><small>${esc(c.aka)}</small><span class="tag"><i class="i-${{tolerated:'cond',closed:'no',listed:'ok',mixed:'cond',component:'ok',brand:'brand',none:'no'}[c.track]}"></i>${esc(c.trackLabel)}</span>`;
     b.onclick=()=>{picked=c;menus.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));$('#board').disabled=false;$('#skipRide').disabled=false;$('#board').textContent='Board the cart with '+c.name};li.appendChild(b);menu.appendChild(li)}}
 
+{const W=D.score.watch,el=document.createElement('div');el.className='watch';el.innerHTML=`<div class="menuH">On the watch · ${W.length}<small>${esc(D.score.watchNote)}</small></div><ul>${W.map(w=>`<li><b>${esc(w.name)}</b>${w.also?`<span>${esc(w.also)}</span>`:''}<p>${esc(w.why)}</p><a href="${esc(w.url)}" target="_blank" rel="noopener">The registry record</a></li>`).join('')}</ul>`;menus.appendChild(el)}
 /* ---------- the plate ---------- */
 const CAT={green:'Green · solid human evidence, with oversight',yellow:'Yellow · thinner evidence, on FDA\'s radar',orange:'Orange · some human evidence, nobody looking',red:'Red · no human evidence'};
-function plate(c){const lvl=['Clear skies.','Overcast.','Rain and lightning.','A storm, with wind.','A blizzard, with hail.'][c.weather];$('#readout').className='c-'+c.standing;$('#fade').className='c-'+c.standing;$('#plate').innerHTML=`<div class="eyebrow">Where it stands · ${esc(c.trackLabel)} · as of ${D.asOf}</div><h2>${esc(c.name)}</h2><div class="cat">${CAT[c.standing]}</div><p class="aka">${esc(c.aka)}. ${esc(c.about)}</p>
-  <p class="path">${esc(c.path)}</p>
+const VW={pass:'Pass',open:'Open',fail:'Fail',info:''},IC={pass:'<path d="M5 12.5l4.2 4.2L19 7"/>',fail:'<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>',open:'<path d="M9.2 9.3a3 3 0 1 1 4.3 2.7c-1 .5-1.5 1.1-1.5 2.2"/><path d="M12 17.6v.1"/>',info:'<circle cx="12" cy="12" r="2.4"/>'};
+const lk=(ls,none)=>ls&&ls.length?ls.map(([l,u])=>`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(l)}</a>`).join(''):`<span class="nf">${esc(none||'Not found')}</span>`;
+const ladder=t=>t.id==='path'?`<span class="ladder" role="img" aria-label="On the ladder from no path to approved: ${['no path','a tolerance','approved'][t.rung]}">${['No path','Tolerated','Approved'].map((w,k)=>`<i class="${k===t.rung?'on':''}">${w}</i>`).join('')}</span>`:t.id==='evidence'?`<span class="ladder g" role="img" aria-label="Evidence grade ${esc(t.grade)} on a scale from A to D">${'ABCD'.split('').map(g=>`<i class="${g===t.grade?'on':''}">${g}</i>`).join('')}</span>`:'';
+const trow=(t,i)=>`<li class="t t-${t.state}" style="--i:${i}"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true">${IC[t.state]}</svg></span><div class="tb"><h3><span>${esc(t.q)}</span>${VW[t.state]?`<span class="st">${VW[t.state]}</span>`:''}</h3>${ladder(t)}<p>${esc(t.say)}</p><div class="src"><span>Sources</span>${lk(t.links,'Not found for this compound in the register')}</div></div></li>`;
+function plate(c){const S=c.score,lvl=['Clear skies.','Overcast.','Rain and lightning.','A storm, with wind.','A blizzard, with hail.'][c.weather];$('#readout').className='c-'+c.standing;$('#fade').className='c-'+c.standing;
+  const nx=S.next.length?`<ul class="nx">${S.next.map((n,i)=>`<li style="--i:${i+4}"><span class="when${n.dated?' d':''}">${esc(n.when)}</span><div><p>${esc(n.what)}</p><div class="src"><span>Source</span>${lk(n.links)}<em>looked at ${esc(n.verified)}</em></div></div></li>`).join('')}</ul>`:`<p class="nfrow"><span class="nf">Not found</span> No dated event ahead names this compound in the register or in the ${esc(D.score.watchedOn)} watch.</p>`;
+  $('#plate').innerHTML=`<div class="sc v-${S.verdict}"><div class="sctop"><div class="scid"><div class="eyebrow">Where it stands · ${esc(c.trackLabel)} · register as of ${D.asOf}</div><h2>${esc(c.name)}</h2><div class="cat">${CAT[c.standing]}</div><p class="aka">${c.about.toLowerCase().startsWith(c.aka.toLowerCase())?esc(c.about):esc(c.aka)+'. '+esc(c.about)}</p></div>
+    <div class="stampw"><div class="stamp" role="img" aria-label="The tool's ruling: ${esc(S.word)}"><svg viewBox="0 0 24 24" aria-hidden="true">${IC[{pass:'pass',fail:'fail',out:'open'}[S.verdict]]}</svg><b>${esc(S.word)}</b></div><small>The tool's ruling, not FDA's</small></div></div>
+    <p class="ruling">${esc(S.line)}</p>
+    <ol class="tests">${S.tests.map(trow).join('')}</ol>
+    <ul class="infos">${S.info.map((t,i)=>`<li style="--i:${i+2}"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true">${IC.info}</svg></span><div><h3>${esc(t.q)}</h3><p>${esc(t.say)}</p><div class="src"><span>Sources</span>${lk(t.links,t.unchecked?'Not checked':'Not found')}</div></div></li>`).join('')}</ul>
+    <section class="next"><h3>What could change this ruling</h3>${nx}</section>
+    <details class="how"><summary>How the ruling is made</summary><p>${esc(D.score.rule)}</p></details></div>
+  <div class="record"><div class="k">The record</div><p class="path">${esc(c.path)}</p>
   <div class="grid3"><div><div class="k">This peptide's own record</div><div class="v">${esc(c.own)}</div></div><div><div class="k">Human evidence, and the weather it earned</div><div class="v">${esc(c.evidence)} ${lvl}</div></div><div><div class="k">Enforcement</div><div class="v">${esc(c.enforce)}</div></div></div>
   <details class="shared"><summary>The rules this track shares: 503A, the HHS draft, 503B</summary><div class="grid3"><div><div class="k">503A pharmacy</div><div class="v">${esc(c.a)}</div></div><div><div class="k">HHS draft policy, 2026-10-30</div><div class="v">${esc(c.hhs)}</div></div><div><div class="k">503B outsourcing facility</div><div class="v">${esc(c.b)}</div></div></div></details>
   ${c.ix?`<div class="k">Where the human evidence is counted: each number opens its search</div><ul class="ix">${c.ix.map(([l,n,u])=>`<li><a href="${esc(u)}" target="_blank" rel="noopener">${esc(l)}: ${n==null?'not counted, the index did not answer':Number(n).toLocaleString('en-US')}</a></li>`).join('')}</ul><p class="rule">Grade ${esc(c.grade)}, graded on ${esc(c.graded_on)}. A: an approved US product. B: three or more human trials. C: three or more human studies. D: laboratory and animal work only. Counts are mentions and registrations, not a verdict.</p>`:''}
   ${c.papers&&c.papers.length?`<div class="k">Papers in the human literature, by relevance</div><ul class="papers">${c.papers.map(p=>`<li><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)}</a> · ${esc(p.journal)}${p.year?', '+esc(p.year):''}</li>`).join('')}</ul>`:''}
-  ${c.dates.length?`<div class="k">Dates</div>`:''}<ul class="dates">${c.dates.map(x=>`<li><span class="d">${x.date}</span><span>${esc(x.what)} <a href="${esc(x.url)}" target="_blank" rel="noopener">source</a></span></li>`).join('')}</ul>
+  ${c.dates.length?`<div class="k">Dates</div>`:''}<ul class="dates">${c.dates.map(x=>`<li><span class="d">${x.date}</span><span>${esc(x.what)} <a href="${esc(x.url)}" target="_blank" rel="noopener">source</a></span></li>`).join('')}</ul></div>
   <div class="acts"><button class="btn" id="again">Order another</button><a class="btn ghost" href="map.html" style="text-decoration:none">Go deeper: the map</a><a class="btn ghost" href="glossary.html" style="text-decoration:none">Glossary</a></div>
-  <p class="foot">Maps public guidance; not legal advice. Tolerated is never approved. The HHS policy is a draft under comment until 2026-11-13 (<a href="${esc(D.hhsUrl)}" target="_blank" rel="noopener">Federal Register notice</a>).</p>`;
+  <p class="foot">Maps public guidance; not legal advice. Tolerated is never approved. The HHS draft policy (<a href="${esc(D.hhsUrl)}" target="_blank" rel="noopener">Federal Register notice</a>): comments close 2026-11-13, and no final policy had been published when the watch ran on ${esc(D.score.watchedOn)}.</p>`;
   $('#fade').classList.add('on');after(650,()=>{$('#readout').classList.add('on');$('#again').onclick=reset})}
 
 /* ---------- the stage: October in the Lebanon Valley, late afternoon ---------- */
