@@ -83,4 +83,8 @@ Both PASS gives **PASS**. Either FAIL gives **FAIL**. Anything between gives **J
 
 **Checked.** `node tests/pause.test.mjs` (quick). `node tests/walls.test.mjs` (about five minutes): three walls on three lifts, steps open in order, windows open one by one and stay, the four corners are where they should be, a tap takes the panel over and a newly opened step does not take it back, bpc-157 goes through all three walls, ipamorelin stops at the second, retatrutide is shunted before it, Pause freezes the debris. `node tests/stages.mjs` now audits every window on screen, not only the first, and the size of every tab.
 
+## Signs and flags you can read (2026-11-13)
+
+After the revamp was first watched through, the painted signs (the building names, the wall names, CLOSED, the loop and tunnel signs) read grey against the low sun: they were lit like paint, and a board that faces away from the light goes dark. They now glow from their own texture (`emissiveMap` at 0.62 on the cream face), so the lettering reads from any side, and the pennants on the wall posts are twice the size and lit the same way (a flag on a 25-unit post was a speck). Checked on the rendered frames at 1200 px and 375 px before and after, and by the whole suite again (walls, pause, features, court, scorecard, score, 34 paused stages). One slip worth recording: the pennant helper is a single line, and a `//` comment written into it would have commented out the rest of the function without any build error, which the build would not have flagged; I caught it by reading the line back and ran the page's script through a syntax check before the suite.
+
 Maps public guidance as of its date. Not legal advice, and no claim that any peptide is safe or works.
