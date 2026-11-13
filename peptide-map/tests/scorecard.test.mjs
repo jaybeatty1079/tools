@@ -32,6 +32,8 @@ try {
   }
   // the watch list sits under the menus on the counter
   const {page, ctx} = await open(browser, url, 1200, 800); const wl = await page.evaluate(() => [...document.querySelectorAll('.watch li')].map(e => [e.querySelector('b').textContent, e.querySelector('a').href]));
+  const lines = await page.evaluate(() => JSON.parse(document.getElementById('data').textContent).cards.map(c => [c.id, window.ride.lead(c)]));   // the line under every name says each fact once
+  for (const [id, t] of lines) { const w = t.toLowerCase().match(/[\w'-]+/g), seen = new Set(); for (let i = 0; i + 2 < w.length; i++) { const g = w.slice(i, i + 3).join(' '); assert.ok(!seen.has(g), id + ': the line under the name repeats "' + g + '": ' + t); seen.add(g) } } console.log('ok   the line under every name says each fact once,', lines.length, 'cards');
   assert.equal(wl.length, 3); assert.ok(wl.every(([, u]) => u.startsWith('https://clinicaltrials.gov/')), 'each watch name links its registry record'); await ctx.close(); console.log('ok   watch list:', wl.map(x => x[0]).join(', '));
   console.log('scorecard: all checks passed');
 } catch (e) { console.error('FAIL', e.stack || e.message); process.exitCode = 1 } finally { await browser.close(); srv.close() }
