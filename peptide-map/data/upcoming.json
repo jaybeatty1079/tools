@@ -1,0 +1,36 @@
+{
+  "watchedOn": "2026-11-13",
+  "note": "Curated from the watch run of 2026-11-12 and 2026-11-13 (tools/WATCH.md). Primary sources only; a line is marked computed where the date was worked out from a rule and not announced. The advisory-committee line was checked a second time against FDA's own page.",
+  "items": [
+    {"id": "hhs-close", "date": "2026-11-13", "kind": "comment-close", "compounds": ["bpc-157", "tb-500", "mots-c", "kpv", "epitalon", "semax"],
+     "what": "Comments close on the HHS draft policy for BPC-157, TB-500, MOTS-c, KPV, epitalon and semax (11:59 pm Eastern). No date has been given for a final policy.",
+     "links": [["Federal Register notice", "https://www.federalregister.gov/documents/2026/10/30/2026-22192/enforcement-discretion-policy-regarding-503a-compounding-using-certain-peptide-bulk-drug-substances"]], "verified": "2026-11-13"},
+    {"id": "pcac-2027", "date": null, "when": "Before the end of February 2027", "kind": "meeting", "compounds": ["ghk-cu", "m-ll-37", "m-dihexa", "m-melanotan-2", "m-peg-mgf"],
+     "what": "FDA says its advisory committee will meet before the end of February 2027 on LL-37, GHK-Cu, dihexa, melanotan II and PEG-MGF. No date or Federal Register notice yet.",
+     "links": [["FDA's meeting page", "https://www.fda.gov/advisory-committees/pharmacy-compounding-advisory-committee/meeting-pharmacy-compounding-advisory-committee"]], "verified": "2026-11-13"},
+    {"id": "rule-503a", "date": null, "when": "No date", "kind": "rulemaking", "compounds": ["bpc-157", "tb-500", "mots-c", "kpv", "epitalon", "semax"],
+     "what": "FDA has not proposed its rule on which substances go on the 503A list; the Unified Agenda entry targeted July 2026. The HHS policy runs while that rule is written.",
+     "links": [["Unified Agenda entry", "https://www.reginfo.gov/public/do/eAgendaViewRule?pubId=202510&RIN=0910-AI70"]], "verified": "2026-11-12"},
+    {"id": "psm-petition", "date": "2027-04-21", "kind": "decision", "compounds": ["bpc-157", "tb-500", "mots-c", "kpv", "epitalon", "semax", "m-dsip"],
+     "what": "A citizen petition filed 2026-10-23 asks FDA not to allow compounding of the seven peptides its July committee reviewed. FDA's 180-day response mark is 2027-04-21 (computed; a tentative answer counts).",
+     "links": [["The petition, as filed", "https://www.safemedicines.org/wp-content/uploads/2026/10/PSM-Citizens-Petition.pdf"], ["The 180-day rule", "https://www.ecfr.gov/current/title-21/section-10.30"]], "verified": "2026-11-13"},
+    {"id": "glp1-503b", "date": null, "when": "No date", "kind": "decision", "compounds": ["semaglutide", "tirzepatide", "m-liraglutide"],
+     "what": "FDA has not published its final decision on keeping semaglutide, tirzepatide and liraglutide off the 503B list (proposed 2026-05-01).",
+     "links": [["Federal Register proposal", "https://www.federalregister.gov/documents/2026/05/01/2026-08552/list-of-bulk-drug-substances-for-which-there-is-a-clinical-need-under-section-503b-of-the-federal"]], "verified": "2026-11-12"},
+    {"id": "scotus-window", "date": "2026-11-25", "kind": "court", "compounds": ["semaglutide", "tirzepatide"],
+     "what": "Computed from the court's rule, not announced: the window to ask the Supreme Court to review the Fifth Circuit's August 2026 rulings for FDA in the shortage cases closes about 2026-11-25 to 2026-11-30. Nobody has said they will file.",
+     "links": [["Fifth Circuit opinion, tirzepatide", "https://www.ca5.uscourts.gov/opinions/unpub/25/25-10600.0.pdf"], ["Fifth Circuit opinion, semaglutide", "https://www.ca5.uscourts.gov/opinions/unpub/25/25-10758.0.pdf"]], "verified": "2026-11-12"},
+    {"id": "lilly-7th", "date": null, "when": "No date", "kind": "court", "compounds": ["retatrutide"],
+     "what": "Seventh Circuit appeal, Eli Lilly v. Kennedy (No. 26-1301): is retatrutide a protein, so a biologic, or a drug? No argument date found.",
+     "links": [["Lilly's reply brief, 2026-06-05", "https://storage.courtlistener.com/recap/gov.uscourts.ca7.55916/gov.uscourts.ca7.55916.31.0.pdf"]], "verified": "2026-11-12"},
+    {"id": "liraglutide-shortage", "date": null, "when": "January 2027", "kind": "other", "compounds": ["m-liraglutide"],
+     "what": "FDA lists liraglutide injection as in shortage, and Novo plans to discontinue Saxenda in January 2027. A shortage listing is what lets some compounding continue.",
+     "links": [["FDA's shortage page", "https://www.accessdata.fda.gov/scripts/drugshortages/dsp_ActiveIngredientDetails.cfm?AI=Liraglutide%20Injection&st=c"]], "verified": "2026-11-12"}
+  ],
+  "watch": [
+    {"name": "Berobenatide", "also": "MET-097, PF-08653944", "why": "Pfizer registered three phase 3 trials after 2026-10-29, in knee osteoarthritis and in stress urinary incontinence, each with obesity or overweight.", "url": "https://clinicaltrials.gov/study/NCT07915609", "verified": "2026-11-12"},
+    {"name": "Enicepatide", "also": "CT-388, RO7795068", "why": "Roche registered a phase 3 cardiovascular-outcomes trial on 2026-11-05 in adults with overweight or obesity and heart disease.", "url": "https://clinicaltrials.gov/study/NCT07918846", "verified": "2026-11-12"},
+    {"name": "Ecnoglutide", "also": "", "why": "Sciwind registered a phase 2 trial of oral tablets on 2026-11-10 in Chinese adults with overweight or obesity.", "url": "https://clinicaltrials.gov/study/NCT07929298", "verified": "2026-11-12"}
+  ],
+  "watchNote": "On the watch means a registered trial and nothing else: no regulator list, customs release, court filing or FDA letter names them, and none is on the menus yet."
+}

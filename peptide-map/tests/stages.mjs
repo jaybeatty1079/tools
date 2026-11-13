@@ -12,7 +12,7 @@ function audit(tag) {
   const MIN_FONT = 12, MIN_BODY = {1200: 18, 375: 16}, bad = [], st = document.querySelector('#stage').getBoundingClientRect();
   const vis = el => { const r = el.getBoundingClientRect(), cs = getComputedStyle(el); return r.width > 2 && r.height > 2 && cs.display !== 'none' && cs.visibility !== 'hidden' ? r : null };
   const boxes = {};
-  const things = [['pinned panel', document.querySelector('#now')], ...[...document.querySelectorAll('.panel.on')].map(e => ['window ' + (+e.dataset.step + 1), e]), ['feature caption', document.querySelector('#feat')], ['pause bar', document.querySelector('#pausebar')], ['door message', document.querySelector('#doors.show .door.r .msg')], ['door name', document.querySelector('#doorName')]];   // up to four windows are up at once now, one per step of the wall
+  const things = [['pinned panel', document.querySelector('#now')], ...[...document.querySelectorAll('.panel.on')].map(e => ['window ' + (+e.dataset.step + 1), e]), ['feature caption', document.querySelector('#feat')], ['verdict banner', document.querySelector('#verdict')], ['pause bar', document.querySelector('#pausebar')], ['door message', document.querySelector('#doors.show .door.r .msg')], ['door name', document.querySelector('#doorName')]];   // up to four windows are up at once now, one per step of the wall
   for (const [name, el] of things) {
     if (!el) continue; const r = vis(el); if (!r) continue; boxes[name] = r;
     if (r.left < st.left - 1 || r.right > st.right + 1 || r.top < st.top - 1 || r.bottom > st.bottom + 1) bad.push(name + ' leaves the stage');
@@ -40,7 +40,11 @@ for (const [label, w, h] of SIZES) for (const id of ids) {
   await page.evaluate(() => window.ride.pause()); await page.waitForTimeout(200); await shoot('00-doors'); await page.evaluate(() => window.ride.resume());
   if (process.env.DOORS_ONLY) { await ctx.close(); continue }
   const stop = await page.evaluate(i => window.ride.stopStep(i), id);
-  for (let k = 0; k < 12; k++) {
+  if (process.env.LATE) {   // LATE=1: skip the climb and audit only the ending (the court caption, the lit banner, the standing)
+    await page.click('#boardNow'); await page.waitForFunction(() => window.ride.state().phase === 'lift', null, {timeout: 60000, polling: 'raf'});
+    await page.evaluate(([stop]) => { const r = window.ride; if (stop != null) r.jump(r.sToT(r.WALLS[1].s - 40), 'lift'); else r.jump(r.sToT(r.CT.cut - 30), 'lift') }, [stop]);   // phase 'lift', so the next step runs the real change into the run, which clears the windows
+  }
+  for (let k = 0; k < 12 && !process.env.LATE; k++) {
     if (stop != null && k > stop) break;
     await page.waitForFunction(k => window.ride.state().shown >= k, k, {timeout: 240000, polling: 'raf'});
     await page.evaluate(() => window.ride.pause()); await page.waitForTimeout(250);
@@ -50,6 +54,8 @@ for (const [label, w, h] of SIZES) for (const id of ids) {
       await page.waitForFunction(() => window.ride.state().fx, null, {timeout: 240000, polling: 'raf'}); await page.evaluate(() => window.ride.pause()); await page.waitForTimeout(250);
       await shoot('04b-feature'); await page.evaluate(() => window.ride.resume()) }
   }
+  await page.waitForFunction(() => window.ride.state().court, null, {timeout: 240000, polling: 'raf'}); await page.evaluate(() => window.ride.pause()); await page.waitForTimeout(250); await shoot('97-court'); await page.evaluate(() => window.ride.resume());   // on the way to Mount Evidence, the caption
+  await page.waitForFunction(() => /lit/.test(window.ride.state().verdict), null, {timeout: 240000, polling: 'raf'}); await page.evaluate(() => window.ride.pause()); await page.waitForTimeout(250); await shoot('98-verdict'); await page.evaluate(() => window.ride.resume());   // inside it, the banner lit
   await page.waitForFunction(() => window.ride.state().readout, null, {timeout: 240000}); await page.waitForTimeout(900);
   await shoot('99-standing'); if (errors.some(e => !/404/.test(e))) { fails++; console.log('FAIL console', id, label, errors) }
   await ctx.close();
