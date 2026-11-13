@@ -60,6 +60,8 @@ check('—' not in blob and '–' not in blob, 'a dash in the scorecard words')
 
 counts = {v: sum(1 for c in cards.values() if c['score']['verdict'] == v) for v in ('pass', 'out', 'fail')}
 check(counts == {'pass': 19, 'out': 12, 'fail': 34}, 'rulings over the 65 cards changed: %s' % counts)
+fw = sum(1 for c in cards.values() if c['score']['verdict'] == 'fail' and c['score']['tests'][1]['state'] == 'pass')   # quoted in the 2026-11-16 LinkedIn post: of the 34 FAILs, the ones with human trials
+check(fw == 27, 'FAILs that have human trials: %d (the LinkedIn post of 2026-11-16 says 27)' % fw)
 if fails:
     print('\n'.join('FAIL ' + f for f in fails)); sys.exit(1)
 print('score: all checks passed; rulings %s over %d cards, %d upcoming items, %d on the watch' % (counts, len(cards), len(up), len(D['score']['watch'])))
