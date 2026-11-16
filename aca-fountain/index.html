@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Payroll Fountain</title>
+<meta name="description" content="Section 125 Wellness Illustration Tool. Brass plumbing pours a month of payroll, then shows what a Section 125 wellness plan changes: less to payroll taxes, more to the employee, some pumped back to the company. Illustrative only.">
+<meta property="og:title" content="The Payroll Fountain">
+<meta property="og:description" content="Watch a month of payroll pour. Then switch the plan on.">
+<link rel="stylesheet" href="iso.css">
+<link rel="icon" href="../favicon.svg?v=2" type="image/svg+xml"><link rel="icon" href="../favicon.ico?v=2" sizes="32x32"><link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
+<style>
+  /* ACA's colors: the logo's gold, the signature's blue, navy behind. One refined look; ACA on adds the blue. */
+  :root { --bg:#0A1326; --panel:#111B33; --line:#2A3755; --ink:#F4EEDD; --text:#B9C1D2; --mute:#7F8AA3;
+    --gold:#CFA84F; --gold-hi:#F6E3AC; --gold-lo:#6E5218; --blue:#2F6FD0; --blue-hi:#8FC2FF; --glow:transparent; color-scheme: dark; }
+  body[data-aca="on"] { --glow:#2F6FD099; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: radial-gradient(900px 500px at 50% -10%, #18264A 0%, var(--bg) 60%) fixed var(--bg); color: var(--text); font: 14.5px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+  main { --side: clamp(250px, 30vw, 320px); display: grid; gap: 10px 20px; padding: 10px; grid-template-columns: minmax(0, 1fr); justify-items: center; }
+  .top, .bottom { width: min(560px, 100%); }
+  canvas { display: block; width: auto; height: auto; max-width: 100%; max-height: calc(100dvh - 20px); box-shadow: 0 30px 60px -30px #000; }
+  @media (min-width: 760px) {
+    main { grid-template-columns: minmax(0, 1fr) var(--side); grid-template-areas: "machine top" "machine bottom"; grid-template-rows: auto 1fr; justify-items: stretch; align-items: start; max-width: calc((100dvh - 20px) * 0.8434 + var(--side) + 40px); margin: 0 auto; }
+    canvas { grid-area: machine; position: sticky; top: 10px; justify-self: end; }
+    .top { grid-area: top; width: auto; }
+    .bottom { grid-area: bottom; width: auto; }
+  }
+  @media (max-width: 759px) { canvas { max-height: calc(100dvh - 232px); } }
+  h1 { font: 500 22px/1.15 Baskerville, "Libre Baskerville", "Hoefler Text", Didot, Georgia, serif; color: var(--ink); margin: 0 0 4px; letter-spacing: .01em; }
+  .kicker { font: 600 9.5px/1 ui-monospace, Menlo, monospace; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); margin: 0 0 10px; }
+
+  button { font-family: inherit; cursor: pointer; transition: background .18s ease-out, border-color .18s ease-out, box-shadow .18s ease-out, color .18s ease-out, transform .1s ease-out; }
+  button:active { transform: translateY(1px); }
+  button:focus-visible, input:focus-visible { outline: 2px solid var(--gold-hi); outline-offset: 3px; }
+
+  .tabs { display: flex; margin: 0 0 10px; }
+  .tabs button { flex: 1; min-height: 36px; font-weight: 600; font-size: 12.5px; letter-spacing: .04em; color: var(--text); background: transparent; border: 1px solid var(--line); margin-left: -1px; }
+  .tabs button:first-child { margin-left: 0; border-radius: 6px 0 0 6px; }
+  .tabs button:last-child { border-radius: 0 6px 6px 0; }
+  .tabs button[aria-selected="true"] { color: #1E1605; background: linear-gradient(var(--gold-hi), var(--gold)); border-color: var(--gold); }
+
+  /* The ACA switch: a brass plate with a handwheel that turns a half turn to open the plan, and a sight glass that fills. */
+  .switch { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px 12px; width: 100%; padding: 9px 12px; margin: 0 0 10px; border-radius: 10px; border: 1px solid var(--gold-lo); background: linear-gradient(#16213D, #0D162B); color: var(--text); text-align: left; box-shadow: inset 0 1px 0 #ffffff10, 0 6px 18px -10px #000; }
+  .sw-name { font: 700 13px/1 Baskerville, "Libre Baskerville", Georgia, serif; letter-spacing: .14em; color: var(--gold-hi); }
+  .sw-name small { display: block; font: 600 9px/1 ui-monospace, Menlo, monospace; letter-spacing: .18em; color: var(--mute); margin-top: 4px; white-space: nowrap; }
+  .sw-state { display: block; margin-top: 8px; font: 800 9.5px/1 ui-sans-serif, system-ui, sans-serif; letter-spacing: .16em; font-style: normal; }
+  .sw-state .sw-off { color: var(--mute); } .sw-state .sw-on { color: var(--blue-hi); display: none; text-shadow: 0 0 8px var(--blue); }
+  .sw-wheel { width: 58px; height: 58px; display: block; }
+  .sw-wheel svg { width: 58px; height: 58px; transition: transform .9s cubic-bezier(.3, 1.3, .4, 1), filter .4s; }
+  .sw-wheel .rim { fill: none; stroke: #B9C0CB; stroke-width: 5; } .sw-wheel .rim2 { fill: none; stroke: #4A515C; stroke-width: 1; }
+  .sw-wheel .spoke { stroke: #B9C0CB; stroke-width: 3.2; stroke-linecap: round; } .sw-wheel .hub { fill: #7D8591; } .sw-wheel .pin { fill: #2E2108; }
+  .sw-glass { grid-column: 1 / -1; position: relative; height: 8px; border-radius: 4px; background: #05080f; border: 1px solid var(--gold-lo); box-shadow: inset 0 2px 4px #000c; overflow: hidden; }
+  .sw-glass i { position: absolute; inset: 1px; width: 0; border-radius: 3px; background: linear-gradient(90deg, #1E4F96, var(--blue) 60%, var(--blue-hi)); box-shadow: 0 0 8px var(--blue); transition: width .9s cubic-bezier(.2, .8, .2, 1); }
+  .sw-glass b { position: absolute; top: 1px; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent); }
+  .switch[aria-pressed="true"] { border-color: var(--gold); box-shadow: inset 0 1px 0 #ffffff18, 0 0 24px -6px var(--blue); }
+  .switch[aria-pressed="true"] .sw-wheel svg { transform: rotate(180deg); filter: drop-shadow(0 0 6px rgba(207,168,79,.8)); }
+  .switch[aria-pressed="true"] .sw-wheel .rim, .switch[aria-pressed="true"] .sw-wheel .spoke { stroke: var(--gold-hi); } .switch[aria-pressed="true"] .sw-wheel .hub { fill: var(--gold); }
+  .switch[aria-pressed="true"] .sw-state .sw-on { display: inline; } .switch[aria-pressed="true"] .sw-state .sw-off { display: none; }
+  .switch[aria-pressed="true"] .sw-glass i { width: calc(100% - 2px); }
+
+  /* The tier wheels come out of the panel only when the plan is on. */
+  .tiers-wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .6s cubic-bezier(.2, .8, .2, 1); }
+  .tiers-wrap > div { overflow: hidden; }
+  body[data-aca="on"] .tiers-wrap { grid-template-rows: 1fr; }
+  .tier { opacity: 0; transform: translateY(14px) scale(.7); transition: opacity .4s, transform .6s cubic-bezier(.3, 1.3, .4, 1); }
+  body[data-aca="on"] .tier { opacity: 1; transform: none; }
+  body[data-aca="on"] .tier:nth-child(2) { transition-delay: .06s; } body[data-aca="on"] .tier:nth-child(3) { transition-delay: .12s; } body[data-aca="on"] .tier:nth-child(4) { transition-delay: .18s; } body[data-aca="on"] .tier:nth-child(5) { transition-delay: .24s; }
+  .tiers { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin: 0 0 10px; }
+  .tier { display: grid; justify-items: center; gap: 3px; padding: 5px 2px 6px; font-weight: 700; font-size: 11px; color: var(--mute); background: linear-gradient(#121C34, #0C1527); border: 1px solid var(--line); border-radius: 6px; }
+  .tier svg { width: 30px; height: 30px; transition: transform .6s cubic-bezier(.3, 1.4, .4, 1), filter .3s; }
+  .tier .rim { fill: none; stroke: var(--nickel, #B9C0CB); stroke-width: 3.2; }
+  .tier .spoke { stroke: var(--nickel, #B9C0CB); stroke-width: 2.2; stroke-linecap: round; }
+  .tier .hub { fill: #7D8591; }
+  .tier[aria-pressed="true"] { color: var(--ink); border-color: var(--gold); box-shadow: inset 0 0 0 1px #ffffff10, 0 0 14px -4px var(--gold); }
+  .tier[aria-pressed="true"] svg { transform: rotate(135deg); filter: drop-shadow(0 0 5px rgba(207,168,79,.7)); }
+  .tier[aria-pressed="true"] .rim, .tier[aria-pressed="true"] .spoke { stroke: var(--gold-hi); }
+  .tier[aria-pressed="true"] .hub { fill: var(--gold); }
+  .tiers-label { display: flex; justify-content: space-between; font: 600 9.5px/1 ui-monospace, Menlo, monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin: 0 0 6px; }
+  .tiers-label output { color: var(--ink); }
+
+  .bar { display: flex; gap: 10px; margin: 0 0 10px; }
+  #start { flex: 1; min-width: 0; min-height: 50px; border-radius: 8px; font: 700 13px/1 Baskerville, "Libre Baskerville", Georgia, serif; letter-spacing: .22em; border: 1px solid var(--gold-hi); background: linear-gradient(var(--gold-hi), var(--gold) 55%, #A8822F); color: #1E1605; box-shadow: 0 3px 0 var(--gold-lo), 0 10px 24px -12px #000; }
+  #start.ready { animation: ready 1.8s ease-in-out infinite; }
+  #start:disabled { opacity: .45; cursor: default; animation: none; }
+  @keyframes ready { 50% { box-shadow: 0 3px 0 var(--gold-lo), 0 0 22px var(--glow); } }
+
+  #summary { margin: 0 0 10px; padding: 9px 12px; border: 1px solid var(--line); border-left: 2px solid var(--gold); background: var(--panel); color: var(--ink); font-size: 13px; line-height: 1.42; min-height: 4.2em; }
+  #summary b { color: var(--gold-hi); }
+  #notes { list-style: none; margin: 0 0 10px; padding: 8px 12px; border: 1px solid var(--line); border-left: 2px solid var(--blue); background: var(--panel); font-size: 12.5px; line-height: 1.4; color: var(--text); }
+  #notes li + li { margin-top: 5px; }
+  #notes b { color: var(--blue-hi); }
+  .company { border: 1px solid var(--line); background: var(--panel); padding: 10px 14px; margin: 0 0 8px; }
+  .company h2 { font: 500 14px/1.2 Baskerville, "Libre Baskerville", Georgia, serif; color: var(--ink); margin: 0 0 8px; }
+  .row { display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 12px; margin: 0 0 10px; }
+  .row > div { min-width: 0; }
+  label { display: flex; justify-content: space-between; font: 600 9.5px/1 ui-monospace, Menlo, monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin: 0 0 7px; }
+  label output { color: var(--ink); }
+  input[type=number] { width: 100%; font: 700 18px/1 ui-sans-serif, system-ui, sans-serif; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 4px; padding: 8px 9px; }
+  .step { display: flex; align-items: center; gap: 6px; }
+  .step input { flex: 1; width: 0; min-width: 0; accent-color: var(--gold); }
+  .step button { width: 36px; height: 36px; flex: none; font-weight: 700; font-size: 17px; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 4px; }
+  #kept { font: 800 24px/1.1 ui-sans-serif, system-ui, sans-serif; color: var(--gold-hi); font-variant-numeric: tabular-nums; }
+  #keptsub { font-size: 12.5px; margin-top: 4px; }
+  .fine { font-size: 12px; color: var(--mute); }
+  .fine summary { cursor: pointer; color: var(--text); }
+  .fine p { margin: 8px 0 0; }
+  .fine a { color: var(--gold); }
+
+  /* The bench model beside the board: a third column on a wide screen, below everything on a narrow one. */
+  .iso-panel { width: min(560px, 100%); }
+  @media (min-width: 1240px) {
+    main { grid-template-columns: minmax(0, 1fr) var(--side) minmax(300px, 420px); grid-template-areas: "machine top iso" "machine bottom iso"; max-width: calc((100dvh - 20px) * 0.8434 + var(--side) + 420px + 60px); }
+    .iso-panel { grid-area: iso; width: auto; position: sticky; top: 10px; }
+  }
+  .iso-card { border: 1px solid var(--gold-lo); border-radius: 6px; padding: 10px 10px 8px; background: linear-gradient(#101B33, #0A1326); box-shadow: inset 0 1px 0 #ffffff0a, 0 30px 60px -30px #000; }
+  .iso-card h2 { font: 500 14px/1.2 Baskerville, "Libre Baskerville", Georgia, serif; color: var(--ink); margin: 0 0 2px; }
+  .iso-card .kicker { margin: 0 0 6px; }
+  .iso-cap { font-size: 11.5px; line-height: 1.4; color: var(--mute); margin: 6px 0 0; }
+  .iso { --anatomy-paper:#0E172B; --anatomy-face:#13203A; --anatomy-top:#16243F; --anatomy-shade-0:#0A1222; --anatomy-shade-1:#0C1527; --anatomy-shade-2:#0F192E; --anatomy-shade-3:#121D34;
+    --anatomy-lit-top:#1C2B4A; --anatomy-lit-shade:#152340; --anatomy-hi:#E8C66A; --anatomy-mid:#9C7A2E; --anatomy-lo:#5E4716; --anatomy-faint:#3A2E12; --anatomy-lit:#F6E3AC;
+    --anatomy-halo:#04070F; --anatomy-halo-opacity:.9; --anatomy-dot:#E8C66A; --anatomy-weight:.6px; }
+  .iso [data-water] .iso-fill { fill: #7FAEE6; } .iso [data-water] .iso-shade { fill: #4F86CC; opacity: .55; }
+  .iso [data-water="aca"] .iso-fill, .iso [data-water="plan"] .iso-fill { fill: #4F8BDD; } .iso [data-water="aca"] .iso-shade, .iso [data-water="plan"] .iso-shade { fill: #2C64B8; }
+  .iso [data-water="reward"] .iso-fill { fill: #2A6AC8; } .iso [data-water="reward"] .iso-shade { fill: #1B4C96; }
+  .iso [data-water="company"] .iso-fill, .iso [data-water="fee"] .iso-fill { fill: #E1BE5E; } .iso [data-water="company"] .iso-shade, .iso [data-water="fee"] .iso-shade { fill: #A8842C; }
+  .iso [data-water] .iso-line { stroke: #CFE3FA; }
+  .iso [data-water] .iso-top { fill: #A9CCF2; } .iso [data-water="aca"] .iso-top, .iso [data-water="plan"] .iso-top { fill: #7FAEE6; }
+  .iso [data-water="reward"] .iso-top { fill: #4A8AE0; } .iso [data-water="company"] .iso-top, .iso [data-water="fee"] .iso-top { fill: #F2DA9A; }
+  .iso .aca-part, .iso [data-water="aca"], .iso [data-water="plan"], .iso [data-water="company"], .iso [data-water="fee"], .iso [data-water="reward"], .iso [data-move] { transition: opacity .7s, transform .8s cubic-bezier(.2, .8, .2, 1); }
+  body[data-aca="off"] .iso .aca-part, body[data-aca="off"] .iso [data-water="aca"], body[data-aca="off"] .iso [data-water="plan"], body[data-aca="off"] .iso [data-water="company"], body[data-aca="off"] .iso [data-water="fee"], body[data-aca="off"] .iso [data-water="reward"], body[data-aca="off"] .iso [data-move] { opacity: 0; transform: translateY(-10px); pointer-events: none; }
+  .iso [data-part] { cursor: pointer; transition: opacity .4s, filter .3s; }
+  .iso [data-part]:hover { filter: brightness(1.25); }
+  .iso.has-focus [data-part]:not(.is-focus) { opacity: .28; }
+  .iso.has-focus .is-focus { filter: brightness(1.2) drop-shadow(0 0 6px rgba(207,168,79,.45)); }
+  .iso svg { transition: none; }
+  .iso-detail { margin: 8px 0 0; padding: 9px 11px; border: 1px solid var(--line); border-left: 2px solid var(--gold); background: var(--panel); font-size: 12px; line-height: 1.45; color: var(--text); }
+  .iso-detail h3 { font: 500 13px/1.2 Baskerville, "Libre Baskerville", Georgia, serif; color: var(--ink); margin: 0 0 4px; }
+  .iso-detail p { margin: 0; }
+  .iso-detail button { margin: 8px 0 0; font: 700 10.5px/1 ui-sans-serif, system-ui, sans-serif; letter-spacing: .08em; color: var(--gold-hi); background: transparent; border: 1px solid var(--gold-lo); border-radius: 5px; padding: 6px 9px; }
+  @media (min-width: 760px) and (max-height: 720px) { .company h2, #keptsub { display: none; } #notes { font-size: 12px; padding: 7px 10px; } }
+  @media (prefers-reduced-motion: reduce) { button, .sw-knob, .sw-glass i, .tier svg { transition: none; } #start.ready { animation: none; } }
+</style>
+</head>
+<body data-aca="off">
+<main>
+  <div class="top">
+    <p class="kicker">Section 125 Wellness Illustration Tool</p>
+    <h1>The Payroll Fountain</h1>
+    <div class="tabs" role="tablist" aria-label="Which payroll">
+      <button type="button" role="tab" id="tab-employee" aria-selected="true">One paycheck</button>
+      <button type="button" role="tab" id="tab-company" aria-selected="false">Whole company</button>
+    </div>
+    <button id="aca" class="switch" type="button" aria-pressed="false" aria-label="Section 125 wellness plan">
+      <span class="sw-name">SECTION 125<small>WELLNESS PLAN</small><em class="sw-state"><b class="sw-off">PLAN OFF</b><b class="sw-on">PLAN ON</b></em></span>
+      <span class="sw-wheel" aria-hidden="true"><svg viewBox="0 0 64 64"><circle class="rim" cx="32" cy="32" r="24"/><circle class="rim2" cx="32" cy="32" r="18"/><path class="spoke" d="M32 10v44M10 32h44M16.4 16.4l31.2 31.2M47.6 16.4L16.4 47.6"/><circle class="hub" cx="32" cy="32" r="7"/><circle class="pin" cx="32" cy="32" r="2.2"/></svg></span>
+      <span class="sw-glass" aria-hidden="true"><i></i><b></b></span>
+    </button>
+    <div class="tiers-wrap"><div>
+      <div class="tiers-label"><span>Plan tier</span><output id="tierv"></output></div>
+      <div class="tiers" role="group" aria-label="Plan tier" id="tiers"></div>
+    </div></div>
+    <div class="bar"><button id="start" type="button">OPEN THE MAIN VALVE</button></div>
+  </div>
+  <canvas id="machine" role="img" aria-label="Brass plumbing on a navy plate. Company payroll comes in as water from the top, through the main valve and into a header. Branch pipes of different bore, each with a valve and a sight glass, pour into glass buckets for payroll taxes, health insurance, an existing Section 125 FSA and the 401(k); what is left runs down the main pipe into the post-tax bucket, the employee\'s take-home. With the plan on, a Section 125 Wellness branch is fitted, the tax valve throttles back, and the tax no longer paid runs through a return line into the Company\'s vessel, with a tee to the admin fee vessel. A float in the Section 125 bucket drives a rack and three gears, the Trigger; when the bucket is full the gears open the reward valve on a separate fixed indemnity supply and the Wellness Reward pours into the post-tax bucket, while the Section 125 bucket drains back to the plan and into the Plan Dollars vessel."></canvas>
+  <div class="bottom">
+    <p id="summary" aria-live="polite"></p>
+    <ul id="notes" hidden>
+      <li><b>Trigger event:</b> the monthly wellness activity that triggers the reward.</li>
+      <li><b>Wellness Reward:</b> paid from the plan's fixed indemnity benefit, post-tax, on the same paycheck. Its own line, not the company's.</li>
+      <li><b>Plan Dollars:</b> the employee's withholding, toward the benefits.</li>
+    </ul>
+    <section class="company" aria-label="Your company">
+      <h2 id="ctitle"></h2>
+      <div class="row">
+        <div><label for="emp">Employees</label><input id="emp" type="number" inputmode="numeric" min="1" max="5000" value="200"></div>
+        <div><label for="q">Qualify <output id="qv">80%</output></label>
+          <div class="step"><button type="button" id="qd" aria-label="Fewer qualify">&minus;</button><input id="q" type="range" min="40" max="100" step="5" value="80"><button type="button" id="qu" aria-label="More qualify">+</button></div></div>
+      </div>
+      <div id="kept"></div>
+      <div id="keptsub"></div>
+    </section>
+    <details class="fine"><summary>Where the numbers come from</summary>
+      <p id="fine1"></p>
+      <p>Illustrative only. Every employee's number is different. No specific tax outcome is guaranteed; results depend on a payroll analysis and on current federal and state law. Figures leave out any workers' compensation, FUTA or SUTA effect. Reward payments in excess of unreimbursed medical expenses may be taxable to the employee.</p>
+    </details>
+    <p class="fine" style="margin:10px 0 0"><a href="../">More tools by Jay Beatty</a></p>
+  </div>
+  <aside class="iso-panel" aria-label="The bench model">
+    <div class="iso-card">
+      <p class="kicker">The same month, on the bench</p>
+      <h2>The Payroll Fountain, in three dimensions</h2>
+      <div id="iso" class="iso"></div>
+      <div class="iso-detail" id="isodetail"><h3>Click any part</h3><p>Each assembly zooms in and explains what it does with the month's money. Plain payroll is a plain bench; switch the plan on and the rest of the machine is fitted.</p></div>
+      <p class="iso-cap">A model of the board: the Company's tank at the back pours into the header channel, the glass cisterns take the withholdings, the pool in front is take-home, and the raised line from the plan's tank at the back right carries the Wellness Reward. The cups hold what comes back to the company, the admin fee and the Plan Dollars. Its water follows the board as it runs.</p>
+    </div>
+  </aside>
+</main>
+<script src="model.js"></script>
+<script src="fountain.js"></script>
+<script src="iso.js"></script>
+<script>
+(function () {
+  const M = FountainModel, F = FOUNTAIN, $ = (id) => document.getElementById(id);
+  const money = (v) => '$' + Math.round(v).toLocaleString('en-US');
+  const cents = (v) => '$' + v.toFixed(2);
+  const params = new URLSearchParams(location.search), tag = location.hash.slice(1); // read before the URL is tidied
+  let scope = params.get('scope') === 'company' ? 'company' : 'employee';
+  let level = M.TIERS[params.get('tier')] ? +params.get('tier') : M.DEFAULT;
+  const inputs = () => ({ employees: Math.max(1, Math.min(5000, Math.round(+$('emp').value || 1))), qualify: +$('q').value });
+  const isOn = () => $('aca').getAttribute('aria-pressed') === 'true';
+  const current = () => (scope === 'company' ? M.scenario(inputs().employees, inputs().qualify, level) : M.single(level));
+
+  function summary(s) {
+    const S = s.scenario, d = S.dollars[s.aca ? 'on' : 'off'], many = s.scope === 'company', who = many ? 'the employees' : 'the employee';
+    $('start').disabled = s.running;
+    $('start').classList.toggle('ready', !s.running);
+    if (s.running) $('summary').textContent = s.aca ? 'The plan is on. When the Section 125 bucket is full, the float turns the Trigger gears and the reward valve opens.' : 'Payroll is running.';
+    else if (!s.finished) $('summary').textContent = s.aca ? 'The plan is on at the ' + money(S.level) + ' tier: the Section 125 branch is fitted, the return line is connected and the Trigger gears are set. Open the main valve.' : 'Plain payroll. Open the main valve to run it.';
+    else if (!s.aca) $('summary').innerHTML = 'Of ' + money(S.total) + ' of payroll, ' + money(d.taxes) + ' went to payroll taxes, ' + money(d.health) + ' to health insurance and ' + money(d.k401) + ' to the 401(k). ' + money(d.bank) + ' reached ' + who + '. <b>Now switch the plan on.</b>';
+    else $('summary').innerHTML = '<b>Take-home is up ' + money(S.delta.bank) + ' and ' + (many ? money(S.delta.company) : cents(S.delta.company)) + ' came back to the company</b> after its ' + money(S.delta.fee) + ' admin fee. Payroll taxes took ' + money(S.delta.taxes) + ' less. Of the Section 125 withholding, ' + money(S.delta.plan) + ' is Plan Dollars.';
+    $('notes').hidden = !s.aca;
+  }
+  F.on(summary);
+
+  // The company box: it sizes the Whole company fountain, and under One paycheck it multiplies the result.
+  function company(resetMachine) {
+    const { employees, qualify } = inputs(), S = M.scenario(employees, qualify, level), per = M.single(level).delta.company;
+    $('qv').textContent = qualify + '%';
+    $('kept').textContent = money(S.delta.company) + ' a month';
+    $('keptsub').textContent = 'back to the company: ' + S.enrolled + ' enrolled × ' + cents(per) + '. ' + money(S.delta.company * 12) + ' a year.';
+    if (scope === 'company' && resetMachine) F.setScenario(S, 'company');
+  }
+  function fine() {
+    const T = M.TIERS[level], one = M.single(level), est = level === 1600 ? '' : ' The $1,600 figures are the overview\'s own; this tier applies the same tax rates to the smaller contribution, so it is an estimate.';
+    $('fine1').textContent = 'One paycheck is the sample from the plan\'s own overview: married, joint filer, $65,000 a year, paid every two weeks, California, scaled to a month, plus the payroll tax the company pays on it. A company of this size already runs a Section 125 plan, so an existing FSA of $100 a month is shown as an illustration; it is the same with the plan off and on, and the sample paycheck has no FSA line of its own. The whole company is that same paycheck for every employee, with the share who qualify enrolled. For each enrolled employee at the ' + money(level) + ' tier, ' + money(level) + ' is withheld before tax into Section 125. The monthly trigger event pays a ' + money(T.reward) + ' Wellness Reward, post-tax, on the same paycheck. The other ' + money(T.plan) + ' is the employee withholding remitted to the program, so the company\'s invoice is ' + money(one.delta.invoice) + ' per enrolled employee. Because the ' + money(level) + ' is withheld before tax, payroll taxes fall on both sides: the employee takes home about ' + money(one.delta.bank) + ' more, and the company stops paying ' + cents(level * M.FICA) + ', pays its $40 admin fee out of that, and keeps ' + cents(one.delta.company) + '. Health insurance and the 401(k) do not change.' + est;
+  }
+  function setScope(next, quiet) {
+    scope = next;
+    for (const which of ['employee', 'company']) $('tab-' + which).setAttribute('aria-selected', String(which === scope));
+    $('ctitle').textContent = scope === 'company' ? 'Your company' : 'Now multiply by your company';
+    F.setScenario(current(), scope);
+    if (!quiet) url();
+  }
+  function setLevel(next) {
+    level = next;
+    for (const b of $('tiers').children) b.setAttribute('aria-pressed', String(+b.dataset.level === level));
+    $('tierv').textContent = money(level) + ' · reward ' + money(M.TIERS[level].reward);
+    company(false); fine();
+    F.setScenario(current(), scope);
+    url();
+  }
+  function url() {
+    const p = new URLSearchParams();
+    if (scope === 'company') p.set('scope', 'company');
+    if (level !== M.DEFAULT) p.set('tier', level);
+    history.replaceState(null, '', p.toString() ? '?' + p : location.pathname);
+  }
+  function setAca(on) {
+    $('aca').setAttribute('aria-pressed', String(on));
+    document.body.dataset.aca = on ? 'on' : 'off';
+    F.setAca(on);
+  }
+  for (const lvl of M.LEVELS) {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'tier'; b.dataset.level = lvl; b.setAttribute('aria-pressed', 'false'); b.setAttribute('aria-label', money(lvl) + ' tier');
+    b.innerHTML = '<svg viewBox="0 0 32 32" aria-hidden="true"><circle class="rim" cx="16" cy="16" r="12"/><path class="spoke" d="M16 5v22M5 16h22"/><circle class="hub" cx="16" cy="16" r="4"/></svg><span>' + money(lvl) + '</span>';
+    b.addEventListener('click', () => setLevel(lvl)); $('tiers').appendChild(b);
+  }
+  $('tab-employee').addEventListener('click', () => setScope('employee'));
+  $('tab-company').addEventListener('click', () => setScope('company'));
+  $('aca').addEventListener('click', () => setAca(!isOn()));
+  $('start').addEventListener('click', () => F.start());
+  $('emp').addEventListener('input', () => company(true));
+  $('q').addEventListener('input', () => company(true));
+  $('qd').addEventListener('click', () => { $('q').value = Math.max(40, +$('q').value - 5); company(true); });
+  $('qu').addEventListener('click', () => { $('q').value = Math.min(100, +$('q').value + 5); company(true); });
+  setScope(scope, true);
+  setLevel(level);
+
+  // The bench model: the figure is built once (iso-build.mjs); here each vessel shows the precomputed water slab nearest
+  // the board's level, the trigger shows the pose for the Section 125 level, the reward slab rides on the take-home slab,
+  // and a click on a part zooms to it and explains it.
+  (function bench() {
+    const I = window.ISO_FIGURE, host = $('iso'), detail = $('isodetail');
+    if (!I || !host) return;
+    host.innerHTML = I.svg;
+    const svg = host.querySelector('svg'), full = svg.getAttribute('viewBox').split(' ').map(Number);
+    const el = {}; host.querySelectorAll('[data-water],[data-move]').forEach((g) => (el[g.dataset.water || g.dataset.move] = g));
+    const shown = {}, steps = I.steps - 1;
+    let raf = 0, seen = true;
+    function tick() {
+      const L = F.levels(), st = F.state();
+      for (const key in el) {
+        const src = key === 'trigger' ? 'aca' : key === 'valve' ? null : key;
+        let idx;
+        if (key === 'valve') idx = L.pay > 0 ? 1 : 0;
+        else { const frac = Math.max(0, Math.min(1, L[src] || 0)); idx = Math.round(frac * (I.levels[key].length - 1)); }
+        if (shown[key] !== idx) { shown[key] = idx; el[key].innerHTML = I.levels[key][idx] || ''; }
+        if (key === 'reward') { const base = Math.max(0, Math.min(1, L.bank - (L.reward || 0))) * I.poolRange; el[key].setAttribute('transform', 'translate(' + (I.up[0] * base).toFixed(2) + ' ' + (I.up[1] * base).toFixed(2) + ')'); }
+      }
+      raf = seen ? requestAnimationFrame(tick) : 0;
+    }
+    new IntersectionObserver((e) => { seen = e[e.length - 1].isIntersecting; if (seen && !raf) raf = requestAnimationFrame(tick); }).observe(host);
+    raf = requestAnimationFrame(tick);
+
+    // What each part does, in the month's own numbers.
+    const T = () => { const S = F.state().scenario, on = F.state().aca, d = S.dollars[on ? 'on' : 'off'], many = S.employees > 1, who = many ? 'the employees' : 'the employee'; return { S, on, d, many, who }; };
+    const TEXT = {
+      tank: () => { const { S, many } = T(); return ['Company payroll', 'A month of payroll comes in here: ' + money(S.total) + (many ? ' for ' + S.employees + ' employees' : ' for one employee') + ', wages plus the payroll tax the company pays on them. It pours down the main into the header. Nothing here changes with the plan: the same money comes in either way.']; },
+      header: () => { const { d, S } = T(); return ['The header', 'Payroll splits here. Each branch is as wide as the dollars it carries: ' + money(d.taxes) + ' to payroll taxes, ' + money(d.health) + ' to health insurance, ' + money(d.k401) + ' to the 401(k), and the main runs on to the pool with ' + money(d.bank) + '.' + (F.state().aca ? ' With the plan on, the tax branch is throttled back and the Section 125 branch is open.' : '')]; },
+      taxes: () => { const { d, S, on } = T(); return ['Payroll taxes', 'Both sides\' payroll taxes: what is withheld from the paycheck and what the company pays on top.' + (on ? ' With the plan on this cistern takes ' + money(d.taxes) + ', which is ' + money(S.delta.taxes) + ' less than the ' + money(S.dollars.off.taxes) + ' it took before, because ' + money(S.level) + ' per enrolled employee is withheld before tax.' : ' Today it takes ' + money(d.taxes) + '.')]; },
+      health: () => { const { d } = T(); return ['Health insurance', 'The major medical premium, ' + money(d.health) + ' a month. The plan does not touch it: it sits alongside major medical, not in place of it.']; },
+      k401: () => { const { d } = T(); return ['401(k)', 'The retirement deferral, ' + money(d.k401) + ' a month. Unchanged by the plan.']; },
+      fsa: () => { const { d } = T(); return ['Existing Section 125: the FSA', 'A company of this size already runs a Section 125 plan: the health premium is paid through it, and many employees elect a flexible spending account. The FSA is shown at an illustrative ' + money(d.fsa) + ' a month, taken before tax, the same with the plan off and on. The wellness plan is one more Section 125 component beside it, not a replacement.']; },
+      pool: () => { const { d, S, on, who } = T(); return [on ? 'Take-home, with the Wellness Reward' : 'Take-home', on ? money(d.bank) + ' reaches ' + who + ' after tax, and the ' + money(S.after.reward) + ' Wellness Reward pours in on top from the plan\'s own line, post-tax, on the same paycheck: ' + money(S.after.bank) + ' in all, ' + money(S.delta.bank) + ' more than without the plan.' : money(d.bank) + ' reaches ' + who + ' after tax. Switch the plan on to see what changes.']; },
+      'aca-cistern': () => { const { S } = T(); return ['Section 125 Wellness', money(S.delta.section125) + ' is withheld before tax into this cistern at the ' + money(S.level) + ' tier. The darker band at the bottom is the Plan Dollars, ' + money(S.delta.plan) + ', the employee\'s withholding toward the benefits. When the float reaches the top and the reward valve opens, the rest drains through the grate in the floor back to the plan, and the Plan Dollars run down the drain to their cup.']; },
+      trigger: () => { const { S } = T(); return ['The Trigger', 'The float rides the water in the Section 125 cistern on a threaded spindle. As the cistern fills the spindle rises through the drive nut and turns the big gear on the bridge; the small gear carries the turn to the last gear, which is the stem of the reward valve. When the cistern is full the valve is open and ' + money(S.after.reward) + ' flows from the plan\'s tank. In the plan this is the trigger event: the monthly wellness activity that releases the Wellness Reward.']; },
+      'aca-line': () => { const { S } = T(); return ['Fixed indemnity', 'The reward\'s own supply. The tank at the back right is the plan\'s fixed indemnity benefit, not the company\'s money: its raised line runs under the bridge to the pool through the valve the gears open, and pays the ' + money(S.after.reward) + ' Wellness Reward, post-tax, on the same paycheck.']; },
+      return: () => { const { S } = T(); return ['Back to the company', 'The company stops paying 7.65% payroll tax on the ' + money(S.level) + ': ' + money(S.delta.company + S.delta.fee) + ' a month per enrolled employee. The pump sends it back along the return line: ' + money(S.delta.fee) + ' to the admin fee cup in front, and ' + money(S.delta.company) + ' to the company\'s cup at the back. Both in gold: company money.']; },
+      plan: () => { const { S } = T(); return ['Plan Dollars', money(S.delta.plan) + ' a month per enrolled employee: the employee\'s withholding, remitted to the program toward the benefits. It drains from the bottom band of the Section 125 cistern into this cup. With the ' + money(S.delta.fee) + ' admin fee, the company\'s invoice is ' + money(S.delta.invoice) + ' per enrolled employee.']; },
+    };
+    let focus = null, anim = 0, from = full.slice(), to = full.slice(), t0 = 0;
+    const setBox = (b) => svg.setAttribute('viewBox', b.map((v) => v.toFixed(2)).join(' '));
+    function fly(target) {
+      from = svg.getAttribute('viewBox').split(' ').map(Number); to = target; t0 = performance.now(); cancelAnimationFrame(anim);
+      const step = (now) => { const u = Math.min(1, (now - t0) / 600), e = u * u * (3 - 2 * u); setBox(from.map((v, i) => v + (to[i] - v) * e)); if (u < 1) anim = requestAnimationFrame(step); };
+      anim = requestAnimationFrame(step);
+    }
+    function show(id) {
+      host.querySelectorAll('.is-focus').forEach((g) => g.classList.remove('is-focus'));
+      focus = id;
+      if (!id) { host.classList.remove('has-focus'); fly(full); detail.innerHTML = '<h3>Click any part</h3><p>Each assembly zooms in and explains what it does with the month\'s money. Plain payroll is a plain bench; switch the plan on and the rest of the machine is fitted.</p>'; return; }
+      let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+      host.querySelectorAll('[data-part="' + id + '"]').forEach((g) => { g.classList.add('is-focus'); if (!g.firstChild) return; const b = g.getBBox(); if (!b.width && !b.height) return; x0 = Math.min(x0, b.x); y0 = Math.min(y0, b.y); x1 = Math.max(x1, b.x + b.width); y1 = Math.max(y1, b.y + b.height); });
+      host.classList.add('has-focus');
+      const w = Math.max(x1 - x0, (y1 - y0) * full[2] / full[3]) * 1.5, h = w * full[3] / full[2], cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+      fly([cx - w / 2, cy - h / 2, w, h]);
+      const [title, body] = TEXT[id] ? TEXT[id]() : [id, ''];
+      detail.innerHTML = '<h3>' + title + '</h3><p>' + body + '</p><button type="button" id="isoback">SHOW THE WHOLE BENCH</button>';
+      $('isoback').addEventListener('click', () => show(null));
+    }
+    host.addEventListener('click', (e) => { const g = e.target.closest('[data-part]'); show(g && g.dataset.part !== focus ? g.dataset.part : null); });
+    F.on(() => { if (focus) { const [title, body] = TEXT[focus] ? TEXT[focus]() : [focus, '']; detail.querySelector('h3').textContent = title; detail.querySelector('p').textContent = body; } });
+  })();
+
+  // Test links: #off and #on show a finished pour, #mid a pour in progress with ACA on, #midoff the same with ACA off.
+  if (tag === 'on' || tag === 'mid') setAca(true);
+  if (tag === 'off' || tag === 'on') { F.start(); F.finish(); }
+  if (tag === 'mid' || tag === 'midoff') { F.start(); F.finish(3.2); }
+})();
+</script>
+</body>
+</html>

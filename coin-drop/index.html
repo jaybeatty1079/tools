@@ -29,6 +29,7 @@
     .bottom { grid-area: bottom; width: auto; }
   }
   @media (max-width: 759px) { canvas { max-height: calc(100dvh - 232px); } }
+  .kicker { font: 600 9.5px/1 ui-monospace, Menlo, monospace; letter-spacing: .2em; text-transform: uppercase; color: var(--mute); margin: 0 0 6px; }
   h1 { font-size: 20px; line-height: 1.15; color: var(--ink); margin: 0 0 7px; letter-spacing: -.01em; transition: color .5s; }
 
   /* Every control lights when it is pressed, and stays lit while it is on. */
@@ -102,13 +103,14 @@
 <body data-pulse="off">
 <main>
   <div class="top">
+    <p class="kicker">Section 125 Wellness Illustration Tool</p>
     <h1>The payroll coin drop</h1>
     <div class="tabs" role="tablist" aria-label="Which payroll">
       <button type="button" role="tab" id="tab-employee" aria-selected="true">One paycheck</button>
       <button type="button" role="tab" id="tab-company" aria-selected="false">Whole company</button>
     </div>
-    <button id="pulse" class="switch" type="button" aria-pressed="false" aria-label="Pulse 125 Wellness plan">
-      <span class="sw-name">PULSE<small>125 WELLNESS</small></span>
+    <button id="pulse" class="switch" type="button" aria-pressed="false" aria-label="Section 125 wellness plan">
+      <span class="sw-name">SECTION 125<small>WELLNESS PLAN</small></span>
       <span class="sw-slot" aria-hidden="true"><b class="sw-on">ON</b><b class="sw-off">OFF</b><span class="sw-knob"></span></span>
       <span class="sw-lamps" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
     </button>
@@ -123,17 +125,17 @@
       </button>
     </div>
   </div>
-  <canvas id="machine" role="img" aria-label="An arcade coin drop machine. Coins leave the Company bank account at the top, bounce down through pegs and land in trays for payroll taxes, health insurance and the 401(k). The rest are pushed along a shelf, through an opening, into the employees' bank accounts at the bottom. With Pulse on the machine lights up: a Pulse 125 Wellness tray opens, a Pulse Section 125 tray opens beside the other withholdings, a lift on each side carries coins back up to the Company and a few drop into a Pulse admin fee box. The last coin trips a Trigger, a hidden door pays the Wellness Reward into the employees' accounts, and the Section 125 tray empties, with part of it running down a chute to Pulse Plan $."></canvas>
+  <canvas id="machine" role="img" aria-label="An arcade coin drop machine. Coins leave the Company bank account at the top, bounce down through pegs and land in trays for payroll taxes, health insurance and the 401(k). The rest are pushed along a shelf, through an opening, into the employees' bank accounts at the bottom. With the plan on the machine lights up: a Section 125 Wellness tray opens, a Section 125 tray opens beside the other withholdings, a lift on each side carries coins back up to the Company and a few drop into an admin fee box. The last coin trips a Trigger, a hidden door pays the Wellness Reward into the employees' accounts, and the Section 125 tray empties, with part of it running down a chute to Plan $."></canvas>
   <div class="bottom">
     <p id="summary" aria-live="polite"></p>
     <ul id="notes" hidden>
       <li><b>Trigger event:</b> the activity that triggers the reward each month.</li>
-      <li>The reward comes from Pulse but is integrated in payroll for efficiency.</li>
+      <li>The reward comes from the plan but is integrated in payroll for efficiency.</li>
     </ul>
     <section class="company" aria-label="Your company">
       <h2 id="ctitle"></h2>
       <div class="row">
-        <div><label for="emp">Employees</label><input id="emp" type="number" inputmode="numeric" min="1" max="5000" value="50"></div>
+        <div><label for="emp">Employees</label><input id="emp" type="number" inputmode="numeric" min="1" max="5000" value="200"></div>
         <div><label for="q">Qualify <output id="qv">80%</output></label>
           <div class="step"><button type="button" id="qd" aria-label="Fewer qualify">&minus;</button><input id="q" type="range" min="40" max="100" step="5" value="80"><button type="button" id="qu" aria-label="More qualify">+</button></div></div>
       </div>
@@ -141,7 +143,7 @@
       <div id="keptsub"></div>
     </section>
     <details class="fine"><summary>Where the numbers come from</summary>
-      <p>One paycheck is the sample from the Pulse deck: married, joint filer, $65,000 a year, California, at the $1,200 level, scaled from weekly to a month, plus the payroll tax the company pays on it. The whole company is that same paycheck for every employee, with the share who qualify enrolled. For each enrolled employee, $1,200 is withheld before tax into Pulse Section 125. The monthly trigger event pays a $1,000 Wellness Reward into the employee's account; the reward is paid after tax, comes from Pulse and runs through payroll. The other $200 is Pulse Plan $, toward the benefits and the claims. Because that $1,200 is withheld before tax, payroll taxes fall on both sides: the employee takes home about $79 more, and the company stops paying $91.80, pays its $35 Pulse admin fee out of that, and keeps $56.80. Health insurance and the 401(k) do not change.</p>
+      <p>One paycheck is the sample from the plan's own deck: married, joint filer, $65,000 a year, California, at the $1,200 level, scaled from weekly to a month, plus the payroll tax the company pays on it. The whole company is that same paycheck for every employee, with the share who qualify enrolled. For each enrolled employee, $1,200 is withheld before tax into Section 125. The monthly trigger event pays a $1,000 Wellness Reward into the employee's account; the reward is paid after tax, comes from the plan and runs through payroll. The other $200 is Plan $, toward the benefits and the claims. Because that $1,200 is withheld before tax, payroll taxes fall on both sides: the employee takes home about $79 more, and the company stops paying $91.80, pays its $35 admin fee out of that, and keeps $56.80. Health insurance and the 401(k) do not change.</p>
       <p>Illustrative only. Every employee's number is different. No specific tax outcome is guaranteed; results depend on a payroll analysis and on current federal and state law. Figures leave out any workers' compensation, FUTA or SUTA effect.</p>
     </details>
     <p class="fine" style="margin:10px 0 0"><a href="../" style="color:inherit">More tools by Jay Beatty</a></p>
@@ -164,10 +166,10 @@
     const S = s.scenario, d = S.dollars[s.pulse ? 'on' : 'off'], many = s.scope === 'company', who = many ? 'the employees' : 'the employee';
     $('start').disabled = s.running;
     $('start').classList.toggle('ready', !s.running);
-    if (s.running) $('summary').textContent = s.pulse ? 'Pulse is on. When everything has landed, the last coin drops into the Trigger.' : 'Payroll is dropping.';
-    else if (!s.finished) $('summary').textContent = s.pulse ? 'Pulse is on: the Section 125 tray is open, the lifts are running and the Trigger is set. Press Start.' : 'Plain payroll. Press Start to run it.';
-    else if (!s.pulse) $('summary').innerHTML = 'Of ' + money(S.total) + ' of payroll, ' + money(d.taxes) + ' went to payroll taxes, ' + money(d.health) + ' to health insurance and ' + money(d.k401) + ' to the 401(k). ' + money(d.bank) + ' reached ' + who + '. <b>Now switch Pulse on.</b>';
-    else $('summary').innerHTML = '<b>Take-home is up ' + money(S.delta.bank) + ' and ' + (many ? money(S.delta.company) : cents(S.delta.company)) + ' came back to the company</b> after its ' + money(S.delta.fee) + ' Pulse admin fee. Payroll taxes took ' + money(S.delta.taxes) + ' less.';
+    if (s.running) $('summary').textContent = s.pulse ? 'The plan is on. When everything has landed, the last coin drops into the Trigger.' : 'Payroll is dropping.';
+    else if (!s.finished) $('summary').textContent = s.pulse ? 'The plan is on: the Section 125 tray is open, the lifts are running and the Trigger is set. Press Start.' : 'Plain payroll. Press Start to run it.';
+    else if (!s.pulse) $('summary').innerHTML = 'Of ' + money(S.total) + ' of payroll, ' + money(d.taxes) + ' went to payroll taxes, ' + money(d.health) + ' to health insurance and ' + money(d.k401) + ' to the 401(k). ' + money(d.bank) + ' reached ' + who + '. <b>Now switch the plan on.</b>';
+    else $('summary').innerHTML = '<b>Take-home is up ' + money(S.delta.bank) + ' and ' + (many ? money(S.delta.company) : cents(S.delta.company)) + ' came back to the company</b> after its ' + money(S.delta.fee) + ' admin fee. Payroll taxes took ' + money(S.delta.taxes) + ' less.';
     $('notes').hidden = !s.pulse;
   }
   K.on(summary);

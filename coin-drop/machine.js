@@ -37,7 +37,7 @@
     taxes: { x: 71, w: 114, cols: 12, bottom: TRAY_BOT, tray: true, name: ['PAYROLL TAXES'] },
     health: { x: 223, w: 76, cols: 7, bottom: TRAY_BOT, tray: true, name: ['HEALTH', 'INSURANCE'] },
     k401: { x: 341, w: 30, cols: 3, bottom: TRAY_BOT, tray: true, name: ['401(k)'] },
-    pulse: { x: 402, w: 90, cols: 9, bottom: TRAY_BOT, tray: true, rise: 5.4, name: ['PULSE', 'SECTION 125'] },
+    pulse: { x: 402, w: 90, cols: 9, bottom: TRAY_BOT, tray: true, rise: 5.4, name: ['SECTION 125', 'WELLNESS'] },
     bank: { x: 150, w: 260, cols: 26, bottom: BANK_BOT, fromRight: true },
     plan: { x: 444, w: 72, cols: 6, bottom: 592 },
     fee: { x: 52, w: 72, cols: 6, bottom: 586 },
@@ -376,7 +376,7 @@
     if (won) text('+' + money(S.delta.company) + ' BACK TO THE COMPANY  ·  +' + money(S.delta.bank) + (many ? ' TO EMPLOYEES' : ' TO THE EMPLOYEE'), 280, 22.5, 12, rgb('company'));
     else if (paying) text('TRIGGERED!   WELLNESS REWARD  +' + money(S.after.reward), 280, 23, 13, '#8fcbff');
     else if (lastOut) { if (Math.floor(clock * 5) % 2 === 0) text('L A S T   C O I N  →  T R I G G E R', 280, 23, 12.5, '#FFE9A6'); }
-    else if (finished) text('NOW SWITCH PULSE ON', 280, 23, 13.5, rgb('ink'));
+    else if (finished) text('NOW SWITCH THE PLAN ON', 280, 23, 13.5, rgb('ink'));
     else text(many ? 'C O M P A N Y   P A Y R O L L' : 'P A Y R O L L', 280, 23, 14, rgb('ink'));
     for (let i = 0; i < 24; i++) {
       const lit = engage > 0.5 && (Math.floor(clock * (won || paying ? 12 : 6)) + i) % 4 === 0;
@@ -390,9 +390,9 @@
     // The Company: the hopper that pays out, and a wing each side where the lifts bring money back.
     lift('L', up); lift('R', up);
     sideBox('fee', LIFT.L, 330 - up, { from: [30, 528], to: [44, 540], draw: (top) => {
-      text('PULSE', 88, top - 31, 12.5, tint('fee')); text('ADMIN FEE', 88, top - 18, 12.5, tint('fee')); text('from company savings', 97, top - 6, 8.5, rgb('mute'), 600);
+      text('PLAN', 88, top - 31, 12.5, tint('fee')); text('ADMIN FEE', 88, top - 18, 12.5, tint('fee')); text('from company savings', 97, top - 6, 8.5, rgb('mute'), 600);
     } });
-    sideBox('plan', 508, 362 - up, { from: [508, 534], to: [508, 554], amount: [496, 547, 'right'], draw: (top) => text('PULSE PLAN $', 476, top + 54, 11, tint('plan')) });
+    sideBox('plan', 508, 362 - up, { from: [508, 534], to: [508, 554], amount: [496, 547, 'right'], draw: (top) => text('PLAN $', 476, top + 54, 11, tint('plan')) });
     ctx.beginPath(); ctx.moveTo(150, 40); ctx.lineTo(410, 40); ctx.lineTo(410, 86); ctx.lineTo(298, 100); ctx.lineTo(262, 100); ctx.lineTo(150, 86); ctx.closePath();
     const hop = ctx.createLinearGradient(0, 40, 0, 100); hop.addColorStop(0, rgb('company', 0.1 + 0.1 * engage)); hop.addColorStop(1, rgb('company', 0.04));
     ctx.fillStyle = hop; ctx.fill(); glow('company', (running ? 10 : 5) + (blink(2) ? 3 : 0)); ctx.lineWidth = 2; ctx.strokeStyle = rgb('company'); ctx.stroke(); noGlow();
@@ -420,7 +420,7 @@
       ctx.globalAlpha = engage;
       ctx.setLineDash([4, 3]); ctx.beginPath(); ctx.moveTo(73, y); ctx.lineTo(183, y); ctx.strokeStyle = rgb('ink'); ctx.lineWidth = 1; ctx.stroke(); ctx.setLineDash([]);
       rr(90, y + 3, 76, 14, 3); ctx.fillStyle = 'rgba(8,12,19,.85)'; ctx.fill();
-      text('without Pulse', 128, y + 13.5, 10, rgb('ink'), 600);
+      text('without the plan', 128, y + 13.5, 10, rgb('ink'), 600);
       if (finished) text('▼ ' + money(S.delta.taxes) + ' less', 128, TRAY_BOT - up + 50, 12, rgb('company'));
       ctx.globalAlpha = 1;
     }
@@ -496,7 +496,7 @@
 
     // The apron: the employee's total, and the key to the coins.
     text(many ? "EMPLOYEES' BANK ACCOUNTS" : "EMPLOYEE'S BANK ACCOUNT", 280, 631, 17, tint('bank'));
-    const gain = won ? '   +' + money(S.delta.bank) + ' a month with Pulse' : '', amount = money(shownDollars('bank'));
+    const gain = won ? '   +' + money(S.delta.bank) + ' a month with the plan' : '', amount = money(shownDollars('bank'));
     ctx.font = '800 16px ' + FONT; const w1 = ctx.measureText(amount).width;
     ctx.font = '800 12.5px ' + FONT; const w2 = gain ? ctx.measureText(gain).width : 0, x0 = 280 - (w1 + w2) / 2;
     text(amount, x0, 651, 16, rgb('ink'), 800, 'left');
@@ -504,7 +504,7 @@
     ctx.drawImage(engage > 0.5 ? GOLD : WORN, 22, 620, SPR, SPR); text('= ' + money(S.coin), 41, 632.5, 11, rgb('mute'), 600, 'left');
     if (engage > 0.5) {
       ctx.drawImage(LIME, 22, 637, SPR, SPR); text('company savings', 41, 649.5, 10, rgb('mute'), 600, 'left');
-      ctx.drawImage(BLUE, 421, 628, SPR, SPR); text('Wellness Reward', 440, 635, 10, rgb('mute'), 600, 'left'); text('post-tax, from Pulse', 440, 647, 10, rgb('mute'), 600, 'left');
+      ctx.drawImage(BLUE, 421, 628, SPR, SPR); text('Wellness Reward', 440, 635, 10, rgb('mute'), 600, 'left'); text('post-tax, from the plan', 440, 647, 10, rgb('mute'), 600, 'left');
     }
 
     // Coins in the air tumble; the ones on the shelf, in the lifts and in the chutes lie flat. Lime and blue coins carry a glow.

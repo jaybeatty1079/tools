@@ -1,6 +1,6 @@
 # The Payroll Coin Drop
 
-A Section 125 wellness plan shown as an arcade coin pusher. Press Start and a month of payroll drops from the Company through a field of posts into its trays: payroll taxes, health insurance, the 401(k), and what is left reaches the employee. Switch Pulse on and the machine transforms: $1,200 is withheld before tax into Pulse Section 125, a lift on each side carries the company's savings back up, the last coin trips the Trigger, and a hidden door pays the Wellness Reward.
+Section 125 Wellness Illustration Tool: a Section 125 wellness plan shown as an arcade coin pusher. Press Start and a month of payroll drops from the Company through a field of posts into its trays: payroll taxes, health insurance, the 401(k), and what is left reaches the employee. Switch the plan on and the machine transforms: $1,200 is withheld before tax into Section 125, a lift on each side carries the company's savings back up, the last coin trips the Trigger, and a hidden door pays the Wellness Reward.
 
 Two machines on one cabinet: **One paycheck** and **Whole company** (enter a headcount and the share who qualify).
 
