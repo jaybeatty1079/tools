@@ -87,4 +87,12 @@ Both PASS gives **PASS**. Either FAIL gives **FAIL**. Anything between gives **J
 
 After the revamp was first watched through, the painted signs (the building names, the wall names, CLOSED, the loop and tunnel signs) read grey against the low sun: they were lit like paint, and a board that faces away from the light goes dark. They now glow from their own texture (`emissiveMap` at 0.62 on the cream face), so the lettering reads from any side, and the pennants on the wall posts are twice the size and lit the same way (a flag on a 25-unit post was a speck). Checked on the rendered frames at 1200 px and 375 px before and after, and by the whole suite again (walls, pause, features, court, scorecard, score, 34 paused stages). One slip worth recording: the pennant helper is a single line, and a `//` comment written into it would have commented out the rest of the function without any build error, which the build would not have flagged; I caught it by reading the line back and ran the page's script through a syntax check before the suite.
 
+## Three fixes from a watch-through (2026-11-15)
+
+Jay's words after riding it: the Hershey sign in the opening scene was cut off, the yellow lines on the doors under the chocolate drops confused the picture, and the how-to text under the ride should stay on the home page and go once you are aboard.
+
+- The station's name board (`shed()` in `ride-template.html`) sat on the roof at the far end, 12 units wide: the top of the view cut it at 1200 px, and a phone's narrow view cut its sides as well. It now hangs under the canopy at the far end, over the track, 4.8 units wide, which is about what a 375 px view fits at that distance. Checked on rendered frames at both widths with the door overlay hidden.
+- Each door had two raised fields; the lower one's frame lines ran right under the chocolate drops. The lower field is gone from both doors; the drops and the small line sit on the door wood.
+- The three blocks under the stage (`.below`) hide while the ride is active (`body.riding`, set in the frame loop from the same `active()` the pause bar uses, so it covers the doors, the lifts, the loop, the siding and a held wall) and come back with the standing, with Order another, and when the ride is skipped. Checked at both widths.
+
 Maps public guidance as of its date. Not legal advice, and no claim that any peptide is safe or works.
