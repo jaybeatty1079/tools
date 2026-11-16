@@ -546,6 +546,13 @@
     sfx: null, // set by sound.js
     on(fn) { listeners.push(fn); },
     state: () => ({ pulse, scope, running, finished, act, lastOut, landed: { ...landed, company: landed.backL + landed.backR, reward: paidIn }, total: coins.length, scenario: S }),
+    // How full each tray and box is, 0..1 of its final count, for a companion figure; plus what is moving.
+    levels() {
+      const n = S.coins, f = (a, b) => (b ? Math.max(0, Math.min(1, a / b)) : 0);
+      return { taxes: f(landed.taxes, n.off.taxes), health: f(landed.health, n.off.health), k401: f(landed.k401, n.off.k401), s125: f(landed.pulse, n.on.pulse),
+        bank: f(landed.bank - paidIn, n.off.bank), reward: f(paidIn, S.after.rewardCoins), company: f(landed.backL + landed.backR, n.on.company), fee: f(landed.fee, n.on.fee), plan: f(landed.plan, S.after.planCoins),
+        belt: running && act === 'drop' ? 1 : 0, tripped: pulse && (act === 'armed' || act === 'payout' || act === 'done') ? 1 : 0, pulse };
+    },
     setPulse(v) { pulse = !!v; reset(); sfx(pulse ? 'engage' : 'disengage'); settle(); },
     // Which payroll the cabinet runs: 'employee' (one paycheck) or 'company' (everyone).
     setScenario(s, which) { S = s; scope = which; reset(); settle(); },
