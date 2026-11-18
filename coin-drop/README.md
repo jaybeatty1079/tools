@@ -9,7 +9,7 @@ Beside the cabinet, on a wide screen, sits **the bench model**: the same month a
 ## Files
 
 - `index.html`: the page and its controls.
-- `model.js`: every number. One sample paycheck from the plan's own deck (married, joint filer, $65,000 a year, California, the $1,200 level), scaled from weekly to a month. It checks itself when it loads.
+- `model.js`: every number. One illustrative paycheck for a smaller company's worker (single, 0/0, $40,000 a year, weekly, California, the $1,200 level), withholding worked out from the 2026 federal and California tables and scaled to a month; a $160 a month health premium and a 1% 401(k), both illustrative. The coin value adjusts so no tray overflows. It checks itself when it loads.
 - `machine.js`: the cabinet, drawn on a canvas. Each coin's destination is set by the model before it drops; the posts only decide its route, so the piles always match the numbers.
 - `sound.js`: the sounds, synthesized in the browser. No audio files.
 - `iso-build.mjs`: builds the bench model once with the anatomy kit (`node coin-drop/iso-build.mjs`) into `iso.js` (the figure, its parts and eleven heap levels per bin) and copies the kit's `iso.css`. The page ships no kit code.

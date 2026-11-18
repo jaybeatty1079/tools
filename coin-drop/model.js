@@ -1,6 +1,9 @@
 /* Where a month of payroll goes, with Pulse off and with Pulse on. Shared by the page and the Node check.
-   One employee: the Pulse deck's sample paycheck (Pulse_365_Deck_White.pptx slide 15: married joint filer, $65,000 a year,
-   weekly, California, $1,200 level), weekly figures x 52 / 12. A whole company: every employee paid like the sample, and
+   One employee (Jay, 2026-11-18: a smaller company's worker): single, W-4 and DE 4 with no adjustments (0/0), $40,000 a
+   year, weekly, California, $1,200 level, withholding worked out from the 2026 tables (IRS Pub 15-T standard schedule;
+   EDD Method B weekly; SDI 1.3%), weekly figures x 52 / 12. A $160 a month health premium and a 1% 401(k), both
+   illustrative (Jay: a smaller premium and a low contribution). Pre-tax health is out of federal, FICA, CA and SDI wages; the 401(k) only
+   out of federal and CA. A whole company: every employee paid like the sample, and
    the share who qualify enrolled. Illustrative: every employee's number is different.
 
    How the plan moves the money (Jay, 2026-11-15):
@@ -13,10 +16,11 @@
   const WEEKS = 52 / 12, r2 = (v) => Math.round(v * 100) / 100;
   const PLAN = { level: 1200, reward: 1000, planDollars: 200, fica: 0.0765, fee: 35 };
   const WK = {
-    health: 173.41, k401: 37.5, // major medical premium and 401(k), unchanged by the plan
-    taxToday: 115.5 + 64.42 + 15.07 + 17.81 + 12.47, taxPlan: 82.27 + 47.25 + 11.05 + 11.1 + 9.14, // withheld from the employee
-    employerToday: 64.42 + 15.07, // the employer matches Social Security and Medicare
-    homeToday: 813.71, homePlan: 832.0, postTaxPlan: 601.23, // take-home today, take-home with the reward, and pay before the reward
+    // weekly gross $769.23; federal, Social Security, Medicare, California, SDI
+    health: 36.92, k401: 7.69, // major medical premium ($160 a month) and 401(k) (1%), unchanged by the plan
+    taxToday: 64.88 + 45.4 + 10.62 + 13.58 + 9.52, taxPlan: 31.65 + 28.23 + 6.6 + 5.08 + 5.92, // withheld from the employee
+    employerToday: 45.4 + 10.62, // the employer matches Social Security and Medicare
+    homeToday: 580.62, homePlan: 600.99, postTaxPlan: 370.22, // take-home today, take-home with the reward, and pay before the reward
   };
   const employerSaved = r2(PLAN.level * PLAN.fica); // 91.80: employer payroll tax no longer paid
   // Where the payroll coins land. `pulse` is the Section 125 withholding; `bank` is take-home before any reward.
@@ -28,10 +32,15 @@
   const sum = (o) => KEYS.reduce((a, k) => a + o[k], 0);
   const FULL = 576; // coins in a full drop; the trays are sized for it
 
-  /* A coin value that keeps the drop near FULL coins: the smallest round number at or just under total / FULL. */
-  function coinFor(total) {
+  // Coins each tray holds before it spills over its rim (rows the tray can stack × columns), as filled by the $65,000 sample.
+  const CAP = { taxes: 144, health: 84, k401: 36, pulse: 120 };
+  const fits = (coin, modes) => modes.every((d) => Object.keys(CAP).every((k) => d[k] / coin <= CAP[k] + 0.5));
+  /* A coin value that keeps the drop near FULL coins: the smallest round number at or just under total / FULL that
+     still lets every tray hold its coins, so a smaller paycheck uses fewer, bigger coins rather than overflow a tray. */
+  function coinFor(total, modes = []) {
     const v = total / FULL, p = Math.pow(10, Math.floor(Math.log10(v)));
-    return [1, 1.25, 1.5, 2, 2.5, 3, 4, 5, 6, 7.5, 8, 10].map((m) => m * p).find((m) => m >= v * 0.98);
+    const steps = [1, 1.2, 1.25, 1.5, 1.6, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7, 7.5, 8, 9].flatMap((m) => [m * p, m * p * 10]).sort((a, b) => a - b);
+    return steps.find((m) => m >= v * 0.98 && fits(m, modes));
   }
   /* Whole coins per destination, by largest remainder, so both modes drop exactly n coins. */
   function allot(dollars, coin, n) {
@@ -47,7 +56,7 @@
     const off = {}, on = {};
     for (const k of KEYS) { off[k] = r2(ONE.off[k] * all); on[k] = r2(ONE.off[k] * all + (ONE.on[k] - ONE.off[k]) * enrolled); }
     const total = sum(off);
-    coin = coin || coinFor(total);
+    coin = coin || coinFor(total, [off, on]);
     const n = Math.round(total / coin), coins = { off: allot(off, coin, n), on: allot(on, coin, n) };
     const reward = enrolled * PLAN.reward, plan = enrolled * PLAN.planDollars;
     return {
@@ -57,7 +66,7 @@
       delta: { taxes: r2(off.taxes - on.taxes), bank: r2(on.bank + reward - off.bank), company: on.company, fee: on.fee, plan, reward, section125: on.pulse },
     };
   }
-  const single = () => scenario(1, 100, 10);
+  const single = () => scenario(1, 100);
 
   /* Self-check: the pay adds up both ways, every dollar no longer paid in tax lands somewhere, and the film's company figures fall out. */
   (function () {
@@ -68,14 +77,16 @@
     near(s.delta.taxes, s.delta.plan + s.delta.fee + s.delta.company + s.delta.bank, 0.2, 'tax not paid lands somewhere');
     near(s.delta.section125, s.delta.reward + s.delta.plan, 0, 'Section 125 is the reward plus Plan $');
     near(s.delta.company, 56.8, 0.001, 'company keeps per employee');
-    near(s.delta.bank, 18.29 * WEEKS, 0.05, 'take-home gain matches the sample');
-    near(s.n, FULL, 0, 'one paycheck is a full drop');
+    near(s.delta.bank, (600.99 - 580.62) * WEEKS, 0.05, 'take-home gain matches the sample');
+    near(sum(s.dollars.off), (769.23 + 45.4 + 10.62) * WEEKS, 0.1, 'payroll is the $40,000 wage plus the employer match');
+    if (s.n > FULL * 1.03 || s.n < FULL * 0.6) throw new Error('one paycheck drop size out of range: ' + s.n);
+    for (const [e, q] of [[1, 100], [1, 80], [7, 80], [50, 80], [50, 100], [333, 65], [5000, 100]]) { const c = scenario(e, q); for (const m of ['off', 'on']) for (const k in CAP) if (c.coins[m][k] > CAP[k] + 1) throw new Error(k + ' tray overflows at ' + e + ' employees, ' + q + '%: ' + c.coins[m][k]); }
     const film = scenario(50, 90); // the film's Northside Heating & Air: 45 of 50 enrolled
     near(film.delta.company, 2556, 0.001, 'film: company keeps'); near(film.delta.plan, 9000, 0.001, 'film: Plan Dollars'); near(film.delta.plan + film.delta.fee, 10575, 0.001, 'film: invoice');
     for (const [e, q] of [[1, 100], [7, 80], [50, 80], [333, 65], [5000, 100]]) {
       const c = scenario(e, q);
       for (const mode of ['off', 'on']) near(KEYS.reduce((a, k) => a + c.coins[mode][k], 0), c.n, 0, 'coins add up at ' + e);
-      if (c.n > FULL * 1.03 || c.n < FULL * 0.75) throw new Error('drop size out of range at ' + e + ': ' + c.n);
+      if (c.n > FULL * 1.03 || c.n < FULL * 0.6) throw new Error('drop size out of range at ' + e + ': ' + c.n);
       if (c.coins.on.bank + c.after.rewardCoins > 390) throw new Error('bank tray overflows at ' + e);
     }
     near(scenario(50, 80).delta.company, 2272, 0.001, 'company at 50 employees, 80%');
