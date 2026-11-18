@@ -8,7 +8,13 @@
 <meta property="og:title" content="The Payroll Coin Drop">
 <meta property="og:description" content="Watch a month of payroll fall. Then switch the plan on.">
 <link rel="stylesheet" href="iso.css">
-<link rel="icon" href="../favicon.svg?v=2" type="image/svg+xml"><link rel="icon" href="../favicon.ico?v=2" sizes="32x32"><link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
+<link rel="icon" href="../favicon.svg?v=2" type="image/svg+xml"><link rel="icon" href="../favicon.ico?v=2" sizes="32x32"><link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#101114">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Coin Drop">
 <style>
   /* Two looks. Pulse off: plain and muted. Pulse on: lit. Every color below reads from these. */
   :root { --bg:#101114; --panel:#17181c; --line:#2c2e35; --ink:#e8eaee; --text:#b3b7c0; --mute:#8d9099;
@@ -317,5 +323,6 @@
   })();
 })();
 </script>
+<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');</script>
 </body>
 </html>

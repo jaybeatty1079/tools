@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs>
+<radialGradient id="bg" cx=".5" cy="-.1" r="1"><stop offset="0" stop-color="#18264A"/><stop offset=".65" stop-color="#0A1326"/></radialGradient>
+<linearGradient id="brass" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#A8822F"/><stop offset=".45" stop-color="#F6E3AC"/><stop offset="1" stop-color="#8a6a25"/></linearGradient>
+<linearGradient id="band" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6E3AC"/><stop offset="1" stop-color="#A8822F"/></linearGradient>
+<linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FC2FF"/><stop offset=".25" stop-color="#2F6FD0"/><stop offset="1" stop-color="#1E4F96"/></linearGradient>
+</defs>
+<rect width="512" height="512" fill="url(#bg)"/>
+<g id="art">
+<rect x="70" y="70" width="372" height="372" rx="14" fill="none" stroke="#CFA84F" stroke-width="5"/>
+<rect x="84" y="84" width="344" height="344" rx="8" fill="none" stroke="#6E5218" stroke-width="3"/>
+<rect x="234" y="84" width="44" height="120" fill="url(#brass)"/>
+<rect x="222" y="196" width="68" height="16" rx="4" fill="url(#band)"/>
+<g transform="translate(256 132)" stroke="#CFA84F" stroke-width="9" fill="none" stroke-linecap="round">
+<circle r="46"/><path d="M0-46V46M-46 0H46M-32-32L32 32M32-32L-32 32" stroke-width="6"/>
+</g>
+<circle cx="256" cy="132" r="13" fill="#F6E3AC" stroke="#6E5218" stroke-width="3"/>
+<rect x="244" y="212" width="24" height="110" rx="12" fill="#8FC2FF" opacity=".9"/>
+<path d="M168 286 L344 286 L326 410 L186 410 Z" fill="#0d1a33" stroke="#8FC2FF" stroke-opacity=".55" stroke-width="4"/>
+<path d="M176 322 L336 322 L326 404 L186 404 Z" fill="url(#water)"/>
+<rect x="160" y="282" width="192" height="14" rx="5" fill="url(#band)"/>
+<rect x="178" y="396" width="156" height="14" rx="5" fill="url(#band)"/>
+</g>
+</svg>
