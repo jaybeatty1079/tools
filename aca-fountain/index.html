@@ -89,6 +89,11 @@
   #start { flex: 1; min-width: 0; min-height: 50px; border-radius: 8px; font: 700 13px/1 Baskerville, "Libre Baskerville", Georgia, serif; letter-spacing: .22em; border: 1px solid var(--gold-hi); background: linear-gradient(var(--gold-hi), var(--gold) 55%, #A8822F); color: #1E1605; box-shadow: 0 3px 0 var(--gold-lo), 0 10px 24px -12px #000; }
   #start.ready { animation: ready 1.8s ease-in-out infinite; }
   #start:disabled { opacity: .45; cursor: default; animation: none; }
+  /* The mute button: a small brass plate; the speaker glows gold while sound is on. */
+  #mute { width: 50px; flex: none; min-height: 50px; border-radius: 8px; border: 1px solid var(--gold-lo); background: linear-gradient(#16213D, #0D162B); color: var(--mute); box-shadow: 0 3px 0 #05080f, inset 0 1px 0 #ffffff10; display: grid; place-items: center; }
+  #mute[aria-pressed="false"] { color: var(--gold-hi); border-color: var(--gold); box-shadow: 0 3px 0 #05080f, 0 0 14px -4px var(--gold); }
+  #mute svg { width: 24px; height: 24px; }
+  #mute[aria-pressed="true"] .waves, #mute[aria-pressed="false"] .cross { display: none; }
   @keyframes ready { 50% { box-shadow: 0 3px 0 var(--gold-lo), 0 0 22px var(--glow); } }
 
   #summary { margin: 0 0 10px; padding: 9px 12px; border: 1px solid var(--line); border-left: 2px solid var(--gold); background: var(--panel); color: var(--ink); font-size: 13px; line-height: 1.42; min-height: 4.2em; }
@@ -145,7 +150,47 @@
   .iso-detail p { margin: 0; }
   .iso-detail button { margin: 8px 0 0; font: 700 10.5px/1 ui-sans-serif, system-ui, sans-serif; letter-spacing: .08em; color: var(--gold-hi); background: transparent; border: 1px solid var(--gold-lo); border-radius: 5px; padding: 6px 9px; }
   @media (min-width: 760px) and (max-height: 720px) { .company h2, #keptsub { display: none; } #notes { font-size: 12px; padding: 7px 10px; } }
-  @media (prefers-reduced-motion: reduce) { button, .sw-knob, .sw-glass i, .tier svg { transition: none; } #start.ready { animation: none; } }
+  /* The guide: whichever button is next blinks, one at a time: the valve, then the plan switch, then the valve again. */
+  #start.blink, .switch.blink { animation: blink 1s ease-in-out infinite; }
+  @keyframes blink { 0%, 100% { outline: 3px solid #F6E3ACe6; outline-offset: 2px; filter: brightness(1.2); } 50% { outline: 3px solid #F6E3AC00; outline-offset: 9px; filter: none; } }
+
+  /* The tour card: floats over the board, above or below the part being read, in type a phone can read. */
+  .tour { position: fixed; z-index: 20; display: none; padding: 12px 14px; border: 1px solid var(--gold); border-radius: 12px; background: #0B1428f0; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: 0 18px 40px -12px #000; color: #DCE2EE; font-size: 16px; line-height: 1.45; max-height: 56vh; overflow: auto; }
+  .tour.show { display: block; }
+  .tour .t-count { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; font: 600 11px/1 ui-monospace, Menlo, monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
+  .tour .t-tag { padding: 3px 6px; border-radius: 4px; background: var(--blue); color: #fff; letter-spacing: .12em; }
+  .tour h3 { font: 500 21px/1.2 Baskerville, "Libre Baskerville", Georgia, serif; color: var(--ink); margin: 0 0 2px; }
+  .tour .t-amt { font: 800 19px/1.3 ui-sans-serif, system-ui, sans-serif; color: var(--gold-hi); margin: 0 0 6px; font-variant-numeric: tabular-nums; }
+  .tour p { margin: 0 0 10px; }
+  .tour .t-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .tour .t-row button { min-height: 44px; padding: 0 16px; border-radius: 8px; font: 700 15px/1 ui-sans-serif, system-ui, sans-serif; }
+  .tour .t-look { border: 1px solid var(--gold-hi); background: linear-gradient(var(--gold-hi), var(--gold)); color: #1E1605; }
+  .tour .t-ok { border: 1px solid var(--gold); background: transparent; color: var(--ink); }
+  .tour .t-skip { margin-left: auto; border: 0; background: transparent; color: var(--mute); text-decoration: underline; padding: 0 4px !important; font-weight: 600 !important; }
+  .tour .t-ask { flex-basis: 100%; margin: 0; color: var(--ink); font-weight: 600; }
+
+  /* On a phone the panel type steps up to a readable size. */
+  @media (max-width: 759px) {
+    body { font-size: 16px; }
+    .kicker { font-size: 11px; }
+    .tabs button { font-size: 14.5px; min-height: 44px; }
+    .sw-name { font-size: 15px; } .sw-name small, .sw-state { font-size: 11px; }
+    .tiers-label, label { font-size: 11.5px; }
+    .tier { font-size: 13px; }
+    #start { font-size: 15px; }
+    #summary { font-size: 15.5px; }
+    #notes { font-size: 15px; }
+    #keptsub, .fine { font-size: 14.5px; }
+    .company h2 { font-size: 17px; }
+  }
+  /* Jay, 2026-11-18: every letter capitalized, bold and as clear as possible. */
+  body { text-transform: uppercase; letter-spacing: .02em; font-weight: 650; --text: #E4E8F0; --mute: #AEB8CC; }
+  #summary, #notes, #keptsub, .fine, .iso-detail, .iso-cap { font-weight: 700; color: #F1F4F9; }
+  .tour { color: #fff; } .tour p { font-weight: 700; }
+  h1, .company h2, .iso-card h2, .iso-detail h3, .tour h3 { font-weight: 700; }
+  .kicker, label, .tiers-label, .sw-name small, .tour .t-count, .tabs button { font-weight: 800; }
+  button { text-transform: inherit; } input { text-transform: none; }
+  @media (prefers-reduced-motion: reduce) { button, .sw-knob, .sw-glass i, .tier svg { transition: none; } #start.ready { animation: none; } #start.blink, .switch.blink { animation: none; outline: 3px solid var(--gold-hi); outline-offset: 3px; } }
 </style>
 </head>
 <body data-aca="off">
@@ -166,7 +211,14 @@
       <div class="tiers-label"><span>Plan tier</span><output id="tierv"></output></div>
       <div class="tiers" role="group" aria-label="Plan tier" id="tiers"></div>
     </div></div>
-    <div class="bar"><button id="start" type="button">OPEN THE MAIN VALVE</button></div>
+    <div class="bar"><button id="start" type="button">OPEN THE MAIN VALVE</button>
+      <button id="mute" type="button" aria-pressed="false" aria-label="Mute the sound">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/>
+          <g class="waves"><path d="M15.5 9a4.2 4.2 0 0 1 0 6"/><path d="M18 6.5a7.6 7.6 0 0 1 0 11"/></g>
+          <g class="cross"><path d="M16 9.5l5 5M21 9.5l-5 5"/></g>
+        </svg>
+      </button></div>
   </div>
   <canvas id="machine" role="img" aria-label="Brass plumbing on a navy plate. Company payroll comes in as water from the top, through the main valve and into a header. Branch pipes of different bore, each with a valve and a sight glass, pour into glass buckets for payroll taxes, health insurance, an existing Section 125 FSA and the 401(k); what is left runs down the main pipe into the post-tax bucket, the employee\'s take-home. With the plan on, a Section 125 Wellness branch is fitted, the tax valve throttles back, and the tax no longer paid runs through a return line into the Company\'s vessel, with a tee to the admin fee vessel. A float in the Section 125 bucket drives a rack and three gears, the Trigger; when the bucket is full the gears open the reward valve on a separate fixed indemnity supply and the Wellness Reward pours into the post-tax bucket, while the Section 125 bucket drains back to the plan and into the Plan Dollars vessel."></canvas>
   <div class="bottom">
@@ -192,6 +244,7 @@
     </details>
     <p class="fine" style="margin:10px 0 0"><a href="../">More tools by Jay Beatty</a></p>
   </div>
+  <div class="tour" id="tour" role="dialog" aria-label="A quick look at each part" aria-live="polite"></div>
   <aside class="iso-panel" aria-label="The bench model">
     <div class="iso-card">
       <p class="kicker">The same month, on the bench</p>
@@ -205,6 +258,7 @@
 <script src="model.js"></script>
 <script src="fountain.js"></script>
 <script src="iso.js"></script>
+<script src="sound.js"></script>
 <script>
 (function () {
   const M = FountainModel, F = FOUNTAIN, $ = (id) => document.getElementById(id);
@@ -217,11 +271,123 @@
   const isOn = () => $('aca').getAttribute('aria-pressed') === 'true';
   const current = () => (scope === 'company' ? M.scenario(inputs().employees, inputs().qualify, level) : M.single(level));
 
+  /* ---------- the tour: before the water runs, a bubble rings each part; tap to zoom in and read, check to move on ---------- */
+  const cv = $('machine'), card = $('tour'), [BW, BH] = F.size;
+  let tour = null, skipped = false, guided = false;
+  const toured = { off: false, on: false };
+  // Each part's ring on the board, [x, y, w, h] in board units (fountain.js draws at 560 x 664).
+  const BOX = { tank: [255, 60, 185, 102], taxes: [50, 262, 94, 132], health: [146, 262, 68, 108], fsa: [216, 262, 40, 126], k401: [346, 262, 48, 108],
+    pool: [168, 446, 224, 136], aca: [408, 262, 88, 120], company: [44, 40, 120, 82], fee: [44, 466, 110, 78], trigger: [484, 204, 52, 156], supply: [395, 455, 141, 64], plan: [340, 400, 126, 52] };
+  const OFF = ['tank', 'taxes', 'health', 'fsa', 'k401', 'pool'];
+  const NEW_ON = [['taxes', 'changed'], ['aca', 'new'], ['company', 'new'], ['fee', 'new'], ['trigger', 'new'], ['supply', 'new'], ['plan', 'new'], ['pool', 'changed']];
+  const FULL_ON = ['tank', 'taxes', 'health', 'fsa', 'k401', 'aca', 'company', 'fee', 'trigger', 'supply', 'plan', 'pool'];
+  // What each part does, in this month's numbers: [title, amount, sentence].
+  function words(key) {
+    const s = F.state(), S = s.scenario, on = s.aca, d = S.dollars[on ? 'on' : 'off'], many = s.scope === 'company', who = many ? 'the employees' : 'the employee';
+    const co = (v) => (many ? money(v) : cents(v));
+    return {
+      tank: ['Company payroll', money(S.total) + ' a month', 'Payroll comes in at the top: wages plus the payroll tax the company pays on them' + (many ? ', for ' + S.employees + ' employees' : '') + '. Open the main valve and it splits into the buckets below.'],
+      taxes: ['Payroll taxes', money(d.taxes) + ' a month', on ? 'With the plan on this bucket takes ' + money(S.delta.taxes) + ' less than before. The dashed line shows where it filled without the plan.' : 'Both sides\' payroll taxes: what is withheld from the paycheck and what the company pays on top.'],
+      health: ['Health insurance', money(d.health) + ' a month', 'The health insurance premium. The plan does not change it: it sits beside major medical, not in place of it.'],
+      fsa: ['Existing FSA', money(d.fsa) + ' a month', 'A company this size already runs a Section 125 plan. The FSA is shown at an illustrative ' + money(d.fsa) + ' a month, the same with the plan off or on.'],
+      k401: ['401(k)', money(d.k401) + ' a month', 'The retirement savings deferral. The plan does not change it.'],
+      pool: [many ? "Employees' take-home" : "Employee's take-home", money(on ? S.after.bank : d.bank) + ' a month', on ? money(d.bank) + ' reaches ' + who + ' after tax, and the ' + money(S.after.reward) + ' Wellness Reward pours in on top. That is ' + money(S.delta.bank) + ' more a month than without the plan.' : 'What reaches ' + who + ' after tax: the post-tax bucket at the bottom.'],
+      aca: ['Section 125 Wellness', money(S.delta.section125) + ' a month', 'Withheld before tax at the ' + money(S.level) + ' tier. The darker band at the bottom is the Plan Dollars, ' + money(S.delta.plan) + '.'],
+      company: ['Back to the company', '+' + co(S.delta.company) + ' a month', 'The company stops paying 7.65% payroll tax on the ' + money(S.level) + '. That saved tax runs back up the return line: part pays the admin fee and ' + co(S.delta.company) + ' comes back to the company.'],
+      fee: ['Admin fee', money(S.delta.fee) + ' a month', 'The plan\'s admin fee, paid out of the company\'s payroll tax savings.'],
+      trigger: ['The Trigger', 'A monthly wellness activity', 'A float rides the water in the Section 125 bucket. When the bucket is full, the float turns the three gears and they open the reward valve. In the plan, this is the trigger event that releases the Wellness Reward.'],
+      supply: ['Fixed indemnity', money(S.after.reward) + ' Wellness Reward', 'The reward\'s own supply line, from the plan\'s fixed indemnity benefit, not the company\'s money. It pays into take-home, post-tax, on the same paycheck.'],
+      plan: ['Plan Dollars', money(S.delta.plan) + ' a month', 'The employee\'s withholding toward the benefits. It drains from the bottom of the Section 125 bucket into this vessel.'],
+    }[key];
+  }
+  const item = () => { const it = tour.list[tour.i]; return Array.isArray(it) ? it : [it, '']; };
+  const lower = (key) => BOX[key][1] + BOX[key][3] / 2 > BH / 2; // a part in the lower half gets the card on top
+  // Zoom so the part fills the board area the card leaves uncovered (free, a share of the board's height).
+  function viewFor(key) {
+    const [x, y, w, h] = BOX[key], A = BW / BH, r = cv.getBoundingClientRect(), seen = Math.min(r.bottom, innerHeight) - Math.max(r.top, 0);
+    const free = outside ? 1 : Math.max(0.3, (seen - card.offsetHeight - 16) / r.height);
+    // At most 1.6 screen pixels per board unit: big enough to read on a phone, not a blur on a laptop.
+    const vw = Math.min(BW, Math.max(r.width / 1.6, w / 0.85, (h / (0.82 * free)) * A)), vh = vw / A;
+    const vx = Math.max(0, Math.min(BW - vw, x + w / 2 - vw / 2)), vy = Math.max(0, Math.min(BH - vh, y + h / 2 - vh * (lower(key) ? 1 - free / 2 : free / 2)));
+    return [vx, vy, vw, vh];
+  }
+  function renderCard() {
+    if (!tour) { card.classList.remove('show'); return; }
+    const [key, tag] = item(), [title, amount, body] = words(key), last = tour.i === tour.list.length - 1;
+    const count = '<div class="t-count"><span>' + (tour.i + 1) + ' of ' + tour.list.length + '</span>' + (tag ? '<span class="t-tag">' + tag + '</span>' : '') + '</div>';
+    const row = tour.confirm
+      ? '<p class="t-ask">Skip the tour and go straight to the valve?</p><button type="button" class="t-look" data-do="skipyes">Yes, skip</button><button type="button" class="t-ok" data-do="skipno">No</button>'
+      : (tour.zoomed ? '' : '<button type="button" class="t-look" data-do="look">Zoom in</button>') + '<button type="button" class="t-ok" data-do="ok" aria-label="Got it, next">✓ ' + (last ? 'Done' : 'Got it') + '</button><button type="button" class="t-skip" data-do="skip">Skip the tour</button>';
+    card.innerHTML = count + '<h3>' + title + '</h3>' + (tour.zoomed ? '<div class="t-amt">' + amount + '</div><p>' + body + '</p>' : '') + '<div class="t-row">' + row + '</div>';
+    card.classList.add('show');
+    place();
+  }
+  // The card sits just below the board when the screen has room (a phone, with the board scrolled up), else over it,
+  // on the side away from the part.
+  let outside = false;
+  function place() {
+    if (!tour) return;
+    const r = cv.getBoundingClientRect(), w = Math.min(r.width - 16, 460), ch = card.offsetHeight;
+    card.style.width = w + 'px'; card.style.left = r.left + (r.width - w) / 2 + 'px';
+    outside = innerHeight - r.bottom >= ch + 12;
+    card.style.top = (outside ? r.bottom + 6 : lower(item()[0]) ? Math.max(8, r.top + 8) : Math.min(r.bottom, innerHeight) - ch - 8) + 'px';
+  }
+  function showStep() {
+    const [key] = item();
+    renderCard(); // first, so the zoom knows how much of the board the card covers
+    F.bubble(tour.zoomed ? null : BOX[key]);
+    F.zoom(tour.zoomed ? viewFor(key) : null);
+    guide(F.state());
+  }
+  function beginTour(mode) {
+    tour = { mode, list: mode === 'on' ? (toured.off ? NEW_ON : FULL_ON) : OFF, i: 0, zoomed: false, confirm: false };
+    // On a phone the board is scrolled to the top of the screen so all of it shows while the tour runs.
+    if (innerWidth < 760) scrollBy(0, cv.getBoundingClientRect().top - 8);
+    summary(F.state()); showStep();
+  }
+  function endTour(done) {
+    if (!tour) return;
+    if (done) toured[tour.mode] = true;
+    tour = null; F.bubble(null); F.zoom(null); renderCard(); summary(F.state());
+    $('start').scrollIntoView({ block: 'nearest' }); $('start').focus({ preventScroll: true });
+  }
+  card.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-do]'); if (!b || !tour) return;
+    const act = b.dataset.do;
+    if (act === 'look') { tour.zoomed = true; showStep(); }
+    else if (act === 'ok') { tour.zoomed = false; if (++tour.i >= tour.list.length) endTour(true); else showStep(); }
+    else if (act === 'skip') { tour.confirm = true; renderCard(); }
+    else if (act === 'skipno') { tour.confirm = false; renderCard(); }
+    else if (act === 'skipyes') { skipped = true; endTour(false); }
+  });
+  cv.addEventListener('click', (e) => {
+    if (!tour || tour.zoomed) return;
+    const r = cv.getBoundingClientRect(), x = (e.clientX - r.left) * BW / r.width, y = (e.clientY - r.top) * BH / r.height, [bx, by, bw, bh] = BOX[item()[0]], pad = 18;
+    if (x > bx - pad && x < bx + bw + pad && y > by - pad - 18 && y < by + bh + pad) { tour.zoomed = true; showStep(); }
+  });
+  addEventListener('resize', place); addEventListener('scroll', place, { passive: true });
+  // The guide: one blinking button at a time, and the valve doubles as pause once water is running.
+  function guide(s) {
+    if (s.finished && s.aca) guided = true;
+    const st = $('start');
+    st.disabled = !!tour;
+    st.textContent = s.running ? (s.paused ? 'OPEN THE VALVE · RESUME' : 'CLOSE THE VALVE · PAUSE') : 'OPEN THE MAIN VALVE';
+    st.classList.toggle('blink', !tour && (s.paused || (!guided && !s.running && !s.finished)));
+    $('aca').classList.toggle('blink', !tour && !guided && s.finished && !s.aca && !s.running);
+  }
+  function valve() {
+    const s = F.state(), mode = isOn() ? 'on' : 'off';
+    if (s.running) F.pause(!s.paused);
+    else if (!skipped && !toured[mode]) beginTour(mode);
+    else F.start();
+  }
+
   function summary(s) {
     const S = s.scenario, d = S.dollars[s.aca ? 'on' : 'off'], many = s.scope === 'company', who = many ? 'the employees' : 'the employee';
-    $('start').disabled = s.running;
-    $('start').classList.toggle('ready', !s.running);
-    if (s.running) $('summary').textContent = s.aca ? 'The plan is on. When the Section 125 bucket is full, the float turns the Trigger gears and the reward valve opens.' : 'Payroll is running.';
+    guide(s);
+    if (tour) { $('summary').textContent = 'A quick look at each part before the water runs. Tap the glowing bubble to zoom in, or the check mark to move on.'; renderCard(); return; }
+    if (s.paused) $('summary').textContent = 'The main valve is closed and everything is holding still. Open it to carry on.';
+    else if (s.running) $('summary').textContent = s.aca ? 'The plan is on. When the Section 125 bucket is full, the float turns the Trigger gears and the reward valve opens.' : 'Payroll is running.';
     else if (!s.finished) $('summary').textContent = s.aca ? 'The plan is on at the ' + money(S.level) + ' tier: the Section 125 branch is fitted, the return line is connected and the Trigger gears are set. Open the main valve.' : 'Plain payroll. Open the main valve to run it.';
     else if (!s.aca) $('summary').innerHTML = 'Of ' + money(S.total) + ' of payroll, ' + money(d.taxes) + ' went to payroll taxes, ' + money(d.health) + ' to health insurance and ' + money(d.k401) + ' to the 401(k). ' + money(d.bank) + ' reached ' + who + '. <b>Now switch the plan on.</b>';
     else $('summary').innerHTML = '<b>Take-home is up ' + money(S.delta.bank) + ' and ' + (many ? money(S.delta.company) : cents(S.delta.company)) + ' came back to the company</b> after its ' + money(S.delta.fee) + ' admin fee. Payroll taxes took ' + money(S.delta.taxes) + ' less. Of the Section 125 withholding, ' + money(S.delta.plan) + ' is Plan Dollars.';
@@ -274,8 +440,14 @@
   }
   $('tab-employee').addEventListener('click', () => setScope('employee'));
   $('tab-company').addEventListener('click', () => setScope('company'));
-  $('aca').addEventListener('click', () => setAca(!isOn()));
-  $('start').addEventListener('click', () => F.start());
+  $('aca').addEventListener('click', () => { endTour(false); setAca(!isOn()); });
+  $('start').addEventListener('click', valve);
+  const SND = window.FOUNTAIN_SOUND;
+  if (SND) {
+    $('mute').setAttribute('aria-pressed', String(SND.muted));
+    $('mute').addEventListener('click', () => { SND.setMuted(!SND.muted); $('mute').setAttribute('aria-pressed', String(SND.muted)); SND.play('check'); });
+    card.addEventListener('click', (e) => { if (e.target.closest('[data-do=ok]')) SND.play('check'); });
+  } else $('mute').hidden = true;
   $('emp').addEventListener('input', () => company(true));
   $('q').addEventListener('input', () => company(true));
   $('qd').addEventListener('click', () => { $('q').value = Math.max(40, +$('q').value - 5); company(true); });

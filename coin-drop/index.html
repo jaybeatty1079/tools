@@ -76,6 +76,9 @@
   body[data-pulse="on"] #start.ready { animation: ready 1.5s ease-in-out infinite; }
   #start:disabled { opacity: .45; cursor: default; }
   @keyframes ready { 50% { box-shadow: 0 4px 0 var(--go-deep), 0 0 26px var(--glow); } }
+  /* The guide: whichever button is the next thing to press blinks, one at a time (Start, then the plan switch, then Start). */
+  #start.blink, .switch.blink { animation: blink 1s ease-in-out infinite; }
+  @keyframes blink { 0%, 100% { outline: 3px solid #ffffffd9; outline-offset: 2px; filter: brightness(1.25); } 50% { outline: 3px solid #ffffff00; outline-offset: 9px; filter: none; } }
   #mute { width: 52px; flex: none; min-height: 52px; border-radius: 12px; border: 2px solid var(--line); background: var(--panel); color: var(--mute); box-shadow: 0 4px 0 #050608; display: grid; place-items: center; }
   #mute[aria-pressed="false"] { color: var(--lamp); border-color: var(--lamp); box-shadow: 0 4px 0 #050608, 0 0 14px color-mix(in srgb, var(--lamp) 45%, transparent); }
   #mute svg { width: 24px; height: 24px; }
@@ -134,7 +137,25 @@
   .iso-detail h3 { font-size: 13px; color: var(--ink); margin: 0 0 4px; }
   .iso-detail p { margin: 0; }
   .iso-detail button { margin: 8px 0 0; font: 700 10.5px/1 ui-sans-serif, system-ui, sans-serif; letter-spacing: .08em; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px; }
-  @media (prefers-reduced-motion: reduce) { button, body, .sw-knob { transition: none; } #start.ready, .switch[aria-pressed="true"] .sw-lamps i { animation: none; } }
+  /* Jay, 2026-11-18: every letter capitalized, bold and as clear as possible, matching the Fountain. */
+  body { text-transform: uppercase; letter-spacing: .02em; font-weight: 650; --text: #DDE1E8; --mute: #B4B9C4; }
+  body[data-pulse="on"] { --text: #E2E8F2; --mute: #AEB9CB; }
+  button { text-transform: inherit; } input { text-transform: none; }
+  #summary, #notes, #keptsub, .fine, .iso-detail, .iso-cap { font-weight: 700; color: #F1F4F9; }
+  h1, .company h2, .iso-card h2, .iso-detail h3 { font-weight: 800; }
+  .kicker, label, .sw-name small, .tabs button { font-weight: 800; }
+  @media (max-width: 759px) {
+    body { font-size: 16px; }
+    .kicker { font-size: 11px; }
+    .tabs button { font-size: 14.5px; min-height: 44px; }
+    .sw-name small { font-size: 11px; }
+    label { font-size: 11.5px; }
+    #summary { font-size: 15.5px; }
+    #notes { font-size: 15px; }
+    #keptsub, .fine { font-size: 14.5px; }
+    .company h2 { font-size: 17px; }
+  }
+  @media (prefers-reduced-motion: reduce) { button, body, .sw-knob { transition: none; } #start.ready, .switch[aria-pressed="true"] .sw-lamps i { animation: none; } #start.blink, .switch.blink { animation: none; outline: 3px solid #fff; outline-offset: 3px; } }
 </style>
 </head>
 <body data-pulse="off">
@@ -208,11 +229,15 @@
   const inputs = () => ({ employees: Math.max(1, Math.min(5000, Math.round(+$('emp').value || 1))), qualify: +$('q').value });
   const isOn = () => $('pulse').getAttribute('aria-pressed') === 'true';
   const click = () => SND.play('button', { pulse: isOn() });
+  let guided = false; // true once the plan-on run has finished: the tour of buttons is over
 
   function summary(s) {
     const S = s.scenario, d = S.dollars[s.pulse ? 'on' : 'off'], many = s.scope === 'company', who = many ? 'the employees' : 'the employee';
     $('start').disabled = s.running;
-    $('start').classList.toggle('ready', !s.running);
+    // The guide: Start blinks, then the plan switch once the plain run is done, then Start again; after the plan run, nothing.
+    if (s.finished && s.pulse) guided = true;
+    $('start').classList.toggle('blink', !guided && !s.running && !s.finished);
+    $('pulse').classList.toggle('blink', !guided && s.finished && !s.pulse);
     if (s.running) $('summary').textContent = s.pulse ? 'The plan is on. When everything has landed, the last coin drops into the Trigger.' : 'Payroll is dropping.';
     else if (!s.finished) $('summary').textContent = s.pulse ? 'The plan is on: the Section 125 tray is open, the lifts are running and the Trigger is set. Press Start.' : 'Plain payroll. Press Start to run it.';
     else if (!s.pulse) $('summary').innerHTML = 'Of ' + money(S.total) + ' of payroll, ' + money(d.taxes) + ' went to payroll taxes, ' + money(d.health) + ' to health insurance and ' + money(d.k401) + ' to the 401(k). ' + money(d.bank) + ' reached ' + who + '. <b>Now switch the plan on.</b>';

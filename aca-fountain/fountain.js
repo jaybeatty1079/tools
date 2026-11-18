@@ -65,7 +65,9 @@
 
   let S = M.single(M.DEFAULT), scope = 'employee';
   let aca = false, engage = 0, running = false, finished = false, clock = 0, t = 0, act = 'idle', quiet = false, raf = 0, last = 0;
-  let armedAt = -9, paidAt = -9, lastSent = false, drops = [], valveOpen = 0, snap = 0, rewardOpen = 0;
+  let armedAt = -9, paidAt = -9, lastSent = false, drops = [], valveOpen = 0, snap = 0, rewardOpen = 0, paused = false;
+  // The tour: a bubble ring around one part, and a camera that zooms the board onto it ([x, y, w, h] in board units).
+  let bubble = null, view = [0, 0, W, H], viewFrom = view, viewTo = view, viewAt = -9;
   const listeners = [];
   const emit = () => listeners.forEach((fn) => fn(api.state()));
   const sfx = (name) => { if (!quiet && api.sfx) api.sfx(name, { aca }); };
@@ -105,8 +107,10 @@
     return y1 >= bottom - 0.5 ? null : [y1, y2];
   }
 
-  function reset() { t = 0; act = 'idle'; running = false; finished = false; drops = []; lastSent = false; armedAt = -9; paidAt = -9; }
+  function reset() { t = 0; act = 'idle'; running = false; finished = false; paused = false; drops = []; lastSent = false; armedAt = -9; paidAt = -9; }
   function step(dt) {
+    if (viewAt >= 0) { const u = clamp((performance.now() - viewAt) / 650, 0, 1), e = ease(u); view = viewFrom.map((v, i) => v + (viewTo[i] - v) * e); if (u >= 1) viewAt = -9; }
+    if (paused) return; // the main valve is closed: everything holds still until it opens again
     clock += dt;
     engage += ((aca ? 1 : 0) - engage) * Math.min(1, dt / 0.4);
     if (Math.abs((aca ? 1 : 0) - engage) < 0.004) engage = aca ? 1 : 0;
@@ -152,6 +156,7 @@
   /* ---------- drawing helpers ---------- */
   const rr = (x, y, w, h, r) => { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); };
   function text(s, x, y, size, color, opts = {}) {
+    s = String(s).toUpperCase(); // Jay, 2026-11-18: every letter capitalized
     ctx.font = (opts.weight || 500) + ' ' + size + 'px ' + (opts.serif ? SERIF : SANS); ctx.fillStyle = color; ctx.textAlign = opts.align || 'center'; ctx.textBaseline = 'alphabetic';
     if ('letterSpacing' in ctx) ctx.letterSpacing = (opts.space || 0) + 'px';
     ctx.fillText(s, x, y);
@@ -319,12 +324,14 @@
   }
   const label = (s, x, y, size, color = C.brass, align = 'center') => text(s, x, y, size, color, { serif: true, weight: 700, space: 1.4, align });
   const figure = (s, x, y, size, align = 'center', color = C.ivory) => text(s, x, y, size, color, { weight: 800, align });
-  const note = (s, x, y, align = 'center', size = 8.5) => text(s, x, y, size, C.mute, { weight: 600, align });
+  const note = (s, x, y, align = 'center', size = 8.5) => text(s, x, y, size, '#CDD4E2', { weight: 800, align });
 
   /* ---------- the picture ---------- */
   function draw() {
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#0A1326'; ctx.fillRect(0, 0, W, H);
+    const z = W / view[2];
+    ctx.setTransform(DPR * z, 0, 0, DPR * z, -view[0] * DPR * z, -view[1] * DPR * z);
     ctx.drawImage(BACK, 0, 0, W, H);
     const d = D(), many = scope === 'company', won = finished && aca, paying = act === 'armed' || act === 'payout' || (act === 'done' && aca);
     const flow = flowing() ? 1 : 0, poured = act === 'idle' ? 0 : clamp(t / POUR, 0, 1);
@@ -412,8 +419,8 @@
       if (key === 'taxes' && engage > 0.02) {
         const y = ROW.bottom - 1.5 - Math.min(96, hOf(S.dollars.off.taxes, b.bw));
         ctx.globalAlpha = engage; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(b.bx + 3, y); ctx.lineTo(b.bx + b.bw - 3, y); ctx.lineWidth = 1; ctx.strokeStyle = C.ivory; ctx.stroke(); ctx.setLineDash([]);
-        note('without the plan', b.bx + b.bw / 2, y - 3, 'center', 7.5);
-        if (finished) figure('▼ ' + money(S.delta.taxes) + ' less', b.bx + b.bw / 2, ROW.bottom + 18, 11, 'center', '#E8C66A');
+        // the dashed line is the level without the plan; its words sit under the bucket so they never cross the nameplate
+        if (finished) { figure('▼ ' + money(S.delta.taxes) + ' less', b.bx + b.bw / 2, ROW.bottom + 18, 11, 'center', '#E8C66A'); note('than without the plan', b.bx + b.bw / 2, ROW.bottom + 28, 'center', 7); }
         ctx.globalAlpha = 1;
       }
       if (isAca) {
@@ -474,7 +481,7 @@
         ctx.moveTo(x0, SUPPLY.y - 4); ctx.quadraticCurveTo(x0 - 26, SUPPLY.y - 2, x0 - 34, poolSurface); ctx.lineTo(x0 - 34 - w, poolSurface); ctx.quadraticCurveTo(x0 - 24, SUPPLY.y + 4 + w, x0, SUPPLY.y + 4); ctx.fill();
         hit(x0 - 34 - w / 2, poolSurface, w);
       }
-      label('FIXED INDEMNITY', 470, SUPPLY.y + 24, 7.5, '#8FC2FF'); note('supplies the Wellness Reward, post-tax', 470, SUPPLY.y + 35, 'center', 7.5); note("its own line, not the company's", 470, SUPPLY.y + 45, 'center', 7.5);
+      label('FIXED INDEMNITY', 470, SUPPLY.y + 24, 7.5, '#8FC2FF'); note('pays the Wellness Reward,', 466, SUPPLY.y + 35, 'center', 7.5); note('post-tax. its own line,', 466, SUPPLY.y + 45, 'center', 7.5); note("not the company's", 466, SUPPLY.y + 55, 'center', 7.5);
       note('from the plan →', SUPPLY.edge - 2, SUPPLY.y - 15, 'right', 7.5);
       if (paying && clock - armedAt < 0.35) { ctx.fillStyle = 'rgba(255,244,199,' + 0.18 * (1 - (clock - armedAt) / 0.35) + ')'; ctx.fillRect(20, 20, W - 40, H - 40); }
       ctx.globalAlpha = 1;
@@ -488,6 +495,16 @@
     if (engage > 0.5) { drop(C.gold, 104, 616); note('back to the company', 114, 620, 'left'); drop(C.plan, 222, 616); note('Plan Dollars', 232, 620, 'left'); drop(C.reward, 312, 616); note('Wellness Reward, from the plan', 322, 620, 'left'); }
     note('Water is money: one scale for every bucket and vessel', 280, 636, 'center', 8);
     label('SECTION 125 WELLNESS ILLUSTRATION TOOL', 280, 652, 7, 'rgba(207,168,79,.7)');
+
+    /* --- the tour bubble: a glowing ring around the part to look at next, with a TAP tag --- */
+    if (bubble) {
+      const [x, y, w, h] = bubble, p = still.matches ? 0.5 : 0.5 + 0.5 * Math.sin(performance.now() / 260), cx = x + w / 2, cy = y + h / 2;
+      ctx.fillStyle = 'rgba(4,8,18,.5)'; ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.roundRect(x - 6, y - 6, w + 12, h + 12, 12); ctx.fill('evenodd');
+      for (const [grow, a, lw] of [[4 + 6 * p, 0.35 * (1 - p), 6], [0, 0.95, 2.5]]) { rr(x - 6 - grow, y - 6 - grow, w + 12 + grow * 2, h + 12 + grow * 2, 12 + grow); ctx.lineWidth = lw; ctx.strokeStyle = 'rgba(246,227,172,' + a + ')'; ctx.stroke(); }
+      const ty = y - 6 > 40 ? y - 22 : y + h + 8;
+      rr(cx - 22, ty, 44, 15, 7.5); ctx.fillStyle = C.brassHi; ctx.fill();
+      text('TAP', cx, ty + 11, 9, '#1E1605', { weight: 800, align: 'center', space: 1.5 });
+    }
   }
 
   let seen = true;
@@ -495,7 +512,7 @@
     const dt = last ? Math.min((now - last) / 1000, 1 / 30) : 1 / 60;
     last = now;
     step(dt); draw();
-    const busy = running || engage !== (aca ? 1 : 0) || drops.length || Math.abs(valveOpen - (act !== 'idle' && t < POUR ? 1 : 0)) > 0.01 || (aca && seen && !still.matches);
+    const busy = (running && !paused) || bubble || viewAt >= 0 || engage !== (aca ? 1 : 0) || drops.length || Math.abs(valveOpen - (act !== 'idle' && t < POUR ? 1 : 0)) > 0.01 || (aca && seen && !still.matches);
     if (busy) raf = requestAnimationFrame(frame); else { raf = 0; last = 0; }
   }
   const kick = () => { if (!raf) { last = 0; raf = requestAnimationFrame(frame); } };
@@ -507,11 +524,21 @@
     on(fn) { listeners.push(fn); },
     // The live water levels, 0..1 of each vessel's height, for a companion figure.
     levels: () => ({ taxes: levelOf('taxes') / 98, health: levelOf('health') / 98, fsa: levelOf('fsa') / 98, k401: levelOf('k401') / 98, aca: levelOf('aca') / 98, bank: levelOf('bank') / 128, company: levelOf('company') / 72, fee: levelOf('fee') / 68, plan: levelOf('plan') / 44, reward: aca ? (levelOf('bank') - hOf(D().bank * fillPool(), POOL.w)) / 128 : 0, flow: flowing() ? 1 : 0, pay: pay(), poured: act === 'idle' ? 0 : clamp(t / POUR, 0, 1) }),
-    state: () => ({ aca, scope, running, finished, act, lastOut: aca && act === 'drop' && lastSent, scenario: S }),
+    state: () => ({ aca, scope, running, finished, paused, act, lastOut: aca && act === 'drop' && lastSent, scenario: S }),
+    // Close or open the main valve mid-run.
+    pause(v) { if (!running) return; paused = !!v; last = 0; sfx(paused ? 'close' : 'open'); emit(); kick(); },
+    // The tour: ring one part ([x, y, w, h] board units, or null), and zoom the board to a view of the same shape (or null for all of it).
+    bubble(box) { bubble = box; draw(); kick(); },
+    zoom(box) {
+      viewFrom = view; viewTo = box || [0, 0, W, H];
+      if (still.matches) { view = viewTo; viewAt = -9; } else viewAt = performance.now();
+      draw(); kick();
+    },
+    size: [W, H],
     setAca(v) { aca = !!v; reset(); sfx(aca ? 'engage' : 'disengage'); settle(); },
     setScenario(s, which) { S = s; scope = which; reset(); settle(); },
     start() { reset(); act = 'drop'; running = true; sfx('start'); emit(); if (still.matches) api.finish(); else kick(); },
-    finish(seconds = 100) { if (act === 'idle') act = 'drop'; running = true; engage = aca ? 1 : 0; quiet = true; for (let i = 0; i < seconds * 60 && running; i++) step(1 / 60); quiet = false; drops = []; draw(); kick(); },
+    finish(seconds = 100) { paused = false; if (act === 'idle') act = 'drop'; running = true; engage = aca ? 1 : 0; quiet = true; for (let i = 0; i < seconds * 60 && running; i++) step(1 / 60); quiet = false; drops = []; draw(); kick(); },
   };
   window.FOUNTAIN = api;
   reset(); draw();

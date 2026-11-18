@@ -20,10 +20,10 @@
   const money = (v) => '$' + Math.round(v).toLocaleString('en-US');
 
   // Colors: the lit palette, and a muted one made from it for the plain machine.
-  const LIT = { taxes: [255, 122, 102], health: [63, 208, 192], k401: [245, 194, 75], pulse: [75, 163, 245], plan: [75, 163, 245], fee: [198, 240, 66], company: [198, 240, 66], bank: [183, 156, 255], ink: [243, 246, 250], mute: [138, 151, 170], line: [59, 71, 98] };
+  const LIT = { taxes: [255, 122, 102], health: [63, 208, 192], k401: [245, 194, 75], pulse: [75, 163, 245], plan: [75, 163, 245], fee: [198, 240, 66], company: [198, 240, 66], bank: [183, 156, 255], ink: [243, 246, 250], mute: [196, 206, 222], line: [59, 71, 98] };
   const DULL = {};
   for (const k in LIT) { const [r, g, b] = LIT[k], y = 0.3 * r + 0.59 * g + 0.11 * b; DULL[k] = [r, g, b].map((v) => (v * 0.3 + y * 0.7) * 0.78); }
-  DULL.ink = [230, 233, 238]; DULL.mute = [164, 170, 180]; DULL.line = [58, 62, 70];
+  DULL.ink = [230, 233, 238]; DULL.mute = [200, 205, 214]; DULL.line = [58, 62, 70];
   let P = {}; // this frame's palette, as [r, g, b]
   const rgb = (k, a = 1) => 'rgba(' + P[k][0] + ',' + P[k][1] + ',' + P[k][2] + ',' + a + ')';
   // Lettering stays readable on the plain machine: its muted color is lifted toward white, then runs to full color with Pulse on.
@@ -261,6 +261,7 @@
   /* ---------- drawing ---------- */
   const rr = (x, y, w, h, r) => { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); };
   function text(s, x, y, size, color, weight = 800, align = 'center') {
+    s = String(s).toUpperCase(); weight = Math.max(+weight, 800); // Jay, 2026-11-18: every letter capitalized and bold
     ctx.font = weight + ' ' + size + 'px ' + FONT; ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = 'alphabetic'; ctx.fillText(s, x, y);
   }
   const glow = (k, blur) => { ctx.shadowColor = rgb(k); ctx.shadowBlur = blur * engage; };
@@ -390,7 +391,7 @@
     // The Company: the hopper that pays out, and a wing each side where the lifts bring money back.
     lift('L', up); lift('R', up);
     sideBox('fee', LIFT.L, 330 - up, { from: [30, 528], to: [44, 540], draw: (top) => {
-      text('PLAN', 88, top - 31, 12.5, tint('fee')); text('ADMIN FEE', 88, top - 18, 12.5, tint('fee')); text('from company savings', 97, top - 6, 8.5, rgb('mute'), 600);
+      text('PLAN', 88, top - 31, 12.5, tint('fee')); text('ADMIN FEE', 88, top - 18, 12.5, tint('fee')); text('from company savings', 92, top - 6, 7.5, rgb('mute'), 600); // sized so the capitals stop short of the bank box
     } });
     sideBox('plan', 508, 362 - up, { from: [508, 534], to: [508, 554], amount: [496, 547, 'right'], draw: (top) => text('PLAN $', 476, top + 54, 11, tint('plan')) });
     ctx.beginPath(); ctx.moveTo(150, 40); ctx.lineTo(410, 40); ctx.lineTo(410, 86); ctx.lineTo(298, 100); ctx.lineTo(262, 100); ctx.lineTo(150, 86); ctx.closePath();
@@ -419,8 +420,8 @@
       const rows = Math.ceil(S.coins.off.taxes / BINS.taxes.cols), y = TRAY_BOT - up - rows * 6 - 5;
       ctx.globalAlpha = engage;
       ctx.setLineDash([4, 3]); ctx.beginPath(); ctx.moveTo(73, y); ctx.lineTo(183, y); ctx.strokeStyle = rgb('ink'); ctx.lineWidth = 1; ctx.stroke(); ctx.setLineDash([]);
-      rr(90, y + 3, 76, 14, 3); ctx.fillStyle = 'rgba(8,12,19,.85)'; ctx.fill();
-      text('without the plan', 128, y + 13.5, 10, rgb('ink'), 600);
+      rr(77, y + 3, 102, 14, 3); ctx.fillStyle = 'rgba(8,12,19,.85)'; ctx.fill();
+      text('without the plan', 128, y + 13, 8.5, rgb('ink'), 600);
       if (finished) text('▼ ' + money(S.delta.taxes) + ' less', 128, TRAY_BOT - up + 50, 12, rgb('company'));
       ctx.globalAlpha = 1;
     }
@@ -496,7 +497,7 @@
 
     // The apron: the employee's total, and the key to the coins.
     text(many ? "EMPLOYEES' BANK ACCOUNTS" : "EMPLOYEE'S BANK ACCOUNT", 280, 631, 17, tint('bank'));
-    const gain = won ? '   +' + money(S.delta.bank) + ' a month with the plan' : '', amount = money(shownDollars('bank'));
+    const gain = won ? '   +' + money(S.delta.bank) + ' A MONTH' : '', amount = money(shownDollars('bank')); // short, so the capitals clear the coin key on both sides
     ctx.font = '800 16px ' + FONT; const w1 = ctx.measureText(amount).width;
     ctx.font = '800 12.5px ' + FONT; const w2 = gain ? ctx.measureText(gain).width : 0, x0 = 280 - (w1 + w2) / 2;
     text(amount, x0, 651, 16, rgb('ink'), 800, 'left');
@@ -504,7 +505,7 @@
     ctx.drawImage(engage > 0.5 ? GOLD : WORN, 22, 620, SPR, SPR); text('= ' + money(S.coin), 41, 632.5, 11, rgb('mute'), 600, 'left');
     if (engage > 0.5) {
       ctx.drawImage(LIME, 22, 637, SPR, SPR); text('company savings', 41, 649.5, 10, rgb('mute'), 600, 'left');
-      ctx.drawImage(BLUE, 421, 628, SPR, SPR); text('Wellness Reward', 440, 635, 10, rgb('mute'), 600, 'left'); text('post-tax, from the plan', 440, 647, 10, rgb('mute'), 600, 'left');
+      ctx.drawImage(BLUE, 421, 628, SPR, SPR); text('Wellness Reward', 440, 633, 9.5, rgb('mute'), 600, 'left'); text('post-tax,', 440, 644, 9.5, rgb('mute'), 600, 'left'); text('from the plan', 440, 655, 9.5, rgb('mute'), 600, 'left');
     }
 
     // Coins in the air tumble; the ones on the shelf, in the lifts and in the chutes lie flat. Lime and blue coins carry a glow.
