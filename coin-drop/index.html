@@ -16,15 +16,15 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Coin Drop">
 <style>
-  /* Two looks. Pulse off: plain and muted. Pulse on: lit. Every color below reads from these. */
+  /* Two looks. The plan off: plain and muted. The plan on: lit. Every color below reads from these. */
   :root { --bg:#101114; --panel:#17181c; --line:#2c2e35; --ink:#e8eaee; --text:#b3b7c0; --mute:#8d9099;
     --go:#8f9872; --go-deep:#5c6248; --go-ink:#15170f; --lamp:#b9a25e; --glow:transparent; color-scheme: dark; }
-  body[data-pulse="on"] { --bg:#0D1117; --panel:#111827; --line:#2A3446; --ink:#F3F6FA; --text:#9AA7BA; --mute:#6b7687;
+  body[data-wellness="on"] { --bg:#0D1117; --panel:#111827; --line:#2A3446; --ink:#F3F6FA; --text:#9AA7BA; --mute:#6b7687;
     --go:#C6F042; --go-deep:#6c8b12; --go-ink:#10160a; --lamp:#4BA3F5; --glow:#C6F04299; }
   * { box-sizing: border-box; }
   html, body { margin: 0; }
   body { background: var(--bg); color: var(--text); font: 14.5px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; transition: background .5s ease-out, color .5s ease-out; }
-  body[data-pulse="on"] { background: radial-gradient(1100px 560px at 30% 0%, #16213a 0%, var(--bg) 62%) fixed var(--bg); }
+  body[data-wellness="on"] { background: radial-gradient(1100px 560px at 30% 0%, #16213a 0%, var(--bg) 62%) fixed var(--bg); }
   /* One screen: the machine is as tall as the window allows and the controls sit beside it. On a narrow screen they stack. */
   main { --side: clamp(250px, 30vw, 320px); display: grid; gap: 10px 20px; padding: 10px; grid-template-columns: minmax(0, 1fr); justify-items: center; }
   .top, .bottom { width: min(560px, 100%); }
@@ -49,7 +49,7 @@
   .tabs button:first-child { margin-left: 0; }
   .tabs button[aria-selected="true"] { color: var(--bg); background: var(--ink); border-color: var(--ink); position: relative; box-shadow: 0 0 14px var(--glow); }
 
-  /* The Pulse switch: a housing, a slot with a knob that throws across, and a strip of lamps. */
+  /* The plan switch: a housing, a slot with a knob that throws across, and a strip of lamps. */
   .switch { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 7px 12px; width: 100%; padding: 8px 12px 8px; margin: 0 0 10px; border-radius: 14px; border: 2px solid var(--line); background: linear-gradient(#1d1f24, #131417); color: var(--text); text-align: left; box-shadow: 0 4px 0 #050608, inset 0 1px 0 #ffffff0d; }
   .sw-name { font-weight: 800; font-size: 15px; letter-spacing: .1em; color: var(--ink); }
   .sw-name small { display: block; font-weight: 600; font-size: 9.5px; letter-spacing: .16em; color: var(--text); margin-top: 2px; white-space: nowrap; }
@@ -72,8 +72,8 @@
 
   .bar { display: flex; gap: 10px; margin: 0 0 10px; }
   #start { flex: 1; min-width: 0; min-height: 52px; border-radius: 12px; font-weight: 800; font-size: 15px; letter-spacing: .1em; border: 2px solid var(--go); background: var(--go); color: var(--go-ink); box-shadow: 0 4px 0 var(--go-deep); }
-  body[data-pulse="on"] #start { background: linear-gradient(#dcff66, #b3df2c); border-color: #dcff66; }
-  body[data-pulse="on"] #start.ready { animation: ready 1.5s ease-in-out infinite; }
+  body[data-wellness="on"] #start { background: linear-gradient(#dcff66, #b3df2c); border-color: #dcff66; }
+  body[data-wellness="on"] #start.ready { animation: ready 1.5s ease-in-out infinite; }
   #start:disabled { opacity: .45; cursor: default; }
   @keyframes ready { 50% { box-shadow: 0 4px 0 var(--go-deep), 0 0 26px var(--glow); } }
   /* The guide: whichever button is the next thing to press blinks, one at a time (Start, then the plan switch, then Start). */
@@ -100,7 +100,7 @@
   .step input { flex: 1; width: 0; min-width: 0; accent-color: var(--go); }
   .step button { width: 36px; height: 36px; flex: none; font-weight: 700; font-size: 17px; color: var(--ink); background: transparent; border: 1px solid var(--line); }
   #kept { font: 800 24px/1.1 ui-sans-serif, system-ui, sans-serif; color: var(--go); font-variant-numeric: tabular-nums; transition: color .5s, text-shadow .5s; }
-  body[data-pulse="on"] #kept { text-shadow: 0 0 18px #C6F04255; }
+  body[data-wellness="on"] #kept { text-shadow: 0 0 18px #C6F04255; }
   #keptsub { font-size: 12.5px; margin-top: 4px; }
   .fine { font-size: 12px; color: var(--mute); }
   .fine summary { cursor: pointer; color: var(--text); }
@@ -115,20 +115,20 @@
     .iso-panel { grid-area: iso; width: auto; position: sticky; top: 10px; }
   }
   .iso-card { border: 1px solid var(--line); border-radius: 12px; padding: 10px 10px 8px; background: var(--panel); transition: border-color .5s, box-shadow .5s; }
-  body[data-pulse="on"] .iso-card { border-color: #2A3446; box-shadow: 0 0 30px -14px var(--glow); }
+  body[data-wellness="on"] .iso-card { border-color: #2A3446; box-shadow: 0 0 30px -14px var(--glow); }
   .iso-card h2 { font-size: 14px; color: var(--ink); margin: 0 0 2px; }
   .iso-card .kicker { margin: 0 0 6px; }
   .iso-cap { font-size: 11.5px; line-height: 1.4; color: var(--mute); margin: 6px 0 0; }
   .iso { --anatomy-paper:#14161c; --anatomy-face:#1b1e26; --anatomy-top:#1e222b; --anatomy-shade-0:#0e1015; --anatomy-shade-1:#111318; --anatomy-shade-2:#14171d; --anatomy-shade-3:#171a21;
     --anatomy-lit-top:#262b36; --anatomy-lit-shade:#1d2129; --anatomy-hi:#b3b7c0; --anatomy-mid:#6c717c; --anatomy-lo:#43474f; --anatomy-faint:#2c2f36; --anatomy-lit:#e8eaee; --anatomy-halo:#05060a; --anatomy-dot:#b3b7c0; --anatomy-weight:.6px; transition: filter .5s; }
-  body[data-pulse="on"] .iso { --anatomy-paper:#101827; --anatomy-face:#152034; --anatomy-top:#182439; --anatomy-shade-0:#0a1120; --anatomy-shade-1:#0d1526; --anatomy-shade-2:#10192c; --anatomy-shade-3:#131d32;
+  body[data-wellness="on"] .iso { --anatomy-paper:#101827; --anatomy-face:#152034; --anatomy-top:#182439; --anatomy-shade-0:#0a1120; --anatomy-shade-1:#0d1526; --anatomy-shade-2:#10192c; --anatomy-shade-3:#131d32;
     --anatomy-lit-top:#1d2b47; --anatomy-lit-shade:#16233c; --anatomy-hi:#C6F042; --anatomy-mid:#6c8b12; --anatomy-lo:#3f5410; --anatomy-faint:#2a3446; --anatomy-lit:#F6FFB8; --anatomy-dot:#C6F042; }
   .iso .coin .iso-fill { fill: #B98A2A; } .iso .coin .iso-shade { fill: #8A6418; } .iso .coin .iso-top { fill: #EBC562; }
-  body[data-pulse="off"] .iso .coin .iso-fill { fill: #6E6752; } body[data-pulse="off"] .iso .coin .iso-shade { fill: #494435; } body[data-pulse="off"] .iso .coin .iso-top { fill: #A39A7E; }
+  body[data-wellness="off"] .iso .coin .iso-fill { fill: #6E6752; } body[data-wellness="off"] .iso .coin .iso-shade { fill: #494435; } body[data-wellness="off"] .iso .coin .iso-top { fill: #A39A7E; }
   .iso .coin.lime .iso-fill { fill: #8DAE1C; } .iso .coin.lime .iso-shade { fill: #5F7A10; } .iso .coin.lime .iso-top { fill: #C6F042; }
   .iso .coin.blue .iso-fill { fill: #2A74C4; } .iso .coin.blue .iso-shade { fill: #1B4F8C; } .iso .coin.blue .iso-top { fill: #5BB0FA; }
   .iso .plan-part, .iso [data-coins="s125"], .iso [data-coins="plan"], .iso [data-coins="company"], .iso [data-coins="fee"], .iso [data-coins="reward"], .iso [data-move="bridge"] { transition: opacity .7s, transform .8s cubic-bezier(.2, .8, .2, 1); }
-  body[data-pulse="off"] .iso .plan-part, body[data-pulse="off"] .iso [data-coins="s125"], body[data-pulse="off"] .iso [data-coins="plan"], body[data-pulse="off"] .iso [data-coins="company"], body[data-pulse="off"] .iso [data-coins="fee"], body[data-pulse="off"] .iso [data-coins="reward"], body[data-pulse="off"] .iso [data-move="bridge"] { opacity: 0; transform: translateY(-10px); pointer-events: none; }
+  body[data-wellness="off"] .iso .plan-part, body[data-wellness="off"] .iso [data-coins="s125"], body[data-wellness="off"] .iso [data-coins="plan"], body[data-wellness="off"] .iso [data-coins="company"], body[data-wellness="off"] .iso [data-coins="fee"], body[data-wellness="off"] .iso [data-coins="reward"], body[data-wellness="off"] .iso [data-move="bridge"] { opacity: 0; transform: translateY(-10px); pointer-events: none; }
   .iso [data-part] { cursor: pointer; transition: opacity .4s, filter .3s; }
   .iso [data-part]:hover { filter: brightness(1.25); }
   .iso.has-focus [data-part]:not(.is-focus) { opacity: .28; }
@@ -139,7 +139,7 @@
   .iso-detail button { margin: 8px 0 0; font: 700 10.5px/1 ui-sans-serif, system-ui, sans-serif; letter-spacing: .08em; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px; }
   /* Jay, 2026-11-18: every letter capitalized, bold and as clear as possible, matching the Fountain. */
   body { text-transform: uppercase; letter-spacing: .02em; font-weight: 650; --text: #DDE1E8; --mute: #B4B9C4; }
-  body[data-pulse="on"] { --text: #E2E8F2; --mute: #AEB9CB; }
+  body[data-wellness="on"] { --text: #E2E8F2; --mute: #AEB9CB; }
   button { text-transform: inherit; } input { text-transform: none; }
   #summary, #notes, #keptsub, .fine, .iso-detail, .iso-cap { font-weight: 700; color: #F1F4F9; }
   h1, .company h2, .iso-card h2, .iso-detail h3 { font-weight: 800; }
@@ -155,10 +155,10 @@
     #keptsub, .fine { font-size: 14.5px; }
     .company h2 { font-size: 17px; }
   }
-  @media (prefers-reduced-motion: reduce) { button, body, .sw-knob { transition: none; } #start.ready, .switch[aria-pressed="true"] .sw-lamps i { animation: none; } #start.blink, .switch.blink { animation: none; outline: 3px solid #fff; outline-offset: 3px; } }
+  @media (prefers-reduced-motion: reduce) { button, body, .sw-knob { transition: none; } .iso .plan-part, .iso [data-coins="s125"], .iso [data-coins="plan"], .iso [data-coins="company"], .iso [data-coins="fee"], .iso [data-coins="reward"], .iso [data-move="bridge"] { transition: opacity .7s; } #start.ready, .switch[aria-pressed="true"] .sw-lamps i { animation: none; } #start.blink, .switch.blink { animation: none; outline: 3px solid #fff; outline-offset: 3px; } }
 </style>
 </head>
-<body data-pulse="off">
+<body data-wellness="off">
 <main>
   <div class="top">
     <p class="kicker">Section 125 Wellness Illustration Tool</p>
@@ -167,7 +167,7 @@
       <button type="button" role="tab" id="tab-employee" aria-selected="true">One paycheck</button>
       <button type="button" role="tab" id="tab-company" aria-selected="false">Whole company</button>
     </div>
-    <button id="pulse" class="switch" type="button" aria-pressed="false" aria-label="Section 125 wellness plan">
+    <button id="wellness" class="switch" type="button" aria-pressed="false" aria-label="Section 125 wellness plan">
       <span class="sw-name">SECTION 125<small>WELLNESS PLAN</small></span>
       <span class="sw-slot" aria-hidden="true"><b class="sw-on">ON</b><b class="sw-off">OFF</b><span class="sw-knob"></span></span>
       <span class="sw-lamps" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
@@ -227,22 +227,22 @@
   const cents = (v) => '$' + v.toFixed(2);
   let scope = new URLSearchParams(location.search).get('scope') === 'company' ? 'company' : 'employee';
   const inputs = () => ({ employees: Math.max(1, Math.min(5000, Math.round(+$('emp').value || 1))), qualify: +$('q').value });
-  const isOn = () => $('pulse').getAttribute('aria-pressed') === 'true';
-  const click = () => SND.play('button', { pulse: isOn() });
+  const isOn = () => $('wellness').getAttribute('aria-pressed') === 'true';
+  const click = () => SND.play('button', { wellness: isOn() });
   let guided = false; // true once the plan-on run has finished: the tour of buttons is over
 
   function summary(s) {
-    const S = s.scenario, d = S.dollars[s.pulse ? 'on' : 'off'], many = s.scope === 'company', who = many ? 'the employees' : 'the employee';
+    const S = s.scenario, d = S.dollars[s.wellness ? 'on' : 'off'], many = s.scope === 'company', who = many ? 'the employees' : 'the employee';
     $('start').disabled = s.running;
     // The guide: Start blinks, then the plan switch once the plain run is done, then Start again; after the plan run, nothing.
-    if (s.finished && s.pulse) guided = true;
+    if (s.finished && s.wellness) guided = true;
     $('start').classList.toggle('blink', !guided && !s.running && !s.finished);
-    $('pulse').classList.toggle('blink', !guided && s.finished && !s.pulse);
-    if (s.running) $('summary').textContent = s.pulse ? 'The plan is on. When everything has landed, the last coin drops into the Trigger.' : 'Payroll is dropping.';
-    else if (!s.finished) $('summary').textContent = s.pulse ? 'The plan is on: the Section 125 tray is open, the lifts are running and the Trigger is set. Press Start.' : 'Plain payroll. Press Start to run it.';
-    else if (!s.pulse) $('summary').innerHTML = 'Of ' + money(S.total) + ' of payroll, ' + money(d.taxes) + ' went to payroll taxes, ' + money(d.health) + ' to health insurance and ' + money(d.k401) + ' to the 401(k). ' + money(d.bank) + ' reached ' + who + '. <b>Now switch the plan on.</b>';
+    $('wellness').classList.toggle('blink', !guided && s.finished && !s.wellness);
+    if (s.running) $('summary').textContent = s.wellness ? 'The plan is on. When everything has landed, the last coin drops into the Trigger.' : 'Payroll is dropping.';
+    else if (!s.finished) $('summary').textContent = s.wellness ? 'The plan is on: the Section 125 tray is open, the lifts are running and the Trigger is set. Press Start.' : 'Plain payroll. Press Start to run it.';
+    else if (!s.wellness) $('summary').innerHTML = 'Of ' + money(S.total) + ' of payroll, ' + money(d.taxes) + ' went to payroll taxes, ' + money(d.health) + ' to health insurance and ' + money(d.k401) + ' to the 401(k). ' + money(d.bank) + ' reached ' + who + '. <b>Now switch the plan on.</b>';
     else $('summary').innerHTML = '<b>Take-home is up ' + money(S.delta.bank) + ' and ' + (many ? money(S.delta.company) : cents(S.delta.company)) + ' came back to the company</b> after its ' + money(S.delta.fee) + ' admin fee. Payroll taxes took ' + money(S.delta.taxes) + ' less.';
-    $('notes').hidden = !s.pulse;
+    $('notes').hidden = !s.wellness;
   }
   K.on(summary);
 
@@ -262,14 +262,14 @@
     K.setScenario(scope === 'company' ? M.scenario(employees, qualify) : M.single(), scope);
     if (!quiet) history.replaceState(null, '', scope === 'company' ? '?scope=company' : location.pathname);
   }
-  function setPulse(on) {
-    $('pulse').setAttribute('aria-pressed', String(on));
-    document.body.dataset.pulse = on ? 'on' : 'off';
-    K.setPulse(on);
+  function setWellness(on) {
+    $('wellness').setAttribute('aria-pressed', String(on));
+    document.body.dataset.wellness = on ? 'on' : 'off';
+    K.setWellness(on);
   }
   $('tab-employee').addEventListener('click', () => { click(); setScope('employee'); });
   $('tab-company').addEventListener('click', () => { click(); setScope('company'); });
-  $('pulse').addEventListener('click', () => setPulse(!isOn()));
+  $('wellness').addEventListener('click', () => setWellness(!isOn()));
   $('start').addEventListener('click', () => K.start());
   $('mute').setAttribute('aria-pressed', String(SND.muted));
   $('mute').addEventListener('click', () => { SND.setMuted(!SND.muted); $('mute').setAttribute('aria-pressed', String(SND.muted)); click(); });
@@ -280,10 +280,10 @@
   company(false);
   setScope(scope, true);
 
-  // Test links: #off and #on show a finished drop, #mid a drop in progress with Pulse on, #midoff the same with Pulse off.
+  // Test links: #off and #on show a finished drop, #mid a drop in progress with the plan on, #midoff the same with the plan off.
   const tag = location.hash.slice(1);
   if (tag) K.sfx = null; // pictures are silent, and the mute choice is left alone
-  if (tag === 'on' || tag === 'mid') setPulse(true);
+  if (tag === 'on' || tag === 'mid') setWellness(true);
   if (tag === 'off' || tag === 'on') { K.start(); K.finish(); }
   if (tag === 'mid' || tag === 'midoff') { K.start(); K.finish(4.2); }
 
@@ -309,7 +309,7 @@
     new IntersectionObserver((e) => { seen = e[e.length - 1].isIntersecting; if (seen && !raf) raf = requestAnimationFrame(tick); }).observe(host);
     raf = requestAnimationFrame(tick);
 
-    const T = () => { const st = K.state(), S = st.scenario, on = st.pulse, d = S.dollars[on ? 'on' : 'off'], many = S.employees > 1; return { S, on, d, many, who: many ? 'the employees' : 'the employee' }; };
+    const T = () => { const st = K.state(), S = st.scenario, on = st.wellness, d = S.dollars[on ? 'on' : 'off'], many = S.employees > 1; return { S, on, d, many, who: many ? 'the employees' : 'the employee' }; };
     const TEXT = {
       hopper: () => { const { S, many } = T(); return ['Company payroll', 'The month\'s payroll sits in the hopper: ' + money(S.total) + (many ? ' for ' + S.employees + ' employees' : ' for one employee') + ', wages plus the payroll tax the company pays on them, as coins of ' + money(S.coin) + '. It feeds the belt coin by coin. The same money comes in with the plan off or on.']; },
       belt: () => { const { d } = T(); return ['The belt', 'Every coin rides the belt past the diverter arms. Each arm sweeps off exactly the coins its bin is owed, so what reaches the end is what the paycheck keeps: ' + money(d.bank) + ' into the cart' + (T().on ? ', before the reward' : '') + '.']; },

@@ -1,5 +1,5 @@
 // Offline copy of this tool. Bump the version when files change; old caches for this tool are dropped on activate.
-const PREFIX = 'coin-drop-', CACHE = PREFIX + 'v4';
+const PREFIX = 'coin-drop-', CACHE = PREFIX + 'v5';
 const FILES = ['./', 'index.html', 'iso.css', 'model.js', 'machine.js', 'sound.js', 'iso.js', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png', '../favicon.svg?v=2', '../favicon.ico?v=2'];
 
 self.addEventListener('install', (e) => e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES.map((f) => new Request(f, { cache: "reload" })))).then(() => self.skipWaiting())));

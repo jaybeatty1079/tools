@@ -190,7 +190,7 @@
   h1, .company h2, .iso-card h2, .iso-detail h3, .tour h3 { font-weight: 700; }
   .kicker, label, .tiers-label, .sw-name small, .tour .t-count, .tabs button { font-weight: 800; }
   button { text-transform: inherit; } input { text-transform: none; }
-  @media (prefers-reduced-motion: reduce) { button, .sw-knob, .sw-glass i, .tier svg { transition: none; } #start.ready { animation: none; } #start.blink, .switch.blink { animation: none; outline: 3px solid var(--gold-hi); outline-offset: 3px; } }
+  @media (prefers-reduced-motion: reduce) { button, .sw-knob, .sw-glass i, .tier svg { transition: none; } .sw-wheel svg { transition: filter .4s; } .tiers-wrap { transition: none; } .tier { transition: opacity .4s; } .iso .aca-part, .iso [data-water="aca"], .iso [data-water="plan"], .iso [data-water="company"], .iso [data-water="fee"], .iso [data-water="reward"], .iso [data-move] { transition: opacity .7s; } #start.ready { animation: none; } #start.blink, .switch.blink { animation: none; outline: 3px solid var(--gold-hi); outline-offset: 3px; } }
 </style>
 </head>
 <body data-aca="off">
@@ -207,7 +207,7 @@
       <span class="sw-wheel" aria-hidden="true"><svg viewBox="0 0 64 64"><circle class="rim" cx="32" cy="32" r="24"/><circle class="rim2" cx="32" cy="32" r="18"/><path class="spoke" d="M32 10v44M10 32h44M16.4 16.4l31.2 31.2M47.6 16.4L16.4 47.6"/><circle class="hub" cx="32" cy="32" r="7"/><circle class="pin" cx="32" cy="32" r="2.2"/></svg></span>
       <span class="sw-glass" aria-hidden="true"><i></i><b></b></span>
     </button>
-    <div class="tiers-wrap"><div>
+    <div class="tiers-wrap" inert><div>
       <div class="tiers-label"><span>Plan tier</span><output id="tierv"></output></div>
       <div class="tiers" role="group" aria-label="Plan tier" id="tiers"></div>
     </div></div>
@@ -431,6 +431,7 @@
   function setAca(on) {
     $('aca').setAttribute('aria-pressed', String(on));
     document.body.dataset.aca = on ? 'on' : 'off';
+    document.querySelector('.tiers-wrap').inert = !on;
     F.setAca(on);
   }
   for (const lvl of M.LEVELS) {

@@ -7,6 +7,8 @@
 <meta name="description" content="Three missions. Build your lot, run the payroll, set your pay plan. See what a Section 125 plan does to store net and your bonus. Illustrative only.">
 <link rel="icon" href="../favicon.svg?v=2" type="image/svg+xml"><link rel="icon" href="../favicon.ico?v=2" sizes="32x32"><link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="gsap.min.js"></script>
 <script src="model.js"></script>
@@ -19,6 +21,7 @@ html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,sys
 body{padding:0 16px 60px}
 .wrap{max-width:1180px;margin:0 auto}
 header{padding:22px 0 10px}
+.motionRow{display:flex;justify-content:flex-end;margin:0 0 8px}
 h1{font:400 clamp(40px,7vw,72px)/.95 Anton,Impact,sans-serif;margin:0;letter-spacing:.01em;text-transform:uppercase;text-shadow:0 0 18px rgba(214,93,177,.55),3px 3px 0 #3a1a4a}
 h1 span{color:var(--magenta)}
 .sub{color:#c9c4da;max-width:60ch;margin:6px 0 0;font-size:18px}
@@ -171,6 +174,7 @@ body{padding-bottom:calc(52px + env(safe-area-inset-bottom,0px))} /* shortcut: b
 <body>
 <div class="wrap">
 <header><h1 id="h1"></h1><p class="sub" id="sub"></p></header>
+<p class="motionRow"><button class="btn q sm" id="motionBtn" type="button">Pause motion</button></p>
 
 <div id="game">
   <div class="hud" id="mstep">STEP <span id="mstepV">1</span> OF 3</div>
@@ -310,7 +314,7 @@ function update(){
   $('#cash .l').textContent='ADDED TO '+(S.scope==='group'?W.group:W.site).toUpperCase()+' NET, PER YEAR';
   $('#cashD').textContent=fmt(m.base.net)+' → '+fmt(m.base.net+m.base.lift);
   if(!reduce)gsap.fromTo('#cashD',{opacity:0,y:-6},{opacity:1,y:0,duration:.3,yoyo:true,repeat:1,repeatDelay:1.2});
-  const scopeWord=S.scope==='group'?'the '+W.group:'your '+W.site, pct=n=>m.base.net>0?(100*n/m.base.net).toFixed(1)+'%':'—';
+  const scopeWord=S.scope==='group'?'the '+W.group:'your '+W.site, pct=n=>m.base.net>0?(100*n/m.base.net).toFixed(1)+'%':'n/a';
   $('#liftK').textContent=`Net profit added to ${scopeWord}, per year`;
   $('#lift').textContent=fmt(m.base.lift);$('#units').textContent=C.unitLine(Math.round(m.units).toLocaleString());
   $('#liftS').textContent=`${m.base.enrolled.toLocaleString()} enrolled × ${fmt2(m.per)} a month (7.65% FICA on the $${S.plan.toLocaleString()} contribution, less the admin fee) × 12. A ${pct(m.base.lift)} lift on ${fmt(m.base.net)} of net.`+(S.scope==='store'&&S.stores.length>1?` The whole ${W.group}: ${fmt(m.g.lift)}.`:'');
@@ -400,7 +404,7 @@ function stateToHash(){const o={};for(const k of HK)o[k]=S[k];return '#owner='+b
 function hashToState(){try{const h=location.hash;if(!h.startsWith('#owner='))return false;const clean=BM.sanitize(JSON.parse(decodeURIComponent(escape(atob(h.slice(7))))),SEC);for(const k of HK)S[k]=clean[k];return true}catch(e){return false}} // anything off the whitelists falls back to the defaults
 function renderOwner(){const m=model(),ins=S.hp==='insured';
   $('#oLift').textContent=fmt(m.g.lift);$('#oUnits').textContent=C.ownerUnitLine(Math.round(m.unitsOf(m.g.lift)).toLocaleString());
-  $('#oLiftS').textContent=`${sitesN(S.stores.length)}, ${m.g.emp.toLocaleString()} on payroll. ${m.g.enrolled.toLocaleString()} enrolled × ${fmt2(m.per)} a month (7.65% FICA on the $${S.plan.toLocaleString()} contribution, less the plan's admin fee) × 12. A ${m.g.net>0?(100*m.g.lift/m.g.net).toFixed(1)+'%':'—'} lift on ${fmt(m.g.net)} of estimated ${W.group} net.`;
+  $('#oLiftS').textContent=`${sitesN(S.stores.length)}, ${m.g.emp.toLocaleString()} on payroll. ${m.g.enrolled.toLocaleString()} enrolled × ${fmt2(m.per)} a month (7.65% FICA on the $${S.plan.toLocaleString()} contribution, less the plan's admin fee) × 12. A ${m.g.net>0?(100*m.g.lift/m.g.net).toFixed(1)+'%':'n/a'} lift on ${fmt(m.g.net)} of estimated ${W.group} net.`;
   $('#oNet').textContent=fmt(m.g.net)+' → '+fmt(m.g.net+m.g.lift);$('#oNetS').textContent=`${m.g.emp.toLocaleString()} employees × ${fmtM(S.rpe)} revenue each at a ${S.margin.toFixed(1)}% margin, industry averages unless your ${W.role} changed them`;
   $('#oEnrolled').textContent=m.g.enrolled.toLocaleString();$('#oEnrolledS').textContent=`${S.qual}% of ${m.g.emp.toLocaleString()}, voluntary with a 30-day opt-out window`;
   $('#oClaimsStat').style.display=ins?'none':'block';$('#oHowClaims').style.display=ins?'none':'list-item';
@@ -568,7 +572,8 @@ scene.add(new THREE.Mesh(new THREE.SphereGeometry(520,32,24),new THREE.MeshBasic
 const sunDisc=new THREE.Mesh(new THREE.CircleGeometry(15,48),new THREE.MeshBasicMaterial({color:new THREE.Color(1.9,1.25,.85),fog:false,toneMapped:false}));scene.add(sunDisc);
 const halo=new THREE.Sprite(new THREE.SpriteMaterial({map:(()=>{const c=document.createElement('canvas');c.width=c.height=256;const g=c.getContext('2d'),r=g.createRadialGradient(128,128,10,128,128,128);r.addColorStop(0,'rgba(255,190,120,.9)');r.addColorStop(.35,'rgba(255,130,80,.35)');r.addColorStop(1,'rgba(255,100,80,0)');g.fillStyle=r;g.fillRect(0,0,256,256);return new THREE.CanvasTexture(c)})(),blending:THREE.AdditiveBlending,depthWrite:false,fog:false,transparent:true}));halo.scale.set(80,80,1);scene.add(halo);
 const camera=new THREE.PerspectiveCamera(42,16/9,0.5,600);camera.position.set(120,95,150);
-const controls=new OrbitControls(camera,renderer.domElement);controls.target.set(0,2,0);controls.enableDamping=true;controls.autoRotate=true;controls.autoRotateSpeed=.35;controls.maxPolarAngle=Math.PI*.46;controls.minDistance=28;controls.maxDistance=220;controls.enablePan=false;
+let still=matchMedia('(prefers-reduced-motion: reduce)').matches; // no ambient motion: the visitor's system asks for less, or they pressed Pause motion
+const controls=new OrbitControls(camera,renderer.domElement);controls.target.set(0,2,0);controls.enableDamping=true;controls.autoRotate=!still;controls.autoRotateSpeed=.35;controls.maxPolarAngle=Math.PI*.46;controls.minDistance=28;controls.maxDistance=220;controls.enablePan=false;
 
 scene.add(new THREE.HemisphereLight(0xffa36b,0x2a1a3a,1.1));
 const sunLight=new THREE.DirectionalLight(0xffb070,2.4);sunLight.castShadow=!mobile;Object.assign(sunLight.shadow.camera,{left:-170,right:170,top:170,bottom:-170,near:1,far:500});sunLight.shadow.mapSize.set(2048,2048);sunLight.shadow.bias=-.0008;scene.add(sunLight);scene.add(sunLight.target);
@@ -926,15 +931,17 @@ function resize(){const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;
 new ResizeObserver(resize).observe(host);resize();
 const LIM={x:NX*PITCH/2+ROAD/2-1.5,z:NZ*PITCH/2+ROAD/2-1.5}; // the end of the perimeter road
 let last=performance.now(),paused=false,fpsNow=0,fpsN=0,fpsT=0;
+{const mb=document.getElementById('motionBtn');let wasRot=controls.autoRotate;const lab=()=>{mb.textContent=still?'Resume motion':'Pause motion'};lab();mb.onclick=()=>{still=!still;if(still){wasRot=controls.autoRotate;controls.autoRotate=false}else controls.autoRotate=wasRot;lab()}}
 function loop(now){if(paused||document.hidden||!host.clientWidth){last=now;setTimeout(()=>requestAnimationFrame(loop),300);return} // the owner page and background tabs do not burn the battery
   const dt=Math.min(.05,(now-last)/1000);last=now;fpsN++;fpsT+=dt;if(fpsT>=1){fpsNow=Math.round(fpsN/fpsT);fpsN=0;fpsT=0}
-  rippleTex.offset.x+=dt*.012;rippleTex.offset.y+=dt*.02;foam.position.z=SHORE+Math.sin(now/1400)*1.2;foam.material.opacity=.5+.25*Math.sin(now/900); // the tide
+  if(!still){rippleTex.offset.x+=dt*.012;rippleTex.offset.y+=dt*.02;foam.position.z=SHORE+Math.sin(now/1400)*1.2;foam.material.opacity=.5+.25*Math.sin(now/900); // the tide
   for(const b of boats){b.m.position.x+=b.speed*dt;if(b.m.position.x>420)b.m.position.x=-420;if(b.m.position.x<-420)b.m.position.x=420;b.m.position.y=.15*Math.sin(now/900+b.phase);b.m.rotation.z=.04*Math.sin(now/1300+b.phase)}
   for(const g of gulls){g.a+=dt*g.w;g.m.position.x=g.cx+Math.cos(g.a)*g.r;g.m.position.z=g.cz+Math.sin(g.a)*g.r;g.m.rotation.y=-g.a;const f=Math.sin(now/110+g.a*3)*.6;g.m.children.forEach(w=>w.rotation.x=w.userData.sd*f)}
   plane.position.x+=dt*11;if(plane.position.x>420)plane.position.x=-420;
   if(copCar&&copCar.visible){const on=Math.floor(now/220)%2;copLights[0].emissiveIntensity=on?5:.3;copLights[1].emissiveIntensity=on?.3:5;copFlash[0].intensity=on?180:0;copFlash[1].intensity=on?0:180} // red, blue, red, blue
   for(const f of fires){const k=.8+.4*Math.random();f.flame.scale.set(k,.9+.3*Math.random(),k);f.l.intensity=90+60*Math.random()}
   for(const t of traffic){if(t.turn)continue;const p=t.m.position,k=t.axis,o=k==='z'?'x':'z';p[k]+=t.dir*t.speed*dt*60;if(Math.abs(p[k])>LIM[k]){p[k]=Math.sign(p[k])*LIM[k];t.turn=true;gsap.to(t.m.rotation,{y:t.m.rotation.y+Math.PI,duration:.9});gsap.to(p,{[o]:t[o]-4.4*t.dir,duration:.9,onComplete:()=>{t[o]=p[o];t.dir=-t.dir;t.turn=false}})}} // U-turn into the other lane at the end of the road: nothing drives off the map
+  } // still: the tide, boats, gulls, plane, cop lights, fires and traffic hold their place
   for(let i=bursts.length-1;i>=0;i--){const b=bursts[i];b.t+=dt;const r=Math.max(16,80-b.t*34);b.m.position.set(Math.cos(b.a)*r,0,Math.sin(b.a)*r);if(b.t>2.4){drop(scene,b.m);bursts.splice(i,1)}}
   if(stage&&stage.visible){for(const k in flow)if(flow[k]){spawn[k]+=dt;if(spawn[k]>flow[k]){spawn[k]=0;coin(k)}}if(exhaust&&mmCar.visible){puffT+=dt;if(puffT>.2){puffT=0;puff(pipeAt(mmCar))}}}
   for(let i=fumes.length-1;i>=0;i--){const b=fumes[i];b.t+=dt;b.m.position.x+=b.dx*dt;b.m.position.z+=b.dz*dt;b.m.position.y=b.y0+1.5*b.t;b.m.scale.setScalar(1+1.8*b.t);b.m.material.opacity=.7*(1-b.t/2.2);if(b.t>2.2){drop(stage,b.m);fumes.splice(i,1)}} // a puff rises, spreads and thins out

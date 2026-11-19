@@ -1,5 +1,5 @@
 /* Sounds for the coin drop, synthesized so there are no files to load. Two voices:
-   the plain machine is old school (mechanical clacks and a dull bell), and with Pulse on it is bright (small bells on a
+   the plain machine is old school (mechanical clacks and a dull bell), and with the plan on it is bright (small bells on a
    five-note scale). Everything sits between 300 Hz and 3 kHz so a laptop's small speakers can play it, and a compressor
    keeps a busy drop from clipping. The browser only allows sound after a press, so the first press anywhere wakes it. */
 (function () {
@@ -46,28 +46,28 @@
   const VOICE = {
     peg(o, now) {
       if (now - lastPeg < 0.034) return; lastPeg = now;
-      if (o.pulse) note(any(SCALE) * (o.lime ? 2 : 1), 0.07, o.lime ? 'sine' : 'triangle', 0.12);
+      if (o.wellness) note(any(SCALE) * (o.lime ? 2 : 1), 0.07, o.lime ? 'sine' : 'triangle', 0.12);
       else clack(900 + Math.random() * 500, 0.035, 0.5);
     },
     land(o, now) {
       if (now - lastLand < 0.05) return; lastLand = now;
-      if (!o.pulse) { clack(480, 0.06, 0.7); note(330, 0.07, 'triangle', 0.1, 0, 0.7); }
+      if (!o.wellness) { clack(480, 0.06, 0.7); note(330, 0.07, 'triangle', 0.1, 0, 0.7); }
       else if (o.lime) { note(1319, 0.08, 'sine', 0.16); note(1976, 0.12, 'sine', 0.14, 0.06); }
       else note(1568, 0.07, 'sine', 0.1);
     },
-    push(o) { if (o.pulse) note(330, 0.2, 'triangle', 0.07, 0, 2); else clack(380, 0.2, 0.5); },
-    start(o) { if (o.pulse) [523, 784, 1047].forEach((f, i) => note(f, 0.1, 'square', 0.09, i * 0.07)); else { clack(700, 0.08, 0.8); note(392, 0.16, 'square', 0.1, 0.03); } },
+    push(o) { if (o.wellness) note(330, 0.2, 'triangle', 0.07, 0, 2); else clack(380, 0.2, 0.5); },
+    start(o) { if (o.wellness) [523, 784, 1047].forEach((f, i) => note(f, 0.1, 'square', 0.09, i * 0.07)); else { clack(700, 0.08, 0.8); note(392, 0.16, 'square', 0.1, 0.03); } },
     engage() { [523, 659, 784, 1047, 1319, 1568].forEach((f, i) => note(f, 0.14, 'triangle', 0.2, i * 0.065)); note(2093, 0.5, 'sine', 0.14, 0.42); },
     disengage() { note(523, 0.16, 'square', 0.1); note(330, 0.32, 'square', 0.1, 0.14, 0.75); clack(500, 0.12, 0.6, 0.3); },
     finish(o) {
-      if (o.pulse) { [784, 988, 1175, 1568].forEach((f, i) => note(f, 0.16, 'triangle', 0.2, i * 0.1)); [784, 1175, 1568].forEach((f) => note(f, 0.6, 'sine', 0.12, 0.42)); }
+      if (o.wellness) { [784, 988, 1175, 1568].forEach((f, i) => note(f, 0.16, 'triangle', 0.2, i * 0.1)); [784, 1175, 1568].forEach((f) => note(f, 0.6, 'sine', 0.12, 0.42)); }
       else { note(660, 0.5, 'triangle', 0.18); note(1320, 0.3, 'sine', 0.05); } // one plain bell
     },
     // The Trigger trips: an electric zip and a ping. Then the reward: a run of bells climbing two octaves, with a shimmer on top.
     trigger() { note(300, 0.3, 'sawtooth', 0.14, 0, 7); note(2637, 0.18, 'square', 0.1, 0.26); note(2637, 0.18, 'square', 0.08, 0.5); },
     reward() { [523, 659, 784, 1047, 1319, 1568, 2093].forEach((f, i) => note(f, 0.18, 'triangle', 0.22, i * 0.075)); [2093, 2637, 3136].forEach((f, i) => note(f, 0.8, 'sine', 0.1, 0.55 + i * 0.05)); },
     ready() { note(880, 0.09, 'square', 0.12); note(880, 0.09, 'square', 0.12, 0.16); }, // two ticks: the last coin is on its way
-    button(o) { if (o.pulse) note(1175, 0.05, 'square', 0.08); else clack(1100, 0.03, 0.6); },
+    button(o) { if (o.wellness) note(1175, 0.05, 'square', 0.08); else clack(1100, 0.03, 0.6); },
   };
   function play(name, o) {
     if (muted || !VOICE[name] || !ready()) return;

@@ -5,8 +5,8 @@ const M = createRequire(import.meta.url)('./model.js');
 
 const one = M.single();
 assert.equal(one.n, 358, 'one paycheck at $10 a coin'); // the Section 125 tray (120 coins) sets the limit
-assert.deepEqual(one.coins.off, { taxes: 87, health: 16, k401: 3, pulse: 0, fee: 0, company: 0, bank: 252 });
-assert.deepEqual(one.coins.on, { taxes: 49, health: 16, k401: 3, pulse: 120, fee: 4, company: 6, bank: 160 });
+assert.deepEqual(one.coins.off, { taxes: 87, health: 16, k401: 3, wellness: 0, fee: 0, company: 0, bank: 252 });
+assert.deepEqual(one.coins.on, { taxes: 49, health: 16, k401: 3, wellness: 120, fee: 4, company: 6, bank: 160 });
 assert.equal(one.after.rewardCoins, 100); assert.equal(one.after.planCoins, 20);
 assert.equal(one.delta.company, 56.8); assert.equal(one.delta.fee, 35); assert.equal(one.delta.reward, 1000); assert.equal(one.delta.plan, 200);
 assert.ok(Math.abs(one.delta.bank - 88.27) < 0.01, 'take-home gain'); // $40,000 single 0/0, $160 health, 1% 401(k), 2026 tables

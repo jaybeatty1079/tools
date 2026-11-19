@@ -46,7 +46,7 @@ function refLink(ref) {
 }
 const refChip = r => { const l = refLink(r); return l.href ? `<a class="ref" href="${esc(l.href)}" target="_blank" rel="noopener">${esc(l.label)}</a>` : `<span class="ref">${esc(l.label)}</span>`; };
 const shortRef = s => { s = String(s || ''); const m = s.match(/\b(P\d{6}(?:\/S\d{3})?|K\d{6}|DEN\d{6}|H\d{6}|BK\d{6}|BLA\s?\d+)\b/); return m ? m[1] : s.split(/[;(]/)[0].trim().slice(0, 40); };
-const regLabel = p => { const r = p.regulatory || {}; const path = { 'PMA': 'PMA', '510k': '510(k)', '361-HCTP': '361 HCT/P', 'HDE': 'HDE', 'De-Novo': 'De Novo', 'BLA': 'BLA', 'NDA': 'NDA', 'IND-only': 'IND', 'IDE-only': 'IDE', 'none-unapproved': 'Unapproved' }[r.path] || r.path || '—'; const ref = shortRef(r.reference); return ref && ref !== path ? `${path} · ${ref}` : path; };
+const regLabel = p => { const r = p.regulatory || {}; const path = { 'PMA': 'PMA', '510k': '510(k)', '361-HCTP': '361 HCT/P', 'HDE': 'HDE', 'De-Novo': 'De Novo', 'BLA': 'BLA', 'NDA': 'NDA', 'IND-only': 'IND', 'IDE-only': 'IDE', 'none-unapproved': 'Unapproved' }[r.path] || r.path || 'n/a'; const ref = shortRef(r.reference); return ref && ref !== path ? `${path} · ${ref}` : path; };
 const statusBadge = p => p.status === 'withdrawn' ? '<span class="badge off">Withdrawn</span>' : p.status === 'off-market' ? '<span class="badge off">Off market</span>' : '';
 
 /* ---------- state and routing ---------- */
@@ -216,7 +216,7 @@ function productCard(p, x, a) {
     ${x.evidence_summary ? `<div class="ev">${esc(x.evidence_summary)}</div>` : '<div class="ev muted">No published evidence for this application.</div>'}
     ${x.caveats ? `<div class="cav">${esc(x.caveats)}</div>` : ''}
     ${shown.length ? `<div class="refs">${shown.slice(0, 4).map(e => refChip(e.ref)).join('')}</div>` : ''}
-    <div class="bd"><div><b>Regulatory</b>${esc(regLabel(p))}</div><div><b>Channel</b>${esc((p.bd || {}).sales_channel || '—')}</div><div style="grid-column:1/-1"><b>How it is paid</b>${esc((p.bd || {}).reimbursement || '—')}</div></div>
+    <div class="bd"><div><b>Regulatory</b>${esc(regLabel(p))}</div><div><b>Channel</b>${esc((p.bd || {}).sales_channel || 'n/a')}</div><div style="grid-column:1/-1"><b>How it is paid</b>${esc((p.bd || {}).reimbursement || 'n/a')}</div></div>
   </div>`;
 }
 
@@ -234,14 +234,14 @@ function openProduct(id) {
     <dt>FDA pathway</dt><dd>${esc(regLabel(p))}${r.us_market_year ? ` · US market ${esc(r.us_market_year)}` : ''}${r.reference && String(r.reference).length > 24 ? `<div class="muted small" style="margin-top:4px">${esc(r.reference)}</div>` : ''}</dd>
     ${(r.on_label_indications || []).length ? `<dt>Labeled indications</dt><dd><ul class="tight">${r.on_label_indications.map(s => `<li>${esc(s)}</li>`).join('')}</ul></dd>` : ''}
     ${pipe ? `<dt>Pipeline</dt><dd>${esc(pipe.stage || '')}${pipe.expected_milestone ? ' · ' + esc(pipe.expected_milestone) : ''}${(pipe.trials || []).length ? `<div class="refs" style="margin-top:6px">${pipe.trials.map(refChip).join('')}</div>` : ''}</dd>` : ''}
-    <dt>Channel</dt><dd>${esc(bd.sales_channel || '—')}</dd>
-    <dt>How it is paid</dt><dd>${esc(bd.reimbursement || '—')}</dd>
+    <dt>Channel</dt><dd>${esc(bd.sales_channel || 'n/a')}</dd>
+    <dt>How it is paid</dt><dd>${esc(bd.reimbursement || 'n/a')}</dd>
     ${bd.notes ? `<dt>BD notes</dt><dd>${esc(bd.notes)}</dd>` : ''}
   </dl>
   <h4>Applications in this atlas</h4>
   <div class="applist">${apps.map(x => { const a = appById[x.application_id]; return `<button class="app-row" type="button" data-go="a-${a.id}"><div><div class="t">${esc(a.name)}</div><div class="d">${esc(REGION[a.region].label)}${x.evidence_summary ? ' · ' + esc(x.evidence_summary.slice(0, 110)) + (x.evidence_summary.length > 110 ? '…' : '') : ''}</div></div><div class="counts"><span class="grade g${esc(x.evidence_grade || 'V')}">${esc(x.evidence_grade || 'V')}</span><span class="pill ${x.tier === 'established' ? 'est' : x.tier === 'emerging' ? 'emg' : 'inv'}">${esc(x.tier)}</span>${x.on_label === true ? '<span class="badge on">On label</span>' : x.on_label === false ? '<span class="badge off">Off label</span>' : ''}</div></button>`; }).join('') || '<div class="empty">No application pairings.</div>'}</div>
   <h4>Evidence</h4>
-  ${(p.evidence || []).length ? `<div style="overflow:auto"><table class="evtable"><thead><tr><th>Ref</th><th>Year</th><th>Design</th><th>n</th><th>Finding</th><th>Sponsor</th></tr></thead><tbody>${p.evidence.map(e => `<tr><td>${refChip(e.ref)}</td><td class="n">${esc(e.year || '')}</td><td>${esc(e.design || '')}</td><td class="n">${esc(e.n || '')}</td><td>${e.title ? `<div class="muted small">${esc(e.title)}</div>` : ''}${esc(e.finding || '')}</td><td>${e.sponsor_funded === true ? 'Yes' : e.sponsor_funded === false ? 'No' : '—'}</td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">No published study was found for this product. It is graded V everywhere it appears.</div>'}
+  ${(p.evidence || []).length ? `<div style="overflow:auto"><table class="evtable"><thead><tr><th>Ref</th><th>Year</th><th>Design</th><th>n</th><th>Finding</th><th>Sponsor</th></tr></thead><tbody>${p.evidence.map(e => `<tr><td>${refChip(e.ref)}</td><td class="n">${esc(e.year || '')}</td><td>${esc(e.design || '')}</td><td class="n">${esc(e.n || '')}</td><td>${e.title ? `<div class="muted small">${esc(e.title)}</div>` : ''}${esc(e.finding || '')}</td><td>${e.sponsor_funded === true ? 'Yes' : e.sponsor_funded === false ? 'No' : 'n/a'}</td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">No published study was found for this product. It is graded V everywhere it appears.</div>'}
   ${(p.sources || []).length ? `<details class="more"><summary>Sources (${p.sources.length})</summary><div class="srcs" style="margin-top:8px">${p.sources.map(s => /^https?:/.test(s) ? `<a href="${esc(s)}" target="_blank" rel="noopener">${esc(s)}</a>` : `<span>${esc(s)}</span>`).join('')}</div></details>` : ''}
   <div class="muted small">Last reviewed ${esc(p.last_reviewed || META.reviewed || '')}. Permalink: <a href="#p-${esc(p.id)}">#p-${esc(p.id)}</a></div>`;
   dlgBody.querySelector('#pdlg-close').addEventListener('click', () => dlg.close());

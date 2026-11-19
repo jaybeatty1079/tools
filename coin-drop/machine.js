@@ -3,9 +3,9 @@
    route it takes to get there, so the piles always match the numbers. One cabinet serves both machines: a single paycheck
    and a whole company's payroll differ only in the scenario they are given.
 
-   With Pulse off the cabinet is plain: muted colors, no lights. Switching Pulse on transforms it: `engage` runs 0 to 1 and
-   every color, glow and moving part reads from it. A Pulse run has three acts:
-     drop    payroll falls; $1,200 lands in the Pulse Section 125 tray beside the other withholdings
+   With the plan off the cabinet is plain: muted colors, no lights. Switching the plan on transforms it: `engage` runs 0 to 1 and
+   every color, glow and moving part reads from it. A plan run has three acts:
+     drop    payroll falls; $1,200 lands in the Section 125 tray beside the other withholdings
      armed   the last coin into the employee's tray trips the Trigger
      payout  a hidden door pays the Wellness Reward into the employee's tray, and the Section 125 tray empties:
              most of it leaves through a side door, and the Plan $ part runs down a chute to its own box */
@@ -20,16 +20,16 @@
   const money = (v) => '$' + Math.round(v).toLocaleString('en-US');
 
   // Colors: the lit palette, and a muted one made from it for the plain machine.
-  const LIT = { taxes: [255, 122, 102], health: [63, 208, 192], k401: [245, 194, 75], pulse: [75, 163, 245], plan: [75, 163, 245], fee: [198, 240, 66], company: [198, 240, 66], bank: [183, 156, 255], ink: [243, 246, 250], mute: [196, 206, 222], line: [59, 71, 98] };
+  const LIT = { taxes: [255, 122, 102], health: [63, 208, 192], k401: [245, 194, 75], wellness: [75, 163, 245], plan: [75, 163, 245], fee: [198, 240, 66], company: [198, 240, 66], bank: [183, 156, 255], ink: [243, 246, 250], mute: [196, 206, 222], line: [59, 71, 98] };
   const DULL = {};
   for (const k in LIT) { const [r, g, b] = LIT[k], y = 0.3 * r + 0.59 * g + 0.11 * b; DULL[k] = [r, g, b].map((v) => (v * 0.3 + y * 0.7) * 0.78); }
   DULL.ink = [230, 233, 238]; DULL.mute = [200, 205, 214]; DULL.line = [58, 62, 70];
   let P = {}; // this frame's palette, as [r, g, b]
   const rgb = (k, a = 1) => 'rgba(' + P[k][0] + ',' + P[k][1] + ',' + P[k][2] + ',' + a + ')';
-  // Lettering stays readable on the plain machine: its muted color is lifted toward white, then runs to full color with Pulse on.
+  // Lettering stays readable on the plain machine: its muted color is lifted toward white, then runs to full color with the plan on.
   const tint = (k) => 'rgb(' + [0, 1, 2].map((i) => { const d = DULL[k][i] * 0.5 + 116; return Math.round(d + (LIT[k][i] - d) * engage); }).join(',') + ')';
 
-  // Columns are 38 apart; a coin moves half a column at every peg row. With Pulse on the peg rows close up by a pixel each
+  // Columns are 38 apart; a coin moves half a column at every peg row. With the plan on the peg rows close up by a pixel each
   // and the four trays ride up by UP.
   const X = (p) => 280 + 38 * p;
   const A0 = 104, ROWS_A = 14, UP = 14, TRAY_TOP = 290, TRAY_BOT = 370, B0 = 426, ROWB = 15, ROWS_B = 4, SHELF = 500, BANK_TOP = 512, BANK_BOT = 606;
@@ -37,27 +37,27 @@
     taxes: { x: 71, w: 114, cols: 12, bottom: TRAY_BOT, tray: true, name: ['PAYROLL TAXES'] },
     health: { x: 223, w: 76, cols: 7, bottom: TRAY_BOT, tray: true, name: ['HEALTH', 'INSURANCE'] },
     k401: { x: 341, w: 30, cols: 3, bottom: TRAY_BOT, tray: true, name: ['401(k)'] },
-    pulse: { x: 402, w: 90, cols: 9, bottom: TRAY_BOT, tray: true, rise: 5.4, name: ['SECTION 125', 'WELLNESS'] },
+    wellness: { x: 402, w: 90, cols: 9, bottom: TRAY_BOT, tray: true, rise: 5.4, name: ['SECTION 125', 'WELLNESS'] },
     bank: { x: 150, w: 260, cols: 26, bottom: BANK_BOT, fromRight: true },
     plan: { x: 444, w: 72, cols: 6, bottom: 592 },
     fee: { x: 52, w: 72, cols: 6, bottom: 586 },
     backL: { x: 50, w: 92, cols: 8, bottom: 93 },
     backR: { x: 418, w: 92, cols: 8, bottom: 93 },
   };
-  const COLS = { taxes: [-5, -4, -3], health: [-1, 0], k401: [2], pulse: [4, 5] };
+  const COLS = { taxes: [-5, -4, -3], health: [-1, 0], k401: [2], wellness: [4, 5] };
   const LIFT = { L: 21, R: 539 }, OPEN = 380; // the two return lifts; where the shelf ends and the opening begins
   const DOOR = { x: 421, y: 470, w: 17, h: 26 }; // the hidden reward door, in the wall beside the opening
   const CUP = { col: 1, x: 318, top: 428, bottom: 452, seat: 445 }; // the Trigger: a catch cup under the pre-tax row, in the gap between two trays
 
   let S = M.single(), scope = 'employee';
-  let pulse = false, engage = 0, running = false, finished = false, finishedAt = 0, clock = 0, coins = [], released = 0, raf = 0, last = 0, quiet = false;
+  let wellness = false, engage = 0, running = false, finished = false, finishedAt = 0, clock = 0, coins = [], released = 0, raf = 0, last = 0, quiet = false;
   let reserved = {}, landed = {}, resting = {}, hit = {}, flashes = [], face = 146, prevFace = 146, pushing = false;
   let lastCoin = null, lastOut = false, sweepT = 0, act = 'idle', through = 0, firedAt = -9, trigHit = -9, paidIn = 0, sideDoor = 0, rewardDoor = 0;
   const listeners = [];
   const emit = () => listeners.forEach((fn) => fn(api.state()));
-  const sfx = (name, lime) => { if (!quiet && api.sfx) api.sfx(name, { pulse, lime }); };
-  const mode = () => (pulse ? 'on' : 'off');
-  const rowA = () => (pulse ? 12 : 13), lifted = () => (pulse ? UP : 0);
+  const sfx = (name, lime) => { if (!quiet && api.sfx) api.sfx(name, { wellness, lime }); };
+  const mode = () => (wellness ? 'on' : 'off');
+  const rowA = () => (wellness ? 12 : 13), lifted = () => (wellness ? UP : 0);
 
   const pick = (a) => a[Math.floor(Math.random() * a.length)];
   function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
@@ -71,7 +71,7 @@
   function plan(c, i) {
     const q = [], row = rowA(), endA = A0 + ROWS_A * row;
     const side = i % 2 ? 'R' : 'L';
-    const j = c.last ? CUP.col : c.dest === 'company' ? (side === 'L' ? -6 : 6) : c.dest === 'fee' ? -6 : pick(c.dest === 'bank' ? (pulse ? [-2, 3] : [-2, 1, 3, 4, 5]) : COLS[c.dest]);
+    const j = c.last ? CUP.col : c.dest === 'company' ? (side === 'L' ? -6 : 6) : c.dest === 'fee' ? -6 : pick(c.dest === 'bank' ? (wellness ? [-2, 3] : [-2, 1, 3, 4, 5]) : COLS[c.dest]);
     let p = 0, r = 0;
     for (const s of hops(ROWS_A, 7 + j)) { p += s; r++; q.push({ x: X(p), y: A0 + r * row, dur: 0.12 + Math.random() * 0.05, kind: 'hop', peg: r < ROWS_A }); }
     if (c.last) {
@@ -90,7 +90,7 @@
       q.push({ x: X(j), y: endA + 18, dur: 0.16, kind: 'fall' }, { x: cx, y: endA + 28, dur: 0.14, kind: 'line' }, { x: cx, y: 58, dur: 1.0, kind: 'line' },
         { x: cx + dir * 22, y: 54, dur: 0.12, kind: 'line' }, { reserve: side === 'L' ? 'backL' : 'backR' });
     } else if (c.dest === 'fee') {
-      // Into the left cup, then down the fee chute to the Pulse admin fee box.
+      // Into the left cup, then down the fee chute to the plan admin fee box.
       q.push({ x: X(j), y: endA + 18, dur: 0.16, kind: 'fall' }, { x: LIFT.L, y: endA + 30, dur: 0.14, kind: 'line' }, { x: LIFT.L, y: 526, dur: 0.8, kind: 'line' },
         { x: 46, y: 540, dur: 0.12, kind: 'line' }, { reserve: 'fee' });
     } else q.push({ reserve: c.dest });
@@ -105,12 +105,12 @@
   function load() {
     reset();
     const counts = S.coins[mode()];
-    for (const key of M.KEYS) for (let i = 0; i < counts[key]; i++) coins.push({ dest: key, lime: pulse && (key === 'company' || key === 'fee') });
+    for (const key of M.KEYS) for (let i = 0; i < counts[key]; i++) coins.push({ dest: key, lime: wellness && (key === 'company' || key === 'fee') });
     shuffle(coins);
-    // With Pulse on, one coin headed for the employee is held back until everything else has landed. It then drops alone
+    // With the plan on, one coin headed for the employee is held back until everything else has landed. It then drops alone
     // into the Trigger cup.
     lastCoin = null; lastOut = false;
-    if (pulse) for (let i = coins.length - 1; i >= 0; i--) if (coins[i].dest === 'bank') { lastCoin = coins[i]; lastCoin.last = true; break; }
+    if (wellness) for (let i = coins.length - 1; i >= 0; i--) if (coins[i].dest === 'bank') { lastCoin = coins[i]; lastCoin.last = true; break; }
     let back = 0;
     coins.forEach((c, i) => {
       c.wait = c.last ? 1e9 : i * 0.012; c.state = 'wait'; c.x = 280; c.y = A0 - 6;
@@ -127,7 +127,7 @@
         q: [{ x: 393 + Math.random() * 14, y: SHELF + 1, dur: 0.16, kind: 'hop' }, { reserve: 'bank' }] });
     }
     // Top of the tray first. The last few, the Plan $ part, leave by the same door and run down the chute.
-    const pile = resting.pulse.filter(Boolean).sort((a, b) => b.n - a.n), keep = S.after.planCoins, doorY = TRAY_BOT - UP - 20;
+    const pile = resting.wellness.filter(Boolean).sort((a, b) => b.n - a.n), keep = S.after.planCoins, doorY = TRAY_BOT - UP - 20;
     pile.forEach((c, k) => {
       const toPlan = k >= pile.length - keep;
       c.leaving = true; c.state = 'wait'; c.wait = 0.2 + k * 0.012;
@@ -172,8 +172,8 @@
   }
   function step(dt) {
     clock += dt;
-    engage += ((pulse ? 1 : 0) - engage) * Math.min(1, dt / 0.4);
-    if (Math.abs((pulse ? 1 : 0) - engage) < 0.004) engage = pulse ? 1 : 0;
+    engage += ((wellness ? 1 : 0) - engage) * Math.min(1, dt / 0.4);
+    if (Math.abs((wellness ? 1 : 0) - engage) < 0.004) engage = wellness ? 1 : 0;
     while (flashes.length && clock - flashes[0].t > 0.42) flashes.shift();
     sweep(dt);
     const opening = act === 'payout' ? 1 : 0;
@@ -186,7 +186,7 @@
       if (c.state === 'wait') {
         c.wait -= dt;
         if (c.wait <= 0) {
-          if (c.leaving) { resting.pulse[c.n] = undefined; landed.pulse--; c.leaving = false; } else if (!c.reward) released++;
+          if (c.leaving) { resting.wellness[c.n] = undefined; landed.wellness--; c.leaving = false; } else if (!c.reward) released++;
           next(c);
         }
         continue;
@@ -207,7 +207,7 @@
       }
     }
     if (lastCoin && !lastOut && act === 'drop' && done === coins.length - 1) { lastOut = true; lastCoin.wait = 0.55; sfx('ready'); } // everything else is home: send the last coin
-    if (done === coins.length && (act === 'payout' || (act === 'drop' && !pulse))) { running = false; finished = true; finishedAt = clock; act = 'done'; sfx('finish'); emit(); }
+    if (done === coins.length && (act === 'payout' || (act === 'drop' && !wellness))) { running = false; finished = true; finishedAt = clock; act = 'done'; sfx('finish'); emit(); }
   }
 
   /* ---------- sprites and the two static cabinets, drawn once ---------- */
@@ -226,7 +226,7 @@
     });
   }
   const GOLD = coinSprite('#FFF1BF', '#EBC562', '#B98A2A', '#8A6418', 1), LIME = coinSprite('#F6FFB8', '#C6F042', '#8DAE1C', '#5F7A10', 1);
-  const BLUE = coinSprite('#D9EEFF', '#5BB0FA', '#2A74C4', '#1B4F8C', 1); // the Wellness Reward, paid by Pulse
+  const BLUE = coinSprite('#D9EEFF', '#5BB0FA', '#2A74C4', '#1B4F8C', 1); // the Wellness Reward, paid by the plan provider
   const WORN = coinSprite('#CFC7AE', '#A39A7E', '#6E6752', '#494435', 0.35); // the plain machine's coins
   const halo = (r, g, b) => layer(32, 32, (c) => {
     const grad = c.createRadialGradient(16, 16, 2, 16, 16, 15); grad.addColorStop(0, 'rgba(' + r + ',' + g + ',' + b + ',.55)'); grad.addColorStop(1, 'rgba(' + r + ',' + g + ',' + b + ',0)');
@@ -274,10 +274,10 @@
     const d = S.dollars[mode()], n = S.coins[mode()];
     if (key === 'company') return finished ? d.company : Math.min(d.company, (landed.backL + landed.backR) * S.coin);
     if (key === 'plan') return finished ? S.after.plan : Math.min(S.after.plan, landed.plan * S.coin);
-    if (key === 'pulse') return act === 'payout' || act === 'done' ? (landed.pulse ? landed.pulse * S.coin : 0) : landed.pulse >= n.pulse ? d.pulse : landed.pulse * S.coin;
+    if (key === 'wellness') return act === 'payout' || act === 'done' ? (landed.wellness ? landed.wellness * S.coin : 0) : landed.wellness >= n.wellness ? d.wellness : landed.wellness * S.coin;
     if (key === 'bank') {
       const pay = landed.bank - paidIn >= n.bank ? d.bank : Math.min(d.bank, (landed.bank - paidIn) * S.coin);
-      return pay + (finished && pulse ? S.after.reward : paidIn * S.coin);
+      return pay + (finished && wellness ? S.after.reward : paidIn * S.coin);
     }
     return finished ? d[key] : Math.min(d[key], landed[key] * S.coin);
   }
@@ -290,7 +290,7 @@
         const x = X(m + (whole ? 0 : 0.5)), y = y0 + r * row + 6.5;
         if (x < 46 || x > 514) continue;
         if (lit && y0 === B0 && r === 1 && (x === X(0) || x === X(1))) continue; // the Trigger cup and its plate sit here
-        // With Pulse on, two bands of light sweep the posts: one blue running down to the right, one lime running back.
+        // With the plan on, two bands of light sweep the posts: one blue running down to the right, one lime running back.
         const blue = lit && Math.sin(clock * 2.6 - x * 0.021 - y * 0.034) > 0.93, lime = lit && !blue && Math.sin(clock * 1.9 + x * 0.027 - y * 0.02 + 2) > 0.965;
         if (blue || lime) ctx.drawImage(blue ? BGLOW : GLOW, x - 9, y - 9, 18, 18);
         ctx.beginPath(); ctx.arc(x, y, blue || lime ? 2.9 : 2.4, 0, TAU); ctx.fillStyle = blue ? '#a9d6ff' : lime ? '#e6ff8a' : lit ? '#5d6b84' : '#4a4d55'; ctx.fill();
@@ -299,23 +299,23 @@
     }
   }
   function tray(key, up) {
-    const b = BINS[key], isPulse = key === 'pulse', dx = isPulse ? (1 - engage) * 150 : 0, alpha = isPulse ? engage : 1, top = TRAY_TOP - up, bot = TRAY_BOT - up;
+    const b = BINS[key], isWellness = key === 'wellness', dx = isWellness ? (1 - engage) * 150 : 0, alpha = isWellness ? engage : 1, top = TRAY_TOP - up, bot = TRAY_BOT - up;
     if (alpha < 0.02) return;
     ctx.save(); ctx.globalAlpha = alpha; ctx.translate(dx, 0);
     const grad = ctx.createLinearGradient(0, top, 0, bot); grad.addColorStop(0, rgb(key, 0.05)); grad.addColorStop(1, rgb(key, 0.1 + 0.12 * engage));
     rr(b.x, top, b.w, bot - top + 2, 5); ctx.fillStyle = grad; ctx.fill();
     resting[key].forEach((c) => c && coin(c));
-    glow(key, (isPulse ? 12 : 3) + 12 * justHit(key));
+    glow(key, (isWellness ? 12 : 3) + 12 * justHit(key));
     rr(b.x, top, b.w, bot - top + 2, 5); ctx.lineWidth = 2; ctx.strokeStyle = rgb(key); ctx.stroke(); noGlow();
     ctx.beginPath(); ctx.moveTo(b.x + 5, top + 3.5); ctx.lineTo(b.x + b.w - 5, top + 3.5); ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(255,255,255,' + 0.2 * engage + ')'; ctx.stroke();
-    if (isPulse) {
+    if (isWellness) {
       for (let i = 0; i < 9; i++) { // a strip of lights chasing along the new tray
         ctx.beginPath(); ctx.arc(b.x + 6 + i * 9.8, top - 5, 1.6, 0, TAU);
-        ctx.fillStyle = (Math.floor(clock * 8) + i) % 3 === 0 ? rgb('company') : rgb('pulse', 0.35); ctx.fill();
+        ctx.fillStyle = (Math.floor(clock * 8) + i) % 3 === 0 ? rgb('company') : rgb('wellness', 0.35); ctx.fill();
       }
       // The side door, low on the right wall: shut during the drop, swung open for the payout.
       ctx.save(); ctx.translate(b.x + b.w, bot - 36); ctx.rotate(-1.2 * sideDoor);
-      rr(-2, 0, 4, 32, 2); ctx.fillStyle = sideDoor > 0.1 ? rgb('ink') : rgb('pulse'); ctx.fill(); ctx.restore();
+      rr(-2, 0, 4, 32, 2); ctx.fillStyle = sideDoor > 0.1 ? rgb('ink') : rgb('wellness'); ctx.fill(); ctx.restore();
     }
     const cx = b.x + b.w / 2;
     b.name.forEach((line, i) => text(line, cx, bot + 17 + i * 15, 14, tint(key)));
@@ -334,15 +334,15 @@
       for (let y = cupY + 14 - ((clock * 60) % 30); y > 56; y -= 30) { ctx.beginPath(); ctx.moveTo(cx - 5, y + 5); ctx.lineTo(cx, y); ctx.lineTo(cx + 5, y + 5); ctx.stroke(); }
       ctx.beginPath(); ctx.arc(cupX + 12, cupY - 6, 2.2, 0, TAU); ctx.fillStyle = blink(3, side === 'L' ? 0 : 1) ? rgb('company') : rgb('company', 0.25); ctx.fill();
     } else { rr(cupX - 1, cupY - 2, 26, 4, 2); ctx.fillStyle = rgb('line'); ctx.fill(); } // lid shut on the plain machine
-    // The wing: shuttered when plain, open and lit with Pulse on.
+    // The wing: shuttered when plain, open and lit with the plan on.
     rr(bin.x, 66, bin.w, 29, 4); ctx.fillStyle = rgb('company', 0.04 + 0.08 * engage); ctx.fill();
-    glow('company', 6 + 12 * justHit(name) + (finished && pulse ? 8 : 0)); ctx.stroke(); noGlow();
+    glow('company', 6 + 12 * justHit(name) + (finished && wellness ? 8 : 0)); ctx.stroke(); noGlow();
     if (engage < 0.98) { ctx.globalAlpha = (1 - engage) * 0.9; ctx.beginPath(); for (let x = bin.x + 8; x < bin.x + bin.w; x += 8) { ctx.moveTo(x, 69); ctx.lineTo(x, 92); } ctx.lineWidth = 1; ctx.strokeStyle = rgb('line'); ctx.stroke(); }
     ctx.globalAlpha = 1;
     resting[name].forEach((c) => c && coin(c));
   }
-  // A chute down one side into a small box at the bottom. Left, in the Company's color: the Pulse admin fee, paid out of the
-  // company's savings. Right, in Pulse blue: Plan $, the part of the Section 125 withholding that funds the benefits.
+  // A chute down one side into a small box at the bottom. Left, in the Company's color: The plan admin fee, paid out of the
+  // company's savings. Right, in plan blue: Plan $, the part of the Section 125 withholding that funds the benefits.
   function sideBox(key, tubeX, tubeTop, label) {
     const b = BINS[key], cx = b.x + b.w / 2, top = b.bottom - 38;
     ctx.globalAlpha = 0.25 + 0.75 * engage;
@@ -366,14 +366,14 @@
     ctx.clearRect(0, 0, W, H);
     ctx.drawImage(PLAIN, 0, 0, W, H);
     if (engage > 0.01) { ctx.globalAlpha = engage; ctx.drawImage(LITUP, 0, 0, W, H); ctx.globalAlpha = 1; }
-    const many = scope === 'company', won = finished && pulse, up = UP * engage, paying = act === 'armed' || act === 'payout';
-    // With Pulse on the lights come up: a wash of blue over the right of the glass.
+    const many = scope === 'company', won = finished && wellness, up = UP * engage, paying = act === 'armed' || act === 'payout';
+    // With the plan on the lights come up: a wash of blue over the right of the glass.
     if (engage > 0.01) {
       const wash = ctx.createRadialGradient(451, 320, 10, 451, 320, 300); wash.addColorStop(0, 'rgba(75,163,245,' + 0.13 * engage + ')'); wash.addColorStop(1, 'rgba(75,163,245,0)');
       rr(38, 36, 484, 576, 9); ctx.fillStyle = wash; ctx.fill();
     }
-    // Marquee: the title, then what to do next, then the result. Its bulbs only run with Pulse on.
-    rr(38, 5, 484, 26, 8); ctx.lineWidth = 1.5; ctx.strokeStyle = rgb(pulse ? 'pulse' : 'line'); glow('pulse', 10); ctx.stroke(); noGlow();
+    // Marquee: the title, then what to do next, then the result. Its bulbs only run with the plan on.
+    rr(38, 5, 484, 26, 8); ctx.lineWidth = 1.5; ctx.strokeStyle = rgb(wellness ? 'wellness' : 'line'); glow('wellness', 10); ctx.stroke(); noGlow();
     if (won) text('+' + money(S.delta.company) + ' BACK TO THE COMPANY  ·  +' + money(S.delta.bank) + (many ? ' TO EMPLOYEES' : ' TO THE EMPLOYEE'), 280, 22.5, 12, rgb('company'));
     else if (paying) text('TRIGGERED!   WELLNESS REWARD  +' + money(S.after.reward), 280, 23, 13, '#8fcbff');
     else if (lastOut) { if (Math.floor(clock * 5) % 2 === 0) text('L A S T   C O I N  →  T R I G G E R', 280, 23, 12.5, '#FFE9A6'); }
@@ -415,8 +415,8 @@
     ctx.globalAlpha = 1;
 
     // First level of trays: everything withheld from the paycheck.
-    for (const key of ['taxes', 'health', 'k401', 'pulse']) tray(key, up);
-    if (engage > 0.02) { // where the tax pile stood without Pulse, and how much less it holds
+    for (const key of ['taxes', 'health', 'k401', 'wellness']) tray(key, up);
+    if (engage > 0.02) { // where the tax pile stood without the plan, and how much less it holds
       const rows = Math.ceil(S.coins.off.taxes / BINS.taxes.cols), y = TRAY_BOT - up - rows * 6 - 5;
       ctx.globalAlpha = engage;
       ctx.setLineDash([4, 3]); ctx.beginPath(); ctx.moveTo(73, y); ctx.lineTo(183, y); ctx.strokeStyle = rgb('ink'); ctx.lineWidth = 1; ctx.stroke(); ctx.setLineDash([]);
@@ -427,7 +427,7 @@
     }
 
     // The caption under the row: these trays are filled before take-home pay is figured. The bracket grows to take in
-    // the Section 125 tray when Pulse is on.
+    // the Section 125 tray when the plan is on.
     {
       const y = 430 - up, xr = 371 + 121 * engage, mid = (71 + xr) / 2;
       ctx.beginPath(); ctx.moveTo(71, y - 5); ctx.lineTo(71, y); ctx.lineTo(xr, y); ctx.lineTo(xr, y - 5); ctx.lineWidth = 1.2; ctx.strokeStyle = rgb('mute'); ctx.stroke();
@@ -536,30 +536,30 @@
     last = now;
     step(dt); draw();
     // The lit machine never sits still; the plain one stops as soon as nothing is moving.
-    const busy = running || engage !== (pulse ? 1 : 0) || flashes.length || (pulse && seen && !still.matches);
+    const busy = running || engage !== (wellness ? 1 : 0) || flashes.length || (wellness && seen && !still.matches);
     if (busy) raf = requestAnimationFrame(frame); else { raf = 0; last = 0; }
   }
   const kick = () => { if (!raf) { last = 0; raf = requestAnimationFrame(frame); } };
-  const settle = () => { if (still.matches) engage = pulse ? 1 : 0; emit(); draw(); kick(); };
+  const settle = () => { if (still.matches) engage = wellness ? 1 : 0; emit(); draw(); kick(); };
   new IntersectionObserver((e) => { seen = e[e.length - 1].isIntersecting; if (seen) kick(); }).observe(cv);
 
   const api = {
     sfx: null, // set by sound.js
     on(fn) { listeners.push(fn); },
-    state: () => ({ pulse, scope, running, finished, act, lastOut, landed: { ...landed, company: landed.backL + landed.backR, reward: paidIn }, total: coins.length, scenario: S }),
+    state: () => ({ wellness, scope, running, finished, act, lastOut, landed: { ...landed, company: landed.backL + landed.backR, reward: paidIn }, total: coins.length, scenario: S }),
     // How full each tray and box is, 0..1 of its final count, for a companion figure; plus what is moving.
     levels() {
       const n = S.coins, f = (a, b) => (b ? Math.max(0, Math.min(1, a / b)) : 0);
-      return { taxes: f(landed.taxes, n.off.taxes), health: f(landed.health, n.off.health), k401: f(landed.k401, n.off.k401), s125: f(landed.pulse, n.on.pulse),
+      return { taxes: f(landed.taxes, n.off.taxes), health: f(landed.health, n.off.health), k401: f(landed.k401, n.off.k401), s125: f(landed.wellness, n.on.wellness),
         bank: f(landed.bank - paidIn, n.off.bank), reward: f(paidIn, S.after.rewardCoins), company: f(landed.backL + landed.backR, n.on.company), fee: f(landed.fee, n.on.fee), plan: f(landed.plan, S.after.planCoins),
-        belt: running && act === 'drop' ? 1 : 0, tripped: pulse && (act === 'armed' || act === 'payout' || act === 'done') ? 1 : 0, pulse };
+        belt: running && act === 'drop' ? 1 : 0, tripped: wellness && (act === 'armed' || act === 'payout' || act === 'done') ? 1 : 0, wellness };
     },
-    setPulse(v) { pulse = !!v; reset(); sfx(pulse ? 'engage' : 'disengage'); settle(); },
+    setWellness(v) { wellness = !!v; reset(); sfx(wellness ? 'engage' : 'disengage'); settle(); },
     // Which payroll the cabinet runs: 'employee' (one paycheck) or 'company' (everyone).
     setScenario(s, which) { S = s; scope = which; reset(); settle(); },
     start() { load(); running = true; sfx('start'); emit(); if (still.matches) api.finish(); else kick(); },
     // Runs the drop forward at once and silently: to the end for reduced motion and tests, or a few seconds for a mid-drop picture.
-    finish(seconds = 100) { if (!coins.length) load(); running = true; engage = pulse ? 1 : 0; quiet = true; for (let i = 0; i < seconds * 60 && running; i++) step(1 / 60); quiet = false; draw(); kick(); },
+    finish(seconds = 100) { if (!coins.length) load(); running = true; engage = wellness ? 1 : 0; quiet = true; for (let i = 0; i < seconds * 60 && running; i++) step(1 / 60); quiet = false; draw(); kick(); },
   };
   window.COIN_MACHINE = api;
   reset(); draw();

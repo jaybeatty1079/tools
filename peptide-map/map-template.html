@@ -12,14 +12,14 @@
 <style>
 /* Layout: one sheet, the United States in the middle with one symbol per state sized by its count of 503B facilities, three inset panels at the edges for the origins the documents name, a rail of tables on the right, the chronology (zoomed on the decade that matters, in lanes) and the court rulings below, then the register, everything footnoted into one sources list. */
 :root{
-  --paper:#edeeea; --paper2:#e3e5df; --ink:#1e2226; --ink2:#4b525a; --muted:#737b84; --rule:#c9cdc6;
+  --paper:#edeeea; --paper2:#e3e5df; --ink:#1e2226; --ink2:#4b525a; --muted:#5e666f; --rule:#c9cdc6;
   --water:#d6dde0; --land:#f6f6f2; --land2:#e9eae3;
   --tol:#2f4f8f; --enf:#8f2b2b; --lawful:#4f6b4a; --single:#8a8f96; --pin:#1e2226; --pinhalo:#f6f6f2;
   --serif:"Source Serif 4",Georgia,"Times New Roman",serif; --sans:"IBM Plex Sans",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
   color-scheme:light;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#161a1e;--paper2:#1e2328;--ink:#e6e8e3;--ink2:#b9bec4;--muted:#8d949c;--rule:#333a41;--water:#1b2228;--land:#242a30;--land2:#2b323a;--tol:#8fb0ec;--enf:#e07a7a;--lawful:#9cc08f;--single:#8d949c;--pin:#e6e8e3;--pinhalo:#161a1e;color-scheme:dark}}
-:root[data-theme="dark"]{--paper:#161a1e;--paper2:#1e2328;--ink:#e6e8e3;--ink2:#b9bec4;--muted:#8d949c;--rule:#333a41;--water:#1b2228;--land:#242a30;--land2:#2b323a;--tol:#8fb0ec;--enf:#e07a7a;--lawful:#9cc08f;--single:#8d949c;--pin:#e6e8e3;--pinhalo:#161a1e;color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#161a1e;--paper2:#1e2328;--ink:#e6e8e3;--ink2:#b9bec4;--muted:#8d949c;--rule:#333a41;--water:#1b2228;--land:#242a30;--land2:#2b323a;--tol:#8fb0ec;--enf:#e07a7a;--lawful:#9cc08f;--single:#8d949c;--pin:#e6e8e3;--pinhalo:#161a1e;--symn:#161a1e;color-scheme:dark}}
+:root[data-theme="dark"]{--paper:#161a1e;--paper2:#1e2328;--ink:#e6e8e3;--ink2:#b9bec4;--muted:#8d949c;--rule:#333a41;--water:#1b2228;--land:#242a30;--land2:#2b323a;--tol:#8fb0ec;--enf:#e07a7a;--lawful:#9cc08f;--single:#8d949c;--pin:#e6e8e3;--pinhalo:#161a1e;--symn:#161a1e;color-scheme:dark}
 *{box-sizing:border-box}
 html,body{margin:0}
 body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;padding-block:0 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -64,7 +64,7 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:24px 28px;margin
 .pin.warning{stroke:var(--enf);stroke-width:1.8}
 .pin.dim{opacity:.1}
 .sym{fill:var(--tol);fill-opacity:.85;stroke:var(--paper);stroke-width:1.5;cursor:pointer}.sym.z{fill:none;stroke:var(--muted);stroke-width:1;stroke-dasharray:2 3;cursor:default}.sym.dim{fill-opacity:.25}
-.symn{font-family:var(--mono);font-size:13px;font-weight:500;fill:#fff;text-anchor:middle;pointer-events:none}.symn.big{font-size:17px}.syms{font-family:var(--mono);font-size:9px;fill:var(--ink2);text-anchor:middle;pointer-events:none}.lead{stroke:var(--muted);stroke-width:.7;fill:none}
+.symn{font-family:var(--mono);font-size:13px;font-weight:500;fill:var(--symn,#fff);text-anchor:middle;pointer-events:none}.symn.big{font-size:17px}.syms{font-family:var(--mono);font-size:9px;fill:var(--ink2);text-anchor:middle;pointer-events:none}.lead{stroke:var(--muted);stroke-width:.7;fill:none}
 .lane{font-family:var(--mono);font-size:10px;fill:var(--ink2)}.lane-line{stroke:var(--rule)}.yrline{stroke:var(--rule);stroke-dasharray:2 3}.ev.court{fill:var(--ink)}.k.court{background:var(--ink)}
 .courts{margin-top:30px;border-top:1.5px solid var(--ink);padding-top:12px}.courts .sub{max-width:80ch;color:var(--ink2);margin:0 0 10px}.courts table{font-size:.82rem}.courts td:nth-child(1){white-space:nowrap;font-family:var(--mono);font-size:.74rem;font-weight:400}.courts .kind{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:block;margin-top:2px}.courts .lesson{color:var(--ink);font-family:var(--serif);font-size:.98rem;line-height:1.4}.courts .pattern{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 28px;margin:14px 0 0;padding:0;list-style:none;font-size:.84rem;color:var(--ink2)}.courts .pattern b{color:var(--ink)}
 .legend text{font-size:10.5px;fill:var(--ink2)}

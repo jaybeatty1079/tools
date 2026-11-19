@@ -7,6 +7,7 @@
 <meta name="description" content="What Iomist does for a produce grower: run one recall twice, follow one clamshell from the field to the shelf, and read the common questions. An illustration from public sources.">
 <link rel="icon" href="../favicon.svg?v=2" type="image/svg+xml"><link rel="icon" href="../favicon.ico?v=2" sizes="32x32"><link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -279,7 +280,7 @@ h1{font-size:26px}
 <body>
 <div class="app plain">
 <header>
-  <img src="assets/iomist-logo-teal.svg" alt="Iomist">
+  <img src="assets/iomist-logo-teal.svg" alt="Iomist" width="103" height="22">
   <nav class="story" aria-label="The story">
     <button data-mode="start" class="on"><b>Start</b><span>What Iomist does</span></button>
     <button data-mode="drill"><b>1 &middot; Try it</b><span>The recall call</span></button>
@@ -388,7 +389,7 @@ h1{font-size:26px}
   <h1>Where do you stand?</h1>
   <p class="sub">A short set of questions against FDA's traceability rule and what your buyers have published. A self-check, not a compliance determination.</p>
   <div class="rgrid">
-    <canvas id="rcv" aria-label="A map of your farm's records, lit by your answers"></canvas>
+    <canvas id="rcv" role="img" aria-label="A map of your farm's records, lit by your answers"></canvas>
     <div>
       <div class="qcard" id="qcard"></div>
     </div>
@@ -433,7 +434,7 @@ h1{font-size:26px}
 <footer><span>Illustration built from public sources (read 2026-11-04 and 2026-11-08) and Iomist’s own materials. Retailer names refer to their published supplier requirements. This is not a compliance determination.</span><span>Built by <a href="https://www.jaybeatty.com">Jay Beatty</a></span></footer>
 </div>
 
-<dialog id="srcDlg"><h2 style="margin-top:0">Sources</h2><p class="hint">Everything marked published comes from one of these, read 2026-11-04.</p><ul id="srcList"></ul><form method="dialog"><button class="btn">Close</button></form></dialog>
+<dialog id="srcDlg" aria-labelledby="srcDlgH"><h2 id="srcDlgH" style="margin-top:0">Sources</h2><p class="hint">Everything marked published comes from one of these, read 2026-11-04.</p><ul id="srcList"></ul><form method="dialog"><button class="btn">Close</button></form></dialog>
 
 <script src="data.js"></script>
 <script src="model.js"></script>
