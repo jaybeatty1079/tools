@@ -8,6 +8,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="How the CMS TEAM Episode Calculator was built: the timeline, the thirteen public datasets, every modeling decision with the alternatives considered, the CFO review that reshaped it, and what comes next.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: a long-form record in the calculator's Scoreboard palette; one reading column, full-width figures, a sticky section nav. Single committed dark look, matching the tool it documents. */
@@ -52,7 +53,7 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;heigh
 .links a:hover{color:var(--fg);text-decoration:none}
 @media(max-width:860px){.links{display:none}}
 .btn{font-weight:700;display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:6px;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--purple);color:var(--fg);background:transparent}
-.btn.primary{background:var(--purple);border-color:var(--purple)}
+.btn.primary{background:#6D50DD;border-color:#6D50DD;color:#fff}
 .btn:hover{text-decoration:none;filter:brightness(1.1)}
 .hero{padding-block:clamp(40px,6vw,72px);border-top:0;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:40px;align-items:center}
 @media(max-width:900px){.hero{grid-template-columns:1fr}}
@@ -147,7 +148,7 @@ table.fixes td:first-child,.fixes td:first-child{font-weight:600;color:var(--fg)
     <h1 style="margin-top:22px;font-size:clamp(1.6rem,3vw,2.4rem)">Every choice behind the number, with the alternative that lost.</h1>
     <p class="lede" style="margin-top:18px">A calculator is only as good as the choices behind it. This page keeps every one: <strong>the public datasets</strong> and what each supplies, <strong>each modeling decision</strong> with the alternatives that lost, <strong>the CFO review</strong> that reshaped the engine, <strong>the tests</strong> that pin the math to the CMS rules, and the road from a portfolio piece to a product. It is updated as the tool changes.</p>
   </div>
-  <div class="board" aria-label="Record at a glance">
+  <div class="board" role="group" aria-label="Record at a glance">
     <div class="board-head"><span>The record at a glance</span><span class="live">Started Oct 12, 2026 · still iterating</span></div>
     <div class="tiles">
       <div class="tile"><div class="lab">Build passes</div><div class="val" id="nPass">7</div><div class="delta">each one answered a question</div></div>
@@ -307,7 +308,7 @@ table.fixes td:first-child,.fixes td:first-child{font-weight:600;color:var(--fg)
 </div>
 </main>
 <footer><div class="wrap"><span>© 2026 Jay Beatty. Decision record for the TEAM Episode Calculator.</span><span>Last updated October 19, 2026</span></div></footer>
-<div class="tip" id="tip" role="status" aria-live="polite"></div>
+<div class="tip" id="tip"></div>
 
 <script>
 (function(){

@@ -132,7 +132,7 @@ const countPills = c => `${c.est ? `<span class="pill est">${c.est} established<
 
 function render() {
   const r = state.region, a = state.app ? appById[state.app] : null;
-  chipsEl.querySelectorAll('.rchip').forEach(b => b.classList.toggle('on', b.dataset.r === r));
+  chipsEl.querySelectorAll('.rchip').forEach(b => { b.classList.toggle('on', b.dataset.r === r); b.setAttribute('aria-pressed', b.dataset.r === r); });
   stageLabel.textContent = r ? REGION[r].label : 'Choose a region';
   if (!r) { panel.innerHTML = renderOverview(); focusRegion(null); }
   else if (!a) { panel.innerHTML = renderRegion(r); focusRegion(r, pendingSub); pendingSub = null; }
@@ -226,7 +226,7 @@ function openProduct(id) {
   const p = prodById[id]; if (!p) return; const r = p.regulatory || {}, bd = p.bd || {}, pipe = p.pipeline;
   const apps = (p.applications || []).filter(x => appById[x.application_id]).sort((u, v) => gradeOf(u) - gradeOf(v));
   dlgBody.innerHTML = `
-  <div class="dlg-head"><div><div class="eyebrow">${esc(p.company)}</div><h3 style="margin-top:8px">${esc(p.name)}</h3></div><button class="close" type="button" id="pdlg-close">Close</button></div>
+  <div class="dlg-head"><div><div class="eyebrow">${esc(p.company)}</div><h3 id="pdlg-title" style="margin-top:8px">${esc(p.name)}</h3></div><button class="close" type="button" id="pdlg-close">Close</button></div>
   <div class="badges"><span class="badge cat">${esc(p.category)}</span><span class="pill ${p.status === 'established' ? 'est' : p.status === 'emerging' ? 'emg' : 'inv'}">${esc(p.status)}</span>${statusBadge(p)}${p.unverified || r.unverified ? '<span class="badge unv">Unverified fields</span>' : ''}${p.catalog_status_2026 ? `<span class="badge">${esc(p.catalog_status_2026)}</span>` : ''}</div>
   <dl class="kv">
     ${p.composition ? `<dt>Composition</dt><dd>${esc(p.composition)}</dd>` : ''}

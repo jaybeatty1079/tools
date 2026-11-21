@@ -19,6 +19,7 @@
 <meta name="twitter:image" content="https://jaybeatty.com/og/calculator.png">
 <meta name="description" content="Estimate what the CMS Transforming Episode Accountability Model (TEAM) pays or costs your hospital, by track and performance year, using the CMS preliminary target prices for PY1 and PY2.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 :root{--t-fast:150ms;--t-base:260ms;--t-slow:480ms;--ease-out:cubic-bezier(.2,.7,.2,1);--ease-inout:cubic-bezier(.65,0,.35,1)}
@@ -62,7 +63,7 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;heigh
 
 @media(max-width:860px){nav{height:auto;flex-wrap:wrap;padding-block:10px;row-gap:8px}.links{width:100%;padding-bottom:2px;-webkit-overflow-scrolling:touch}}
 .btn{font-weight:700;display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border-radius:6px;font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--purple);color:var(--fg);background:transparent;cursor:pointer}
-.btn.primary{background:var(--purple);border-color:var(--purple)}
+.btn.primary{background:#6D50DD;border-color:#6D50DD;color:#fff}
 .btn.small{padding:7px 11px;font-size:.66rem}
 .btn:hover{text-decoration:none;filter:brightness(1.1)}
 
@@ -94,7 +95,7 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:16px;heigh
 .step .help{font-size:.88rem;color:var(--muted);margin-bottom:14px}
 .field{display:grid;gap:6px;min-width:0}
 .field label{font-size:.82rem;color:var(--muted)}
-.field input[type=text],.field input[type=number],.field input[type=search],.field input[type=email],.field select{width:100%;background:var(--panel);border:1px solid var(--line);color:var(--fg);border-radius:6px;padding:10px 12px;font:inherit;font-size:.95rem;font-variant-numeric:tabular-nums}
+.field input[type=text],.field input[type=number],.field input[type=search],.field input[type=email],.field select{width:100%;background:var(--panel);border:1px solid #6f6890;color:var(--fg);border-radius:6px;padding:10px 12px;font:inherit;font-size:.95rem;font-variant-numeric:tabular-nums}
 .field input:focus,.field select:focus{border-color:var(--purple)}
 .row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
@@ -113,6 +114,8 @@ input[type=radio]{accent-color:var(--purple)}
 @media(max-width:640px){.tracks{grid-template-columns:1fr}}
 .track{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px;cursor:pointer;display:grid;gap:4px;position:relative}
 .track.sel{border-color:var(--purple);box-shadow:0 0 0 1px var(--purple) inset}
+.track.sel .t::before{content:"\2713\00a0";content:"\2713\00a0" / ""}
+.track:has(input:focus-visible){outline:2px solid var(--purple-soft);outline-offset:2px}
 .track.off{opacity:.45;cursor:not-allowed}
 .track .t{font-weight:600}
 .track .d{font-size:.8rem;color:var(--muted)}
@@ -422,7 +425,7 @@ header.open .menu-tg .l3{transform:translateY(-5px) rotate(-45deg)}
   <div class="results" id="results">
     <div class="board">
       <div class="board-head"><span id="resHead">Estimated reconciliation</span><span class="live">Live</span></div>
-      <div class="big"><div class="lab" id="bigLab">Net payment reconciliation amount</div><div class="val" id="npra">$0</div><div class="sub" id="npraSub"></div></div>
+      <div class="big"><div class="lab" id="bigLab">Net payment reconciliation amount</div><div class="val" id="npra" aria-live="polite" aria-atomic="true">$0</div><div class="sub" id="npraSub"></div></div>
       <div class="tiles">
         <div class="tile"><div class="lab">Episodes</div><div class="val" id="tEp">0</div><div class="delta" id="tEpD"></div></div>
         <div class="tile"><div class="lab">Aggregated target price</div><div class="val" id="tTarget">$0</div><div class="delta" id="tTargetD"></div></div>
@@ -621,10 +624,10 @@ header.open .menu-tg .l3{transform:translateY(-5px) rotate(-45deg)}
     </div>
     <form name="team-calculator" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="capForm">
       <input type="hidden" name="form-name" value="team-calculator">
-      <p class="sr"><label>Leave empty: <input name="bot-field"></label></p>
-      <div class="field"><label for="cName">Name</label><input type="text" id="cName" name="name" required></div>
-      <div class="field"><label for="cEmail">Work email</label><input type="email" id="cEmail" name="email" required></div>
-      <div class="field"><label for="cHosp">Hospital or company</label><input type="text" id="cHosp" name="hospital"></div>
+      <p class="sr"><label>Leave empty: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+      <div class="field"><label for="cName">Name</label><input type="text" id="cName" name="name" autocomplete="name" required></div>
+      <div class="field"><label for="cEmail">Work email</label><input type="email" id="cEmail" name="email" autocomplete="email" required></div>
+      <div class="field"><label for="cHosp">Hospital or company</label><input type="text" id="cHosp" name="hospital" autocomplete="organization"></div>
       <input type="hidden" name="scenario" id="cScenario">
       <button class="btn primary" type="submit">Send me this scenario</button>
       <span class="note">No newsletter. One reply from Jay with your scenario summary. The summary holds only the inputs on this page and the hospital name you type here; it is kept in the form inbox for 30 days and then deleted. No patient data is involved.</span>
@@ -635,7 +638,7 @@ header.open .menu-tg .l3{transform:translateY(-5px) rotate(-45deg)}
 </div>
 </main>
 <footer><div class="wrap"><span>© 2026 Jay Beatty. Independent educational tool. Not affiliated with CMS.</span><span>Prices: CMS PY1 (2025-12-10) and PY2 (2026-11-04) preliminary target price workbooks</span></div></footer>
-<div class="tip" id="tip" role="status" aria-live="polite"></div>
+<div class="tip" id="tip"></div>
 
 <script>
 const TP=__TP__;

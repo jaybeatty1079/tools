@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
 <title>The Payroll Fountain</title>
 <meta name="description" content="Section 125 Wellness Illustration Tool. Brass plumbing pours a month of payroll, then shows what a Section 125 wellness plan changes: less to payroll taxes, more to the employee, some pumped back to the company. Illustrative only.">
 <meta property="og:title" content="The Payroll Fountain">
@@ -18,11 +19,11 @@
 <style>
   /* ACA's colors: the logo's gold, the signature's blue, navy behind. One refined look; ACA on adds the blue. */
   :root { --bg:#0A1326; --panel:#111B33; --line:#2A3755; --ink:#F4EEDD; --text:#B9C1D2; --mute:#7F8AA3;
-    --gold:#CFA84F; --gold-hi:#F6E3AC; --gold-lo:#6E5218; --blue:#2F6FD0; --blue-hi:#8FC2FF; --glow:transparent; color-scheme: dark; }
+    --gold:#CFA84F; --gold-hi:#F6E3AC; --gold-lo:#6E5218; --blue:#2F6FD0; --blue-hi:#8FC2FF; --glow:transparent; --ctl:#6a7694; --ctl-gold:#8f7029; color-scheme: dark; }
   body[data-aca="on"] { --glow:#2F6FD099; }
   * { box-sizing: border-box; }
   html, body { margin: 0; }
-  body { background: radial-gradient(900px 500px at 50% -10%, #18264A 0%, var(--bg) 60%) fixed var(--bg); color: var(--text); font: 14.5px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+  body { background: radial-gradient(900px 500px at 50% -10%, #18264A 0%, var(--bg) 60%) fixed var(--bg); color: var(--text); font: 0.90625rem/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
   main { --side: clamp(250px, 30vw, 320px); display: grid; gap: 10px 20px; padding: 10px; grid-template-columns: minmax(0, 1fr); justify-items: center; }
   .top, .bottom { width: min(560px, 100%); }
   canvas { display: block; width: auto; height: auto; max-width: 100%; max-height: calc(100dvh - 20px); box-shadow: 0 30px 60px -30px #000; }
@@ -33,24 +34,24 @@
     .bottom { grid-area: bottom; width: auto; }
   }
   @media (max-width: 759px) { canvas { max-height: calc(100dvh - 232px); } }
-  h1 { font: 500 22px/1.15 Baskerville, "Libre Baskerville", "Hoefler Text", Didot, Georgia, serif; color: var(--ink); margin: 0 0 4px; letter-spacing: .01em; }
-  .kicker { font: 600 9.5px/1 ui-monospace, Menlo, monospace; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); margin: 0 0 10px; }
+  h1 { font: 500 1.375rem/1.15 Baskerville, "Libre Baskerville", "Hoefler Text", Didot, Georgia, serif; color: var(--ink); margin: 0 0 4px; letter-spacing: .01em; }
+  .kicker { font: 600 0.59375rem/1 ui-monospace, Menlo, monospace; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); margin: 0 0 10px; }
 
   button { font-family: inherit; cursor: pointer; transition: background .18s ease-out, border-color .18s ease-out, box-shadow .18s ease-out, color .18s ease-out, transform .1s ease-out; }
   button:active { transform: translateY(1px); }
   button:focus-visible, input:focus-visible { outline: 2px solid var(--gold-hi); outline-offset: 3px; }
 
   .tabs { display: flex; margin: 0 0 10px; }
-  .tabs button { flex: 1; min-height: 36px; font-weight: 600; font-size: 12.5px; letter-spacing: .04em; color: var(--text); background: transparent; border: 1px solid var(--line); margin-left: -1px; }
+  .tabs button { flex: 1; min-height: 36px; font-weight: 600; font-size: 0.78125rem; letter-spacing: .04em; color: var(--text); background: transparent; border: 1px solid var(--ctl); margin-left: -1px; }
   .tabs button:first-child { margin-left: 0; border-radius: 6px 0 0 6px; }
   .tabs button:last-child { border-radius: 0 6px 6px 0; }
   .tabs button[aria-selected="true"] { color: #1E1605; background: linear-gradient(var(--gold-hi), var(--gold)); border-color: var(--gold); }
 
   /* The ACA switch: a brass plate with a handwheel that turns a half turn to open the plan, and a sight glass that fills. */
-  .switch { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px 12px; width: 100%; padding: 9px 12px; margin: 0 0 10px; border-radius: 10px; border: 1px solid var(--gold-lo); background: linear-gradient(#16213D, #0D162B); color: var(--text); text-align: left; box-shadow: inset 0 1px 0 #ffffff10, 0 6px 18px -10px #000; }
-  .sw-name { font: 700 13px/1 Baskerville, "Libre Baskerville", Georgia, serif; letter-spacing: .14em; color: var(--gold-hi); }
-  .sw-name small { display: block; font: 600 9px/1 ui-monospace, Menlo, monospace; letter-spacing: .18em; color: var(--mute); margin-top: 4px; white-space: nowrap; }
-  .sw-state { display: block; margin-top: 8px; font: 800 9.5px/1 ui-sans-serif, system-ui, sans-serif; letter-spacing: .16em; font-style: normal; }
+  .switch { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px 12px; width: 100%; padding: 9px 12px; margin: 0 0 10px; border-radius: 10px; border: 1px solid var(--ctl-gold); background: linear-gradient(#16213D, #0D162B); color: var(--text); text-align: left; box-shadow: inset 0 1px 0 #ffffff10, 0 6px 18px -10px #000; }
+  .sw-name { font: 700 0.8125rem/1 Baskerville, "Libre Baskerville", Georgia, serif; letter-spacing: .14em; color: var(--gold-hi); }
+  .sw-name small { display: block; font: 600 0.5625rem/1 ui-monospace, Menlo, monospace; letter-spacing: .18em; color: var(--mute); margin-top: 4px; white-space: nowrap; }
+  .sw-state { display: block; margin-top: 8px; font: 800 0.59375rem/1 ui-sans-serif, system-ui, sans-serif; letter-spacing: .16em; font-style: normal; }
   .sw-state .sw-off { color: var(--mute); } .sw-state .sw-on { color: var(--blue-hi); display: none; text-shadow: 0 0 8px var(--blue); }
   .sw-wheel { width: 58px; height: 58px; display: block; }
   .sw-wheel svg { width: 58px; height: 58px; transition: transform .9s cubic-bezier(.3, 1.3, .4, 1), filter .4s; }
@@ -73,7 +74,7 @@
   body[data-aca="on"] .tier { opacity: 1; transform: none; }
   body[data-aca="on"] .tier:nth-child(2) { transition-delay: .06s; } body[data-aca="on"] .tier:nth-child(3) { transition-delay: .12s; } body[data-aca="on"] .tier:nth-child(4) { transition-delay: .18s; } body[data-aca="on"] .tier:nth-child(5) { transition-delay: .24s; }
   .tiers { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin: 0 0 10px; }
-  .tier { display: grid; justify-items: center; gap: 3px; padding: 5px 2px 6px; font-weight: 700; font-size: 11px; color: var(--mute); background: linear-gradient(#121C34, #0C1527); border: 1px solid var(--line); border-radius: 6px; }
+  .tier { display: grid; justify-items: center; gap: 3px; padding: 5px 2px 6px; font-weight: 700; font-size: 0.6875rem; color: var(--mute); background: linear-gradient(#121C34, #0C1527); border: 1px solid var(--ctl); border-radius: 6px; }
   .tier svg { width: 30px; height: 30px; transition: transform .6s cubic-bezier(.3, 1.4, .4, 1), filter .3s; }
   .tier .rim { fill: none; stroke: var(--nickel, #B9C0CB); stroke-width: 3.2; }
   .tier .spoke { stroke: var(--nickel, #B9C0CB); stroke-width: 2.2; stroke-linecap: round; }
@@ -82,38 +83,38 @@
   .tier[aria-pressed="true"] svg { transform: rotate(135deg); filter: drop-shadow(0 0 5px rgba(207,168,79,.7)); }
   .tier[aria-pressed="true"] .rim, .tier[aria-pressed="true"] .spoke { stroke: var(--gold-hi); }
   .tier[aria-pressed="true"] .hub { fill: var(--gold); }
-  .tiers-label { display: flex; justify-content: space-between; font: 600 9.5px/1 ui-monospace, Menlo, monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin: 0 0 6px; }
+  .tiers-label { display: flex; justify-content: space-between; font: 600 0.59375rem/1 ui-monospace, Menlo, monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin: 0 0 6px; }
   .tiers-label output { color: var(--ink); }
 
   .bar { display: flex; gap: 10px; margin: 0 0 10px; }
-  #start { flex: 1; min-width: 0; min-height: 50px; border-radius: 8px; font: 700 13px/1 Baskerville, "Libre Baskerville", Georgia, serif; letter-spacing: .22em; border: 1px solid var(--gold-hi); background: linear-gradient(var(--gold-hi), var(--gold) 55%, #A8822F); color: #1E1605; box-shadow: 0 3px 0 var(--gold-lo), 0 10px 24px -12px #000; }
+  #start { flex: 1; min-width: 0; min-height: 50px; border-radius: 8px; font: 700 0.8125rem/1 Baskerville, "Libre Baskerville", Georgia, serif; letter-spacing: .22em; border: 1px solid var(--gold-hi); background: linear-gradient(var(--gold-hi), var(--gold) 55%, #A8822F); color: #1E1605; box-shadow: 0 3px 0 var(--gold-lo), 0 10px 24px -12px #000; }
   #start.ready { animation: ready 1.8s ease-in-out infinite; }
   #start:disabled { opacity: .45; cursor: default; animation: none; }
   /* The mute button: a small brass plate; the speaker glows gold while sound is on. */
-  #mute { width: 50px; flex: none; min-height: 50px; border-radius: 8px; border: 1px solid var(--gold-lo); background: linear-gradient(#16213D, #0D162B); color: var(--mute); box-shadow: 0 3px 0 #05080f, inset 0 1px 0 #ffffff10; display: grid; place-items: center; }
+  #mute { width: 50px; flex: none; min-height: 50px; border-radius: 8px; border: 1px solid var(--ctl-gold); background: linear-gradient(#16213D, #0D162B); color: var(--mute); box-shadow: 0 3px 0 #05080f, inset 0 1px 0 #ffffff10; display: grid; place-items: center; }
   #mute[aria-pressed="false"] { color: var(--gold-hi); border-color: var(--gold); box-shadow: 0 3px 0 #05080f, 0 0 14px -4px var(--gold); }
   #mute svg { width: 24px; height: 24px; }
   #mute[aria-pressed="true"] .waves, #mute[aria-pressed="false"] .cross { display: none; }
   @keyframes ready { 50% { box-shadow: 0 3px 0 var(--gold-lo), 0 0 22px var(--glow); } }
 
-  #summary { margin: 0 0 10px; padding: 9px 12px; border: 1px solid var(--line); border-left: 2px solid var(--gold); background: var(--panel); color: var(--ink); font-size: 13px; line-height: 1.42; min-height: 4.2em; }
+  #summary { margin: 0 0 10px; padding: 9px 12px; border: 1px solid var(--line); border-left: 2px solid var(--gold); background: var(--panel); color: var(--ink); font-size: 0.8125rem; line-height: 1.42; min-height: 4.2em; }
   #summary b { color: var(--gold-hi); }
-  #notes { list-style: none; margin: 0 0 10px; padding: 8px 12px; border: 1px solid var(--line); border-left: 2px solid var(--blue); background: var(--panel); font-size: 12.5px; line-height: 1.4; color: var(--text); }
+  #notes { list-style: none; margin: 0 0 10px; padding: 8px 12px; border: 1px solid var(--line); border-left: 2px solid var(--blue); background: var(--panel); font-size: 0.78125rem; line-height: 1.4; color: var(--text); }
   #notes li + li { margin-top: 5px; }
   #notes b { color: var(--blue-hi); }
   .company { border: 1px solid var(--line); background: var(--panel); padding: 10px 14px; margin: 0 0 8px; }
-  .company h2 { font: 500 14px/1.2 Baskerville, "Libre Baskerville", Georgia, serif; color: var(--ink); margin: 0 0 8px; }
+  .company h2 { font: 500 0.875rem/1.2 Baskerville, "Libre Baskerville", Georgia, serif; color: var(--ink); margin: 0 0 8px; }
   .row { display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 12px; margin: 0 0 10px; }
   .row > div { min-width: 0; }
-  label { display: flex; justify-content: space-between; font: 600 9.5px/1 ui-monospace, Menlo, monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin: 0 0 7px; }
+  label { display: flex; justify-content: space-between; font: 600 0.59375rem/1 ui-monospace, Menlo, monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin: 0 0 7px; }
   label output { color: var(--ink); }
-  input[type=number] { width: 100%; font: 700 18px/1 ui-sans-serif, system-ui, sans-serif; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 4px; padding: 8px 9px; }
+  input[type=number] { width: 100%; font: 700 1.125rem/1 ui-sans-serif, system-ui, sans-serif; color: var(--ink); background: transparent; border: 1px solid var(--ctl); border-radius: 4px; padding: 8px 9px; }
   .step { display: flex; align-items: center; gap: 6px; }
   .step input { flex: 1; width: 0; min-width: 0; accent-color: var(--gold); }
-  .step button { width: 36px; height: 36px; flex: none; font-weight: 700; font-size: 17px; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 4px; }
-  #kept { font: 800 24px/1.1 ui-sans-serif, system-ui, sans-serif; color: var(--gold-hi); font-variant-numeric: tabular-nums; }
-  #keptsub { font-size: 12.5px; margin-top: 4px; }
-  .fine { font-size: 12px; color: var(--mute); }
+  .step button { width: 36px; height: 36px; flex: none; font-weight: 700; font-size: 1.0625rem; color: var(--ink); background: transparent; border: 1px solid var(--ctl); border-radius: 4px; }
+  #kept { font: 800 1.5rem/1.1 ui-sans-serif, system-ui, sans-serif; color: var(--gold-hi); font-variant-numeric: tabular-nums; }
+  #keptsub { font-size: 0.78125rem; margin-top: 4px; }
+  .fine { font-size: 0.75rem; color: var(--mute); }
   .fine summary { cursor: pointer; color: var(--text); }
   .fine p { margin: 8px 0 0; }
   .fine a { color: var(--gold); }
@@ -125,9 +126,9 @@
     .iso-panel { grid-area: iso; width: auto; position: sticky; top: 10px; }
   }
   .iso-card { border: 1px solid var(--gold-lo); border-radius: 6px; padding: 10px 10px 8px; background: linear-gradient(#101B33, #0A1326); box-shadow: inset 0 1px 0 #ffffff0a, 0 30px 60px -30px #000; }
-  .iso-card h2 { font: 500 14px/1.2 Baskerville, "Libre Baskerville", Georgia, serif; color: var(--ink); margin: 0 0 2px; }
+  .iso-card h2 { font: 500 0.875rem/1.2 Baskerville, "Libre Baskerville", Georgia, serif; color: var(--ink); margin: 0 0 2px; }
   .iso-card .kicker { margin: 0 0 6px; }
-  .iso-cap { font-size: 11.5px; line-height: 1.4; color: var(--mute); margin: 6px 0 0; }
+  .iso-cap { font-size: 0.71875rem; line-height: 1.4; color: var(--mute); margin: 6px 0 0; }
   .iso { --anatomy-paper:#0E172B; --anatomy-face:#13203A; --anatomy-top:#16243F; --anatomy-shade-0:#0A1222; --anatomy-shade-1:#0C1527; --anatomy-shade-2:#0F192E; --anatomy-shade-3:#121D34;
     --anatomy-lit-top:#1C2B4A; --anatomy-lit-shade:#152340; --anatomy-hi:#E8C66A; --anatomy-mid:#9C7A2E; --anatomy-lo:#5E4716; --anatomy-faint:#3A2E12; --anatomy-lit:#F6E3AC;
     --anatomy-halo:#04070F; --anatomy-halo-opacity:.9; --anatomy-dot:#E8C66A; --anatomy-weight:.6px; }
@@ -145,25 +146,25 @@
   .iso.has-focus [data-part]:not(.is-focus) { opacity: .28; }
   .iso.has-focus .is-focus { filter: brightness(1.2) drop-shadow(0 0 6px rgba(207,168,79,.45)); }
   .iso svg { transition: none; }
-  .iso-detail { margin: 8px 0 0; padding: 9px 11px; border: 1px solid var(--line); border-left: 2px solid var(--gold); background: var(--panel); font-size: 12px; line-height: 1.45; color: var(--text); }
-  .iso-detail h3 { font: 500 13px/1.2 Baskerville, "Libre Baskerville", Georgia, serif; color: var(--ink); margin: 0 0 4px; }
+  .iso-detail { margin: 8px 0 0; padding: 9px 11px; border: 1px solid var(--line); border-left: 2px solid var(--gold); background: var(--panel); font-size: 0.75rem; line-height: 1.45; color: var(--text); }
+  .iso-detail h3 { font: 500 0.8125rem/1.2 Baskerville, "Libre Baskerville", Georgia, serif; color: var(--ink); margin: 0 0 4px; }
   .iso-detail p { margin: 0; }
-  .iso-detail button { margin: 8px 0 0; font: 700 10.5px/1 ui-sans-serif, system-ui, sans-serif; letter-spacing: .08em; color: var(--gold-hi); background: transparent; border: 1px solid var(--gold-lo); border-radius: 5px; padding: 6px 9px; }
-  @media (min-width: 760px) and (max-height: 720px) { .company h2, #keptsub { display: none; } #notes { font-size: 12px; padding: 7px 10px; } }
+  .iso-detail button { margin: 8px 0 0; font: 700 0.65625rem/1 ui-sans-serif, system-ui, sans-serif; letter-spacing: .08em; color: var(--gold-hi); background: transparent; border: 1px solid var(--ctl-gold); border-radius: 5px; padding: 6px 9px; }
+  @media (min-width: 760px) and (max-height: 720px) { .company h2, #keptsub { display: none; } #notes { font-size: 0.75rem; padding: 7px 10px; } }
   /* The guide: whichever button is next blinks, one at a time: the valve, then the plan switch, then the valve again. */
   #start.blink, .switch.blink { animation: blink 1s ease-in-out infinite; }
   @keyframes blink { 0%, 100% { outline: 3px solid #F6E3ACe6; outline-offset: 2px; filter: brightness(1.2); } 50% { outline: 3px solid #F6E3AC00; outline-offset: 9px; filter: none; } }
 
   /* The tour card: floats over the board, above or below the part being read, in type a phone can read. */
-  .tour { position: fixed; z-index: 20; display: none; padding: 12px 14px; border: 1px solid var(--gold); border-radius: 12px; background: #0B1428f0; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: 0 18px 40px -12px #000; color: #DCE2EE; font-size: 16px; line-height: 1.45; max-height: 56vh; overflow: auto; }
+  .tour { position: fixed; z-index: 20; display: none; padding: 12px 14px; border: 1px solid var(--gold); border-radius: 12px; background: #0B1428f0; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: 0 18px 40px -12px #000; color: #DCE2EE; font-size: 1rem; line-height: 1.45; max-height: 56vh; overflow: auto; }
   .tour.show { display: block; }
-  .tour .t-count { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; font: 600 11px/1 ui-monospace, Menlo, monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
+  .tour .t-count { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; font: 600 0.6875rem/1 ui-monospace, Menlo, monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
   .tour .t-tag { padding: 3px 6px; border-radius: 4px; background: var(--blue); color: #fff; letter-spacing: .12em; }
-  .tour h3 { font: 500 21px/1.2 Baskerville, "Libre Baskerville", Georgia, serif; color: var(--ink); margin: 0 0 2px; }
-  .tour .t-amt { font: 800 19px/1.3 ui-sans-serif, system-ui, sans-serif; color: var(--gold-hi); margin: 0 0 6px; font-variant-numeric: tabular-nums; }
+  .tour h3 { font: 500 1.3125rem/1.2 Baskerville, "Libre Baskerville", Georgia, serif; color: var(--ink); margin: 0 0 2px; }
+  .tour .t-amt { font: 800 1.1875rem/1.3 ui-sans-serif, system-ui, sans-serif; color: var(--gold-hi); margin: 0 0 6px; font-variant-numeric: tabular-nums; }
   .tour p { margin: 0 0 10px; }
   .tour .t-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  .tour .t-row button { min-height: 44px; padding: 0 16px; border-radius: 8px; font: 700 15px/1 ui-sans-serif, system-ui, sans-serif; }
+  .tour .t-row button { min-height: 44px; padding: 0 16px; border-radius: 8px; font: 700 0.9375rem/1 ui-sans-serif, system-ui, sans-serif; }
   .tour .t-look { border: 1px solid var(--gold-hi); background: linear-gradient(var(--gold-hi), var(--gold)); color: #1E1605; }
   .tour .t-ok { border: 1px solid var(--gold); background: transparent; color: var(--ink); }
   .tour .t-skip { margin-left: auto; border: 0; background: transparent; color: var(--mute); text-decoration: underline; padding: 0 4px !important; font-weight: 600 !important; }
@@ -171,17 +172,17 @@
 
   /* On a phone the panel type steps up to a readable size. */
   @media (max-width: 759px) {
-    body { font-size: 16px; }
-    .kicker { font-size: 11px; }
-    .tabs button { font-size: 14.5px; min-height: 44px; }
-    .sw-name { font-size: 15px; } .sw-name small, .sw-state { font-size: 11px; }
-    .tiers-label, label { font-size: 11.5px; }
-    .tier { font-size: 13px; }
-    #start { font-size: 15px; }
-    #summary { font-size: 15.5px; }
-    #notes { font-size: 15px; }
-    #keptsub, .fine { font-size: 14.5px; }
-    .company h2 { font-size: 17px; }
+    body { font-size: 1rem; }
+    .kicker { font-size: 0.6875rem; }
+    .tabs button { font-size: 0.90625rem; min-height: 44px; }
+    .sw-name { font-size: 0.9375rem; } .sw-name small, .sw-state { font-size: 0.6875rem; }
+    .tiers-label, label { font-size: 0.71875rem; }
+    .tier { font-size: 0.8125rem; }
+    #start { font-size: 0.9375rem; }
+    #summary { font-size: 0.96875rem; }
+    #notes { font-size: 0.9375rem; }
+    #keptsub, .fine { font-size: 0.90625rem; }
+    .company h2 { font-size: 1.0625rem; }
   }
   /* Jay, 2026-11-18: every letter capitalized, bold and as clear as possible. */
   body { text-transform: uppercase; letter-spacing: .02em; font-weight: 650; --text: #E4E8F0; --mute: #AEB8CC; }
@@ -235,8 +236,8 @@
         <div><label for="q">Qualify <output id="qv">80%</output></label>
           <div class="step"><button type="button" id="qd" aria-label="Fewer qualify">&minus;</button><input id="q" type="range" min="40" max="100" step="5" value="80"><button type="button" id="qu" aria-label="More qualify">+</button></div></div>
       </div>
-      <div id="kept"></div>
-      <div id="keptsub"></div>
+      <div aria-live="polite" aria-atomic="true"><div id="kept"></div>
+      <div id="keptsub"></div></div>
     </section>
     <details class="fine"><summary>Where the numbers come from</summary>
       <p id="fine1"></p>

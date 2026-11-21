@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
 <title>The Payroll Coin Drop</title>
 <meta name="description" content="An arcade coin pusher that drops a month of payroll, then shows what a Section 125 wellness plan changes: fewer coins to payroll taxes, more to the employee, some back to the company. Illustrative only.">
 <meta property="og:title" content="The Payroll Coin Drop">
@@ -18,12 +19,12 @@
 <style>
   /* Two looks. The plan off: plain and muted. The plan on: lit. Every color below reads from these. */
   :root { --bg:#101114; --panel:#17181c; --line:#2c2e35; --ink:#e8eaee; --text:#b3b7c0; --mute:#8d9099;
-    --go:#8f9872; --go-deep:#5c6248; --go-ink:#15170f; --lamp:#b9a25e; --glow:transparent; color-scheme: dark; }
+    --go:#8f9872; --go-deep:#5c6248; --go-ink:#15170f; --lamp:#b9a25e; --glow:transparent; --ctl:#6b7280; color-scheme: dark; }
   body[data-wellness="on"] { --bg:#0D1117; --panel:#111827; --line:#2A3446; --ink:#F3F6FA; --text:#9AA7BA; --mute:#6b7687;
     --go:#C6F042; --go-deep:#6c8b12; --go-ink:#10160a; --lamp:#4BA3F5; --glow:#C6F04299; }
   * { box-sizing: border-box; }
   html, body { margin: 0; }
-  body { background: var(--bg); color: var(--text); font: 14.5px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; transition: background .5s ease-out, color .5s ease-out; }
+  body { background: var(--bg); color: var(--text); font: 0.90625rem/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; transition: background .5s ease-out, color .5s ease-out; }
   body[data-wellness="on"] { background: radial-gradient(1100px 560px at 30% 0%, #16213a 0%, var(--bg) 62%) fixed var(--bg); }
   /* One screen: the machine is as tall as the window allows and the controls sit beside it. On a narrow screen they stack. */
   main { --side: clamp(250px, 30vw, 320px); display: grid; gap: 10px 20px; padding: 10px; grid-template-columns: minmax(0, 1fr); justify-items: center; }
@@ -36,8 +37,8 @@
     .bottom { grid-area: bottom; width: auto; }
   }
   @media (max-width: 759px) { canvas { max-height: calc(100dvh - 232px); } }
-  .kicker { font: 600 9.5px/1 ui-monospace, Menlo, monospace; letter-spacing: .2em; text-transform: uppercase; color: var(--mute); margin: 0 0 6px; }
-  h1 { font-size: 20px; line-height: 1.15; color: var(--ink); margin: 0 0 7px; letter-spacing: -.01em; transition: color .5s; }
+  .kicker { font: 600 0.59375rem/1 ui-monospace, Menlo, monospace; letter-spacing: .2em; text-transform: uppercase; color: var(--mute); margin: 0 0 6px; }
+  h1 { font-size: 1.25rem; line-height: 1.15; color: var(--ink); margin: 0 0 7px; letter-spacing: -.01em; transition: color .5s; }
 
   /* Every control lights when it is pressed, and stays lit while it is on. */
   button { font-family: inherit; cursor: pointer; transition: background .18s ease-out, border-color .18s ease-out, box-shadow .18s ease-out, color .18s ease-out, transform .1s ease-out, filter .1s ease-out; }
@@ -45,15 +46,15 @@
   button:focus-visible, input:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 
   .tabs { display: flex; margin: 0 0 10px; }
-  .tabs button { flex: 1; min-height: 38px; font-weight: 700; font-size: 13px; color: var(--text); background: transparent; border: 1px solid var(--line); margin-left: -1px; }
+  .tabs button { flex: 1; min-height: 38px; font-weight: 700; font-size: 0.8125rem; color: var(--text); background: transparent; border: 1px solid var(--ctl); margin-left: -1px; }
   .tabs button:first-child { margin-left: 0; }
   .tabs button[aria-selected="true"] { color: var(--bg); background: var(--ink); border-color: var(--ink); position: relative; box-shadow: 0 0 14px var(--glow); }
 
   /* The plan switch: a housing, a slot with a knob that throws across, and a strip of lamps. */
-  .switch { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 7px 12px; width: 100%; padding: 8px 12px 8px; margin: 0 0 10px; border-radius: 14px; border: 2px solid var(--line); background: linear-gradient(#1d1f24, #131417); color: var(--text); text-align: left; box-shadow: 0 4px 0 #050608, inset 0 1px 0 #ffffff0d; }
-  .sw-name { font-weight: 800; font-size: 15px; letter-spacing: .1em; color: var(--ink); }
-  .sw-name small { display: block; font-weight: 600; font-size: 9.5px; letter-spacing: .16em; color: var(--text); margin-top: 2px; white-space: nowrap; }
-  .sw-slot { position: relative; width: 96px; height: 38px; border-radius: 19px; background: #07080a; border: 1px solid var(--line); box-shadow: inset 0 3px 7px #000c; font-weight: 800; font-size: 10px; letter-spacing: .12em; }
+  .switch { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 7px 12px; width: 100%; padding: 8px 12px 8px; margin: 0 0 10px; border-radius: 14px; border: 2px solid var(--ctl); background: linear-gradient(#1d1f24, #131417); color: var(--text); text-align: left; box-shadow: 0 4px 0 #050608, inset 0 1px 0 #ffffff0d; }
+  .sw-name { font-weight: 800; font-size: 0.9375rem; letter-spacing: .1em; color: var(--ink); }
+  .sw-name small { display: block; font-weight: 600; font-size: 0.59375rem; letter-spacing: .16em; color: var(--text); margin-top: 2px; white-space: nowrap; }
+  .sw-slot { position: relative; width: 96px; height: 38px; border-radius: 19px; background: #07080a; border: 1px solid var(--line); box-shadow: inset 0 3px 7px #000c; font-weight: 800; font-size: 0.625rem; letter-spacing: .12em; }
   .sw-slot b { position: absolute; top: 12px; transition: opacity .2s, color .2s; }
   .sw-off { right: 12px; color: var(--text); }
   .sw-on { left: 14px; color: #C6F042; opacity: 0; text-shadow: 0 0 8px #C6F042; }
@@ -71,7 +72,7 @@
   @keyframes chase { 0%, 100% { background: #1d3350; box-shadow: none; } 18% { background: #C6F042; box-shadow: 0 0 9px #C6F042; } 40% { background: #4BA3F5; box-shadow: 0 0 6px #4BA3F5; } }
 
   .bar { display: flex; gap: 10px; margin: 0 0 10px; }
-  #start { flex: 1; min-width: 0; min-height: 52px; border-radius: 12px; font-weight: 800; font-size: 15px; letter-spacing: .1em; border: 2px solid var(--go); background: var(--go); color: var(--go-ink); box-shadow: 0 4px 0 var(--go-deep); }
+  #start { flex: 1; min-width: 0; min-height: 52px; border-radius: 12px; font-weight: 800; font-size: 0.9375rem; letter-spacing: .1em; border: 2px solid var(--go); background: var(--go); color: var(--go-ink); box-shadow: 0 4px 0 var(--go-deep); }
   body[data-wellness="on"] #start { background: linear-gradient(#dcff66, #b3df2c); border-color: #dcff66; }
   body[data-wellness="on"] #start.ready { animation: ready 1.5s ease-in-out infinite; }
   #start:disabled { opacity: .45; cursor: default; }
@@ -79,34 +80,34 @@
   /* The guide: whichever button is the next thing to press blinks, one at a time (Start, then the plan switch, then Start). */
   #start.blink, .switch.blink { animation: blink 1s ease-in-out infinite; }
   @keyframes blink { 0%, 100% { outline: 3px solid #ffffffd9; outline-offset: 2px; filter: brightness(1.25); } 50% { outline: 3px solid #ffffff00; outline-offset: 9px; filter: none; } }
-  #mute { width: 52px; flex: none; min-height: 52px; border-radius: 12px; border: 2px solid var(--line); background: var(--panel); color: var(--mute); box-shadow: 0 4px 0 #050608; display: grid; place-items: center; }
+  #mute { width: 52px; flex: none; min-height: 52px; border-radius: 12px; border: 2px solid var(--ctl); background: var(--panel); color: var(--mute); box-shadow: 0 4px 0 #050608; display: grid; place-items: center; }
   #mute[aria-pressed="false"] { color: var(--lamp); border-color: var(--lamp); box-shadow: 0 4px 0 #050608, 0 0 14px color-mix(in srgb, var(--lamp) 45%, transparent); }
   #mute svg { width: 24px; height: 24px; }
   #mute[aria-pressed="true"] .waves, #mute[aria-pressed="false"] .cross { display: none; }
 
-  #summary { margin: 0 0 10px; padding: 8px 12px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font-size: 13px; line-height: 1.42; min-height: 4.2em; transition: background .5s, border-color .5s, color .5s; }
+  #summary { margin: 0 0 10px; padding: 8px 12px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font-size: 0.8125rem; line-height: 1.42; min-height: 4.2em; transition: background .5s, border-color .5s, color .5s; }
   #summary b { color: var(--go); }
-  #notes { list-style: none; margin: 0 0 10px; padding: 8px 12px; border: 1px solid var(--line); border-left: 3px solid #F5C24B; background: var(--panel); font-size: 12.5px; line-height: 1.4; color: var(--text); }
+  #notes { list-style: none; margin: 0 0 10px; padding: 8px 12px; border: 1px solid var(--line); border-left: 3px solid #F5C24B; background: var(--panel); font-size: 0.78125rem; line-height: 1.4; color: var(--text); }
   #notes li + li { margin-top: 5px; }
   #notes b { color: #F5C24B; }
   .company { border: 1px solid var(--line); background: var(--panel); padding: 10px 14px; margin: 0 0 8px; transition: background .5s, border-color .5s; }
-  .company h2 { font-size: 14px; color: var(--ink); margin: 0 0 8px; }
+  .company h2 { font-size: 0.875rem; color: var(--ink); margin: 0 0 8px; }
   .row { display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 12px; margin: 0 0 10px; }
   .row > div { min-width: 0; }
-  label { display: flex; justify-content: space-between; font: 600 10.5px/1 ui-monospace, Menlo, monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--mute); margin: 0 0 7px; }
+  label { display: flex; justify-content: space-between; font: 600 0.65625rem/1 ui-monospace, Menlo, monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--mute); margin: 0 0 7px; }
   label output { color: var(--ink); }
-  input[type=number] { width: 100%; font: 700 18px/1 ui-sans-serif, system-ui, sans-serif; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 0; padding: 8px 9px; }
+  input[type=number] { width: 100%; font: 700 1.125rem/1 ui-sans-serif, system-ui, sans-serif; color: var(--ink); background: transparent; border: 1px solid var(--ctl); border-radius: 0; padding: 8px 9px; }
   .step { display: flex; align-items: center; gap: 6px; }
   .step input { flex: 1; width: 0; min-width: 0; accent-color: var(--go); }
-  .step button { width: 36px; height: 36px; flex: none; font-weight: 700; font-size: 17px; color: var(--ink); background: transparent; border: 1px solid var(--line); }
-  #kept { font: 800 24px/1.1 ui-sans-serif, system-ui, sans-serif; color: var(--go); font-variant-numeric: tabular-nums; transition: color .5s, text-shadow .5s; }
+  .step button { width: 36px; height: 36px; flex: none; font-weight: 700; font-size: 1.0625rem; color: var(--ink); background: transparent; border: 1px solid var(--ctl); }
+  #kept { font: 800 1.5rem/1.1 ui-sans-serif, system-ui, sans-serif; color: var(--go); font-variant-numeric: tabular-nums; transition: color .5s, text-shadow .5s; }
   body[data-wellness="on"] #kept { text-shadow: 0 0 18px #C6F04255; }
-  #keptsub { font-size: 12.5px; margin-top: 4px; }
-  .fine { font-size: 12px; color: var(--mute); }
+  #keptsub { font-size: 0.78125rem; margin-top: 4px; }
+  .fine { font-size: 0.75rem; color: var(--mute); }
   .fine summary { cursor: pointer; color: var(--text); }
   .fine p { margin: 8px 0 0; }
   /* A short window: keep the machine and its controls on one screen by dropping the two lines that repeat what is shown. */
-  @media (min-width: 760px) and (max-height: 690px) { .company h2, #keptsub { display: none; } #notes { font-size: 12px; padding: 7px 10px; } }
+  @media (min-width: 760px) and (max-height: 690px) { .company h2, #keptsub { display: none; } #notes { font-size: 0.75rem; padding: 7px 10px; } }
 
   /* The bench model beside the machine: a third column on a wide screen, below everything on a narrow one. */
   .iso-panel { width: min(560px, 100%); }
@@ -116,9 +117,9 @@
   }
   .iso-card { border: 1px solid var(--line); border-radius: 12px; padding: 10px 10px 8px; background: var(--panel); transition: border-color .5s, box-shadow .5s; }
   body[data-wellness="on"] .iso-card { border-color: #2A3446; box-shadow: 0 0 30px -14px var(--glow); }
-  .iso-card h2 { font-size: 14px; color: var(--ink); margin: 0 0 2px; }
+  .iso-card h2 { font-size: 0.875rem; color: var(--ink); margin: 0 0 2px; }
   .iso-card .kicker { margin: 0 0 6px; }
-  .iso-cap { font-size: 11.5px; line-height: 1.4; color: var(--mute); margin: 6px 0 0; }
+  .iso-cap { font-size: 0.71875rem; line-height: 1.4; color: var(--mute); margin: 6px 0 0; }
   .iso { --anatomy-paper:#14161c; --anatomy-face:#1b1e26; --anatomy-top:#1e222b; --anatomy-shade-0:#0e1015; --anatomy-shade-1:#111318; --anatomy-shade-2:#14171d; --anatomy-shade-3:#171a21;
     --anatomy-lit-top:#262b36; --anatomy-lit-shade:#1d2129; --anatomy-hi:#b3b7c0; --anatomy-mid:#6c717c; --anatomy-lo:#43474f; --anatomy-faint:#2c2f36; --anatomy-lit:#e8eaee; --anatomy-halo:#05060a; --anatomy-dot:#b3b7c0; --anatomy-weight:.6px; transition: filter .5s; }
   body[data-wellness="on"] .iso { --anatomy-paper:#101827; --anatomy-face:#152034; --anatomy-top:#182439; --anatomy-shade-0:#0a1120; --anatomy-shade-1:#0d1526; --anatomy-shade-2:#10192c; --anatomy-shade-3:#131d32;
@@ -133,10 +134,10 @@
   .iso [data-part]:hover { filter: brightness(1.25); }
   .iso.has-focus [data-part]:not(.is-focus) { opacity: .28; }
   .iso.has-focus .is-focus { filter: brightness(1.2) drop-shadow(0 0 6px rgba(198,240,66,.4)); }
-  .iso-detail { margin: 8px 0 0; padding: 9px 11px; border: 1px solid var(--line); border-left: 3px solid var(--go); background: var(--bg); font-size: 12px; line-height: 1.45; color: var(--text); }
-  .iso-detail h3 { font-size: 13px; color: var(--ink); margin: 0 0 4px; }
+  .iso-detail { margin: 8px 0 0; padding: 9px 11px; border: 1px solid var(--line); border-left: 3px solid var(--go); background: var(--bg); font-size: 0.75rem; line-height: 1.45; color: var(--text); }
+  .iso-detail h3 { font-size: 0.8125rem; color: var(--ink); margin: 0 0 4px; }
   .iso-detail p { margin: 0; }
-  .iso-detail button { margin: 8px 0 0; font: 700 10.5px/1 ui-sans-serif, system-ui, sans-serif; letter-spacing: .08em; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px; }
+  .iso-detail button { margin: 8px 0 0; font: 700 0.65625rem/1 ui-sans-serif, system-ui, sans-serif; letter-spacing: .08em; color: var(--ink); background: transparent; border: 1px solid var(--ctl); border-radius: 8px; padding: 6px 9px; }
   /* Jay, 2026-11-18: every letter capitalized, bold and as clear as possible, matching the Fountain. */
   body { text-transform: uppercase; letter-spacing: .02em; font-weight: 650; --text: #DDE1E8; --mute: #B4B9C4; }
   body[data-wellness="on"] { --text: #E2E8F2; --mute: #AEB9CB; }
@@ -145,15 +146,15 @@
   h1, .company h2, .iso-card h2, .iso-detail h3 { font-weight: 800; }
   .kicker, label, .sw-name small, .tabs button { font-weight: 800; }
   @media (max-width: 759px) {
-    body { font-size: 16px; }
-    .kicker { font-size: 11px; }
-    .tabs button { font-size: 14.5px; min-height: 44px; }
-    .sw-name small { font-size: 11px; }
-    label { font-size: 11.5px; }
-    #summary { font-size: 15.5px; }
-    #notes { font-size: 15px; }
-    #keptsub, .fine { font-size: 14.5px; }
-    .company h2 { font-size: 17px; }
+    body { font-size: 1rem; }
+    .kicker { font-size: 0.6875rem; }
+    .tabs button { font-size: 0.90625rem; min-height: 44px; }
+    .sw-name small { font-size: 0.6875rem; }
+    label { font-size: 0.71875rem; }
+    #summary { font-size: 0.96875rem; }
+    #notes { font-size: 0.9375rem; }
+    #keptsub, .fine { font-size: 0.90625rem; }
+    .company h2 { font-size: 1.0625rem; }
   }
   @media (prefers-reduced-motion: reduce) { button, body, .sw-knob { transition: none; } .iso .plan-part, .iso [data-coins="s125"], .iso [data-coins="plan"], .iso [data-coins="company"], .iso [data-coins="fee"], .iso [data-coins="reward"], .iso [data-move="bridge"] { transition: opacity .7s; } #start.ready, .switch[aria-pressed="true"] .sw-lamps i { animation: none; } #start.blink, .switch.blink { animation: none; outline: 3px solid #fff; outline-offset: 3px; } }
 </style>
@@ -197,8 +198,8 @@
         <div><label for="q">Qualify <output id="qv">80%</output></label>
           <div class="step"><button type="button" id="qd" aria-label="Fewer qualify">&minus;</button><input id="q" type="range" min="40" max="100" step="5" value="80"><button type="button" id="qu" aria-label="More qualify">+</button></div></div>
       </div>
-      <div id="kept"></div>
-      <div id="keptsub"></div>
+      <div aria-live="polite" aria-atomic="true"><div id="kept"></div>
+      <div id="keptsub"></div></div>
     </section>
     <details class="fine"><summary>Where the numbers come from</summary>
       <p>One paycheck is an illustrative employee at a smaller company: single, no withholding adjustments (0/0), $40,000 a year, paid weekly, California, at the $1,200 level. Withholding is worked out from the 2026 federal and California tables and scaled to a month, plus the payroll tax the company pays on it. A $160 a month health premium and a 1% 401(k) contribution are illustrative. The whole company is that same paycheck for every employee, with the share who qualify enrolled. For each enrolled employee, $1,200 is withheld before tax into Section 125. The monthly trigger event pays a $1,000 Wellness Reward into the employee's account; the reward is paid after tax, comes from the plan and runs through payroll. The other $200 is Plan $, toward the benefits and the claims. Because that $1,200 is withheld before tax, payroll taxes fall on both sides: the employee takes home about $88 more, and the company stops paying $91.80, pays its $35 admin fee out of that, and keeps $56.80. Health insurance and the 401(k) do not change.</p>

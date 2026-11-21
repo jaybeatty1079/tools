@@ -32,7 +32,7 @@ h2{font-family:var(--serif);font-weight:600;font-size:1.2rem;margin:0 0 8px}
 .lede{max-width:66ch;color:var(--ink2);margin:0}
 .asof{font-family:var(--mono);font-size:.78rem;color:var(--ink2);text-align:right;line-height:1.5}
 .asof b{color:var(--ink);font-weight:500}
-main{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:24px 28px;margin-top:18px}
+.mapmain{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:24px 28px;margin-top:18px}
 .mapcol{min-width:0}
 .controls{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;font-size:.82rem;color:var(--ink2);padding:8px 0 10px;border-bottom:1px solid var(--rule)}
 .controls label{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
@@ -48,13 +48,13 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:24px 28px;margin
 .inset-focus{fill:var(--land);stroke:var(--ink2);stroke-width:.7}
 .inset-title{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;fill:var(--ink2)}
 .inset-sub{font-size:10px;fill:var(--muted)}
-.origin{fill:var(--enf)}.origin.lawful{fill:var(--lawful)}
+.origin{fill:var(--enf)}.origin.lawful{fill:var(--paper);stroke:var(--lawful);stroke-width:1.6}
 .origin-label{font-size:9.5px;fill:var(--ink2)}
 .route{fill:none;stroke-linecap:round;cursor:pointer}
 .route.documented{stroke:var(--enf);stroke-width:2.2}
 .route.partial{stroke:var(--enf);stroke-width:1.5;stroke-opacity:.75}
 .route.single{stroke:var(--single);stroke-width:1.3;stroke-dasharray:4 4}
-.route.lawful{stroke:var(--lawful);stroke-width:1.6}
+.route.lawful{stroke:var(--lawful);stroke-width:1.6;stroke-dasharray:9 3 1.5 3}
 .route.none{stroke:var(--single);stroke-width:1.2;stroke-dasharray:2 5}
 .route:hover,.route.on{stroke-width:3.2;stroke-opacity:1}
 .node{fill:var(--paper);stroke:var(--ink);stroke-width:1.2}
@@ -115,7 +115,7 @@ summary::after{content:" +";color:var(--muted)}details[open] summary::after{cont
 .sources a:hover{color:var(--tol)}
 footer{margin-top:34px;font-size:.78rem;color:var(--muted);max-width:90ch;border-top:1px solid var(--rule);padding-top:12px}
 :focus-visible{outline:2px solid var(--tol);outline-offset:2px}
-@media (max-width:1000px){main{grid-template-columns:1fr}.chron ol,.sources ol{columns:1}.courts .pattern{grid-template-columns:1fr}header{grid-template-columns:1fr}.asof{text-align:left}}
+@media (max-width:1000px){.mapmain{grid-template-columns:1fr}.chron ol,.sources ol{columns:1}.courts .pattern{grid-template-columns:1fr}header{grid-template-columns:1fr}.asof{text-align:left}}
 @media (prefers-reduced-motion:no-preference){.route,.pin{transition:stroke-width .15s,opacity .2s}}
 </style>
 </head>
@@ -128,13 +128,14 @@ footer{margin-top:34px;font-size:.78rem;color:var(--muted);max-width:90ch;border
   <div class="asof"><b>As of <span id="asof"></span></b><br>FDA facility list current as of 2026-10-29<br>Maps public guidance. Not legal advice.<br><a href="index.html">← The front door: order a peptide and ride its track</a><br><a href="glossary.html">Glossary of the terms on this map</a></div>
 </header>
 <main>
+<div class="mapmain">
   <div class="mapcol">
     <div class="controls" id="controls">
       <span class="grp"><span class="k">503B facilities</span><label><input type="checkbox" id="lFac" checked>State symbols</label><label><input type="checkbox" id="lDots" checked>Each facility</label></span>
       <span class="grp"><span class="k">Count only</span><label><input type="checkbox" id="fUnins">Never inspected</label><label><input type="checkbox" id="fPrior">Prior non-compliance</label><label><input type="checkbox" id="fWarn">Warning letter</label></span>
     </div>
     <div class="mapwrap"><svg id="map" viewBox="0 0 1100 740" role="img" aria-label="Map of the United States with one symbol per state sized by its count of registered 503B outsourcing facilities, with inset panels for China, Europe and Mexico naming the origins of supply"></svg></div>
-    <p class="cap" id="mapcap"></p>
+    <p class="cap" id="mapcap" aria-live="polite"></p>
   </div>
   <aside class="rail">
     <section><h2>Compound status, two layers</h2><p class="sub">FDA's list status and the HHS draft tolerance are different things. Tolerated is never approved.<a class="fn" href="#sources" id="fnTol"></a></p>
@@ -142,7 +143,7 @@ footer{margin-top:34px;font-size:.78rem;color:var(--muted);max-width:90ch;border
     <section><h2>Live dates</h2><ul class="dates" id="dates"></ul></section>
     <section><h2>Reading the map</h2><p class="sub">One circle per state, sized by its count of registered 503B facilities, the number inside. A dashed ring is a state with none. The small dots are the facilities themselves. The insets name the places government documents give as origins; no supply lines are drawn, because the documented routes are parcels through express hubs and drums through importers, not a line on a map.</p></section>
   </aside>
-</main>
+</div>
 <section class="chron"><h2>Chronology, zoomed on 2023 to 2027</h2><p class="sub" style="color:var(--ink2);margin:0 0 8px;font-size:.84rem">Everything that moved, moved in these four years. One lane per kind of event; the 2013 Act that created 503B facilities sits off the left edge.</p>
   <div class="strip"><svg id="strip" viewBox="0 0 1100 200" role="img" aria-label="Timeline of rule changes, 2023 to 2027, in lanes by kind"></svg></div>
   <ol id="chron"></ol></section>
@@ -152,6 +153,7 @@ footer{margin-top:34px;font-size:.78rem;color:var(--muted);max-width:90ch;border
 <details><summary>The federal register behind this map, 69 rows</summary><p class="sub">Every federal rule, list placement, court decision and enforcement letter that decides what can be compounded, prescribed, sold or imported. Date, body, decision, compounds, source. Verified 2026-11-02.</p>
   <div class="regwrap"><table class="reg" id="register"><thead><tr><th>Date</th><th>Body</th><th>What it decides</th><th>Compounds</th><th>Source</th></tr></thead><tbody></tbody></table></div></details>
 <section class="sources" id="sources"><h2>Sources</h2><ol id="srclist"></ol></section>
+</main>
 <footer>Compiled from four research tracks on 2026-11-02: the FDA facility registry, the federal rulebook, supply and enforcement records, and trade-press leads checked against primary sources. Claims that could not be traced to a government document, court record or company filing were left off this map. The HHS policy of 2026-10-30 is a draft under comment and may change. Base maps: Natural Earth, via the us-atlas and world-atlas packages. Built with D3.</footer>
 </div>
 <div class="tip" id="tip"></div>

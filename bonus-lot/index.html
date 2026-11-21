@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
 <title>Dealer City</title>
 <meta name="description" content="Three missions. Build your lot, run the payroll, set your pay plan. See what a Section 125 plan does to store net and your bonus. Illustrative only.">
 <link rel="icon" href="../favicon.svg?v=2" type="image/svg+xml"><link rel="icon" href="../favicon.ico?v=2" sizes="32x32"><link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
@@ -15,54 +16,57 @@
 <script src="sectors.js"></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <style>
-:root{--bg:#07060c;--panel:#14121c;--panel2:#1b1826;--line:#272335;--ink:#ece9f4;--mute:#8f8aa3;--green:#22a85e;--green2:#4fd486;--cash:#5cf08a;--purple:#8366ea;--magenta:#d65db1;--obj:#ffd166}
+:root{color-scheme:dark;--magenta-f:#b3358f;--green-f:#167a43;--ctl:#77718f;--bg:#07060c;--panel:#14121c;--panel2:#1b1826;--line:#272335;--ink:#ece9f4;--mute:#8f8aa3;--green:#22a85e;--green2:#4fd486;--cash:#5cf08a;--purple:#8366ea;--magenta:#d65db1;--obj:#ffd166}
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font:0.9375rem/1.5 Inter,system-ui,sans-serif}
 body{padding:0 16px 60px}
 .wrap{max-width:1180px;margin:0 auto}
 header{padding:22px 0 10px}
+.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
 .motionRow{display:flex;justify-content:flex-end;margin:0 0 8px}
-h1{font:400 clamp(40px,7vw,72px)/.95 Anton,Impact,sans-serif;margin:0;letter-spacing:.01em;text-transform:uppercase;text-shadow:0 0 18px rgba(214,93,177,.55),3px 3px 0 #3a1a4a}
+h1{font:400 clamp(2.5rem,7vw,4.5rem)/.95 Anton,Impact,sans-serif;margin:0;letter-spacing:.01em;text-transform:uppercase;text-shadow:0 0 18px rgba(214,93,177,.55),3px 3px 0 #3a1a4a}
 h1 span{color:var(--magenta)}
-.sub{color:#c9c4da;max-width:60ch;margin:6px 0 0;font-size:18px}
+h2.t,h2.k,h2.ln,h3.h{margin:0;font-weight:400}h2.ln{max-width:60ch}
+.sub{color:#c9c4da;max-width:60ch;margin:6px 0 0;font-size:1.125rem}
 #game{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#0b0914;box-shadow:0 30px 60px rgba(0,0,0,.5)}
 #game canvas{position:absolute;inset:0;width:100%!important;height:100%!important;display:block}
 #cash,#mstep,#obj{background:rgba(8,6,16,.78);padding:6px 10px;border-radius:10px;opacity:0} /* the HUD sits on its own dark and stays hidden until the missions start, so nothing reads through the opening panel */
-.l3{font:400 16px Anton,Impact,sans-serif;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;line-height:1;text-shadow:0 0 12px var(--g,#fff),0 1px 0 #000,0 0 3px rgba(0,0,0,.9);-webkit-text-stroke:.5px rgba(0,0,0,.55)}
+.l3{font:400 1rem Anton,Impact,sans-serif;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;line-height:1;text-shadow:0 0 12px var(--g,#fff),0 1px 0 #000,0 0 3px rgba(0,0,0,.9);-webkit-text-stroke:.5px rgba(0,0,0,.55)}
 .hud{position:absolute;font-family:Anton,Impact,sans-serif;letter-spacing:.02em;pointer-events:none;z-index:3}
 #cash{right:3%;top:4%;text-align:right}
-#cash .l{font-family:Inter;font-weight:600;font-size:clamp(10px,1.3vw,13px);letter-spacing:.08em;color:#c9c4da}
-#cash .v{font-size:clamp(22px,4vw,44px);color:var(--cash);text-shadow:2px 2px 0 #0a2f17,0 0 14px rgba(92,240,138,.5);font-variant-numeric:tabular-nums;line-height:1}
-#cash .d{font-size:clamp(14px,2.2vw,22px);color:var(--cash);opacity:0;text-shadow:2px 2px 0 #0a2f17}
-#mstep{left:3%;top:4%;font-size:clamp(12px,1.8vw,18px);color:#fff;text-shadow:2px 2px 0 #000;letter-spacing:.1em}
+#cash .l{font-family:Inter;font-weight:600;font-size:clamp(0.625rem,1.3vw,0.8125rem);letter-spacing:.08em;color:#c9c4da}
+#cash .v{font-size:clamp(1.375rem,4vw,2.75rem);color:var(--cash);text-shadow:2px 2px 0 #0a2f17,0 0 14px rgba(92,240,138,.5);font-variant-numeric:tabular-nums;line-height:1}
+#cash .d{font-size:clamp(0.875rem,2.2vw,1.375rem);color:var(--cash);opacity:0;text-shadow:2px 2px 0 #0a2f17}
+#mstep{left:3%;top:4%;font-size:clamp(0.75rem,1.8vw,1.125rem);color:#fff;text-shadow:2px 2px 0 #000;letter-spacing:.1em}
 #mstep span{color:var(--obj)}
-#obj{left:3%;bottom:5%;max-width:60%;font-size:clamp(12px,2vw,20px);color:var(--obj);text-shadow:2px 2px 0 #000;line-height:1.15;text-transform:uppercase}
-#obj small{display:block;font-family:Inter;font-weight:600;font-size:clamp(10px,1.3vw,13px);color:#fff;letter-spacing:.06em;margin-bottom:4px}
+#obj{left:3%;bottom:5%;max-width:60%;font-size:clamp(0.75rem,2vw,1.25rem);color:var(--obj);text-shadow:2px 2px 0 #000;line-height:1.15;text-transform:uppercase}
+#obj small{display:block;font-family:Inter;font-weight:600;font-size:clamp(0.625rem,1.3vw,0.8125rem);color:#fff;letter-spacing:.06em;margin-bottom:4px}
 /* the Service department: a button in the HUD and an overlay listing every question with its one-line answer */
 /* the Service department dock: always in reach under the game (sticky on desktop, fixed on phones), so a question is one click away at any moment */
 #svcBtn{position:sticky;bottom:10px;z-index:20;display:flex;align-items:center;gap:14px;width:100%;margin-top:10px;padding:10px 16px;border-radius:12px;border:2px solid #ffb02e;background:#16111f;color:#fff;cursor:pointer;text-align:left;box-shadow:0 8px 24px rgba(0,0,0,.45),0 0 18px rgba(255,176,46,.25);transition:.15s}
 #svcBtn:hover,#svcBtn:focus-visible{background:#221a30;transform:translateY(-1px)}
 #svcBtn .c{display:none}#svcBtn.back{border-color:#8366ea;box-shadow:0 8px 24px rgba(0,0,0,.45),0 0 18px rgba(131,102,234,.25)}#svcBtn.back .a{display:none}#svcBtn.back b.c{display:block;flex:1;color:#fff;text-align:center}
 .trayOn .svcSign span{display:none}
-#svcBtn b{font:400 clamp(16px,2.2vw,22px) Anton,Impact,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#ffcf5a}
-#svcBtn span{font:600 13px Inter;color:#ece9f4;flex:1}
-#svcBtn i{font:700 12px Inter;font-style:normal;letter-spacing:.1em;text-transform:uppercase;background:#ffb02e;color:#1a1020;border-radius:999px;padding:7px 14px;white-space:nowrap;animation:nudge 1.8s ease-in-out infinite}
+#svcBtn b{font:400 clamp(1rem,2.2vw,1.375rem) Anton,Impact,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#ffcf5a}
+#svcBtn span{font:600 0.8125rem Inter;color:#ece9f4;flex:1}
+#svcBtn i{font:700 0.75rem Inter;font-style:normal;letter-spacing:.1em;text-transform:uppercase;background:#ffb02e;color:#1a1020;border-radius:999px;padding:7px 14px;white-space:nowrap;animation:nudge 1.8s ease-in-out infinite}
 @keyframes nudge{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
 #svc{position:absolute;left:0;right:0;bottom:0;max-height:44%;z-index:6;display:none;overflow:auto;padding:34px 14px 40px;background:linear-gradient(rgba(7,6,12,0),rgba(7,6,12,.86) 26px)}
-#svc .tt{font:800 11px Inter;letter-spacing:.12em;text-transform:uppercase;color:#ffcf5a;margin:0 0 8px;text-align:center}
-#svc .svcRow{padding:7px 10px;margin:0;height:100%;background:rgba(22,17,31,.94)}#svc .svcRow b{font-size:14px}#svc .svcRow span{font-size:12px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}#svc .svcGrp{display:contents}#svc .svcGrp h3{display:none}
+#svc .tt{font:800 0.6875rem Inter;letter-spacing:.12em;text-transform:uppercase;color:#ffcf5a;margin:0 0 8px;text-align:center}
+#svc .svcRow{padding:7px 10px;margin:0;height:100%;background:rgba(22,17,31,.94)}#svc .svcRow b{font-size:0.875rem}#svc .svcRow span{font-size:0.75rem;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}#svc .svcGrp{display:contents}#svc .svcGrp h3{display:none}
 #svc.on{display:block}
-#service h2{font:400 clamp(24px,3.4vw,38px)/1 Anton,Impact,sans-serif;text-transform:uppercase;letter-spacing:.02em;margin:0}
+#service h2{font:400 clamp(1.5rem,3.4vw,2.375rem)/1 Anton,Impact,sans-serif;text-transform:uppercase;letter-spacing:.02em;margin:0}
 #service h2 span{color:var(--obj)}
-#service .lead{color:#c9c4da;margin:6px 0 0;max-width:60ch;font-size:15px}
+#service .lead{color:#c9c4da;margin:6px 0 0;max-width:60ch;font-size:0.9375rem}
 .svcGrid{display:grid;grid-template-columns:1fr 1fr;gap:18px 28px;max-width:980px;margin:18px auto 0}
 #svc .svcGrid{grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;margin:0 auto;max-width:1100px}
-.svcGrp h3{font:400 15px Anton,Impact,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--obj);margin:0 0 6px}
+.svcGrp h3{font:400 0.9375rem Anton,Impact,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--obj);margin:0 0 6px}
 .svcRow{display:block;width:100%;text-align:left;background:var(--panel);border:0;border-radius:10px;padding:10px 12px;margin:0 0 6px;color:var(--ink);cursor:pointer;font-family:Inter}
 .svcRow:hover,.svcRow:focus-visible{background:var(--panel2);outline:2px solid var(--magenta);outline-offset:-2px}
-.svcRow b{display:block;font:400 16px Anton,Impact,sans-serif;letter-spacing:.03em;text-transform:uppercase;color:#fff}
+.svcRow b{display:block;font:400 1rem Anton,Impact,sans-serif;letter-spacing:.03em;text-transform:uppercase;color:#fff}
 .svcRow.seen b::before{content:'✓ ';color:var(--green2)}
-.svcRow span{display:block;font-size:13.5px;line-height:1.4;color:#c9c4da;margin-top:2px}
+.svcRow span{display:block;font-size:0.84375rem;line-height:1.4;color:#c9c4da;margin-top:2px}
 /* the same board under the game, always in reach */
 #service{margin-top:28px;background:var(--panel);border-radius:16px;padding:22px 24px}
 #service .svcGrid{margin:16px 0 0;max-width:none}
@@ -70,141 +74,142 @@ h1 span{color:var(--magenta)}
 /* signs pinned in the garage: the big Service department sign (a button), and one plate per role */
 .svcSign{pointer-events:auto;cursor:pointer;font-family:Inter;color:#1a1020;background:linear-gradient(#ffd56b,#f59e0b);border:3px solid #fff3c4;border-radius:10px;padding:8px 26px 7px;text-align:center;white-space:nowrap;box-shadow:0 0 0 4px #1a1020,0 0 40px 8px rgba(255,176,46,.6);transition:transform .15s}
 .svcSign:hover,.svcSign:focus-visible{transform:scale(1.05)}
-.svcSign b{display:block;font:400 clamp(24px,3.6vw,42px)/1 Anton,Impact,sans-serif;letter-spacing:.06em;text-transform:uppercase}
-.svcSign span{display:block;font:800 11px Inter;letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
+.svcSign b{display:block;font:400 clamp(1.5rem,3.6vw,2.625rem)/1 Anton,Impact,sans-serif;letter-spacing:.06em;text-transform:uppercase}
+.svcSign span{display:block;font:800 0.6875rem Inter;letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
 .rs{--c:#fff;background:rgba(8,6,16,.9);border:2px solid var(--c);border-radius:10px;padding:5px 12px 6px;text-align:center;white-space:nowrap;box-shadow:0 0 14px -4px var(--c);transition:box-shadow .3s}
 .rs.lit{box-shadow:0 0 22px 2px var(--c)}
-.rs b{display:block;font:400 clamp(15px,1.9vw,22px)/1.05 Anton,Impact,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--c)}
-.rs span{display:block;font:600 11px Inter;color:#ece9f4;margin-top:2px}
-.rs.st{padding:2px 6px 3px}.rs.st b{font-size:10px;letter-spacing:.02em}.rs.plan{padding:7px 18px 8px}.rs.plan b{font-size:clamp(17px,2.4vw,28px)}
-.navrow{display:flex;gap:8px;margin-top:12px}.navrow .btn{margin-top:0}.navrow .next{flex:1;width:auto}.navrow .back{flex:none;font-size:14px;padding:12px 14px;box-shadow:none}
-.heroActs{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.heroActs .btn{margin-top:14px;box-shadow:none;font-size:14px}
+.rs b{display:block;font:400 clamp(0.9375rem,1.9vw,1.375rem)/1.05 Anton,Impact,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--c)}
+.rs span{display:block;font:600 0.6875rem Inter;color:#ece9f4;margin-top:2px}
+.rs.st{padding:2px 6px 3px}.rs.st b{font-size:0.625rem;letter-spacing:.02em}.rs.plan{padding:7px 18px 8px}.rs.plan b{font-size:clamp(1.0625rem,2.4vw,1.75rem)}
+.navrow{display:flex;gap:8px;margin-top:12px}.navrow .btn{margin-top:0}.navrow .next{flex:1;width:auto}.navrow .back{flex:none;font-size:0.875rem;padding:12px 14px;box-shadow:none}
+.heroActs{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.heroActs .btn{margin-top:14px;box-shadow:none;font-size:0.875rem}
 /* what's what: the legend under the game */
-#whats{display:flex;flex-wrap:wrap;gap:6px 22px;margin:12px 0 0;font-size:14px;color:#c9c4da}
+#whats{display:flex;flex-wrap:wrap;gap:6px 22px;margin:12px 0 0;font-size:0.875rem;color:#c9c4da}
 #whats b{color:#fff;font-weight:600}#whats i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px;vertical-align:-1px}
 #phone{position:absolute;left:3%;top:calc(4% + clamp(26px,3.6vw,38px));width:clamp(190px,32%,330px);background:rgba(10,8,18,.9);border:1px solid #3a3550;border-radius:12px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start;transform:translateX(-130%);pointer-events:none;z-index:3;visibility:hidden}
-#phoneX{pointer-events:auto;margin-top:6px;background:none;border:1px solid #3a3550;border-radius:8px;color:#c9bdfd;font:600 11px Inter;padding:3px 10px;cursor:pointer}#phoneX:hover,#phoneX:focus-visible{border-color:var(--magenta);color:#fff}
-#phone .who{font-family:Anton;font-size:12px;letter-spacing:.08em;color:var(--magenta);text-transform:uppercase}
-#phone .txt{font-size:clamp(11px,1.4vw,13.5px);line-height:1.35;color:#ece9f4;min-height:3em}
+#phoneX{pointer-events:auto;margin-top:6px;background:none;border:1px solid #3a3550;border-radius:8px;color:#c9bdfd;font:600 0.6875rem Inter;padding:3px 10px;cursor:pointer}#phoneX:hover,#phoneX:focus-visible{border-color:var(--magenta);color:#fff}
+#phone .who{font-family:Anton;font-size:0.75rem;letter-spacing:.08em;color:var(--magenta);text-transform:uppercase}
+#phone .txt{font-size:clamp(0.6875rem,1.4vw,0.84375rem);line-height:1.35;color:#ece9f4;min-height:3em}
 #phone svg{width:42px;height:42px;flex:none}
 #banner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;opacity:0;z-index:4}
-#banner .big{font-family:Anton;font-size:clamp(34px,9vw,110px);line-height:.95;color:#fff;text-transform:uppercase;letter-spacing:.02em;text-shadow:4px 4px 0 #000,0 0 30px rgba(214,93,177,.8)}
+#banner .big{font-family:Anton;font-size:clamp(2.125rem,9vw,6.875rem);line-height:.95;color:#fff;text-transform:uppercase;letter-spacing:.02em;text-shadow:4px 4px 0 #000,0 0 30px rgba(214,93,177,.8)}
 #banner .big span{color:var(--obj)}
-#banner .mid{font-family:Anton;font-size:clamp(18px,3.4vw,40px);color:var(--cash);text-shadow:3px 3px 0 #000;margin-top:6px}
-#banner .sm{font-family:Inter;font-weight:600;font-size:clamp(11px,1.6vw,16px);color:#fff;text-shadow:2px 2px 0 #000;margin-top:8px;letter-spacing:.08em;text-transform:uppercase}
+#banner .mid{font-family:Anton;font-size:clamp(1.125rem,3.4vw,2.5rem);color:var(--cash);text-shadow:3px 3px 0 #000;margin-top:6px}
+#banner .sm{font-family:Inter;font-weight:600;font-size:clamp(0.6875rem,1.6vw,1rem);color:#fff;text-shadow:2px 2px 0 #000;margin-top:8px;letter-spacing:.08em;text-transform:uppercase}
 /* captions shared by the truck story and the questions */
 #story{left:50%;bottom:5%;transform:translateX(-50%);width:min(88%,760px);text-align:center;opacity:0;z-index:4;background:rgba(8,6,16,.86);border-radius:14px;padding:12px 18px}
-#storyK{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 14px;margin-bottom:6px;font:600 12px Inter;letter-spacing:.04em;color:#ece9f4}#storyK:empty{display:none}#storyK i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:-1px}
-#storyT{font-family:Anton;font-size:clamp(16px,2.6vw,28px);line-height:1.15;color:#fff;text-shadow:3px 3px 0 #000,0 0 18px rgba(0,0,0,.8);text-transform:uppercase}
-#storyS{font-family:Inter;font-weight:600;font-size:clamp(11px,1.5vw,15px);color:var(--obj);text-shadow:2px 2px 0 #000;margin-top:6px}
+#storyK{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 14px;margin-bottom:6px;font:600 0.75rem Inter;letter-spacing:.04em;color:#ece9f4}#storyK:empty{display:none}#storyK i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+#storyT{font-family:Anton;font-size:clamp(1rem,2.6vw,1.75rem);line-height:1.15;color:#fff;text-shadow:3px 3px 0 #000,0 0 18px rgba(0,0,0,.8);text-transform:uppercase}
+#storyS{font-family:Inter;font-weight:600;font-size:clamp(0.6875rem,1.5vw,0.9375rem);color:var(--obj);text-shadow:2px 2px 0 #000;margin-top:6px}
 #qaNav{display:none;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:10px;pointer-events:auto;font-family:Inter}
-#qaNav button{font:600 12px Inter;padding:7px 14px;border-radius:999px;border:1px solid #3a3550;background:rgba(10,8,18,.9);color:#fff;cursor:pointer}
-#qaNav button.p{background:var(--magenta);border-color:transparent}
-#qaNav .n{font:600 11px Inter;color:var(--mute);align-self:center;letter-spacing:.1em}
+#qaNav button{font:600 0.75rem Inter;padding:7px 14px;border-radius:999px;border:1px solid #3a3550;background:rgba(10,8,18,.9);color:#fff;cursor:pointer}
+#qaNav button.p{background:var(--magenta-f);border-color:transparent}
+#qaNav .n{font:600 0.6875rem Inter;color:var(--mute);align-self:center;letter-spacing:.1em}
 /* the opening: a billboard on the left of the city, no blur, the city clear behind it */
 #start{position:absolute;inset:0;z-index:5;display:flex;align-items:center;padding:3%;pointer-events:none} /* the city stays draggable beside the panel */
 #open{width:min(58%,600px);background:rgba(8,6,16,.88);border-radius:14px;padding:clamp(14px,2.4vw,28px) clamp(16px,2.6vw,30px);pointer-events:auto}
-#open .ln{font-family:Anton,Impact,sans-serif;font-size:clamp(20px,3.3vw,40px);line-height:1.05;text-transform:uppercase;color:#fff;letter-spacing:.01em;margin:0}
+#open .ln{font-family:Anton,Impact,sans-serif;font-size:clamp(1.25rem,3.3vw,2.5rem);line-height:1.05;text-transform:uppercase;color:#fff;letter-spacing:.01em;margin:0}
 #open .ln span{color:var(--obj)}#open .ln:nth-child(2) span{color:var(--green2)}#open .ln:nth-child(3) span{color:#c9bdfd}
-#open p{color:#ece9f4;font-size:clamp(12px,1.45vw,15.5px);line-height:1.5;margin:12px 0 0;max-width:60ch}
+#open p{color:#ece9f4;font-size:clamp(0.75rem,1.45vw,0.96875rem);line-height:1.5;margin:12px 0 0;max-width:60ch}
 #open .live{color:var(--cash);font-weight:600;margin-top:8px}
 #open .acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center}
-.btn{font-family:Anton;letter-spacing:.08em;text-transform:uppercase;font-size:clamp(14px,2vw,20px);padding:12px 26px;border-radius:8px;border:0;background:var(--magenta);color:#fff;cursor:pointer;box-shadow:4px 4px 0 #000;transition:.15s}
+.btn{font-family:Anton;letter-spacing:.08em;text-transform:uppercase;font-size:clamp(0.875rem,2vw,1.25rem);padding:12px 26px;border-radius:8px;border:0;background:var(--magenta-f);color:#fff;cursor:pointer;box-shadow:4px 4px 0 #000;transition:.15s}
 .btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #000}
-.btn.g{background:var(--green)}
+.btn.g{background:var(--green-f)}
 .btn.q{background:var(--panel2);color:var(--ink)}
-.btn.sm{font-size:clamp(12px,1.5vw,15px);padding:9px 16px;box-shadow:none}
+.btn.sm{font-size:clamp(0.75rem,1.5vw,0.9375rem);padding:9px 16px;box-shadow:none}
 /* mission panel (in-game) */
 #panel{position:absolute;right:3%;top:calc(4% + clamp(104px,15.6vw,170px));width:clamp(220px,34%,360px);bottom:5%;z-index:3;display:none}
 #panel .m{background:rgba(10,8,18,.9);border:1px solid #3a3550;border-radius:12px;padding:12px 14px;max-height:100%;overflow:auto;display:none}
 #panel .m.on{display:block}
-.m .t{font-family:Anton;font-size:18px;letter-spacing:.04em;text-transform:uppercase;color:var(--obj)}
-.m .why{font-size:13px;color:#c9c4da;margin:2px 0 8px;line-height:1.4}
-label.l{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;color:#c9c4da;margin:10px 0 3px}
-label.l b{color:var(--ink);font-size:14px;font-family:Anton;letter-spacing:.04em}
+.m .t{font-family:Anton;font-size:1.125rem;letter-spacing:.04em;text-transform:uppercase;color:var(--obj)}
+.m .why{font-size:0.8125rem;color:#c9c4da;margin:2px 0 8px;line-height:1.4}
+label.l{display:flex;justify-content:space-between;align-items:baseline;font-size:0.78125rem;color:#c9c4da;margin:10px 0 3px}
+label.l b{color:var(--ink);font-size:0.875rem;font-family:Anton;letter-spacing:.04em}
 input[type=range]{width:100%;accent-color:var(--magenta)}
 .chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
-.toggle{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;flex-wrap:wrap;margin-top:6px}
-.toggle button{font:600 11.5px Inter;padding:6px 11px;border:0;background:transparent;color:var(--mute);cursor:pointer}
-.toggle button.on{background:var(--magenta);color:#fff}
-select,.store input{background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:5px 8px;font:12px Inter;margin-top:6px}
+.toggle{display:inline-flex;border:1px solid var(--ctl);border-radius:999px;overflow:hidden;flex-wrap:wrap;margin-top:6px}
+.toggle button{font:600 0.71875rem Inter;padding:6px 11px;border:0;background:transparent;color:var(--mute);cursor:pointer}
+.toggle button[aria-pressed=true]{background:var(--magenta-f);color:#fff}.toggle button[aria-pressed=true]::before{content:"\2713\00a0"}
+select,.store input{background:var(--panel2);color:var(--ink);border:1px solid var(--ctl);border-radius:8px;padding:5px 8px;font:0.75rem Inter;margin-top:6px}
 .store{display:grid;grid-template-columns:1.1fr .8fr .7fr auto;gap:5px;align-items:center;margin-top:6px}
 .store input{padding:5px 6px;width:100%;margin:0}.store select{margin:0}
-.store .x{background:none;border:0;color:var(--mute);cursor:pointer;font-size:14px}
-.store .you{font:600 9px Inter;color:var(--obj);letter-spacing:.1em}
-.fine{color:#a9a3bd;font-size:13px;line-height:1.45;margin-top:8px;max-width:90ch}
-#legal{margin-top:14px;color:#a9a3bd;font-size:13px;max-width:72ch}#legal summary{cursor:pointer;color:#c9c4da}#legal p{max-width:90ch}
+.store .x{background:none;border:0;color:var(--mute);cursor:pointer;font-size:0.875rem}
+.store .you{font:600 0.5625rem Inter;color:var(--obj);letter-spacing:.1em}
+.fine{color:#a9a3bd;font-size:0.8125rem;line-height:1.45;margin-top:8px;max-width:90ch}
+#legal{margin-top:14px;color:#a9a3bd;font-size:0.8125rem;max-width:72ch}#legal summary{cursor:pointer;color:#c9c4da}#legal p{max-width:90ch}
 .next{margin-top:12px;width:100%}
-details{margin-top:8px;color:var(--mute);font-size:12px}details summary{cursor:pointer;color:var(--ink)}
+details{margin-top:8px;color:var(--mute);font-size:0.75rem}details summary{cursor:pointer;color:var(--ink)}
 /* sheet */
 .sheet{margin-top:14px;display:none;grid-template-columns:1.2fr 1fr;gap:12px}
 .sheet.on{display:grid}
 @media (max-width:860px){.sheet{grid-template-columns:1fr}}
 .hero{background:#0f1a14;border:1px solid var(--green);border-radius:16px;padding:18px 20px}
-.hero .k{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#c9c4da}
-.hero .n{font:400 clamp(44px,6vw,64px)/1 Anton;color:var(--cash);margin:6px 0 2px;text-shadow:2px 2px 0 #0a2f17;font-variant-numeric:tabular-nums}
-.hero .u{font:400 22px Anton;letter-spacing:.03em;margin-top:4px;text-transform:uppercase;color:var(--obj)}
-.hero .s{color:var(--mute);font-size:13px;margin-top:8px}
+.hero .k{font-size:0.75rem;letter-spacing:.06em;text-transform:uppercase;color:#c9c4da}
+.hero .n{font:400 clamp(2.75rem,6vw,4rem)/1 Anton;color:var(--cash);margin:6px 0 2px;text-shadow:2px 2px 0 #0a2f17;font-variant-numeric:tabular-nums}
+.hero .u{font:400 1.375rem Anton;letter-spacing:.03em;margin-top:4px;text-transform:uppercase;color:var(--obj)}
+.hero .s{color:var(--mute);font-size:0.8125rem;margin-top:8px}
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
-.stat .k{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:#c9c4da}
-.wins .cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}.wins .h{font-family:Anton;font-size:16px;letter-spacing:.04em;text-transform:uppercase;color:var(--obj)}.wins ul{margin:6px 0 0;padding-left:18px;font-size:13px;line-height:1.45}.wins li{margin:4px 0}
-.stat .n{font:400 26px/1.1 Anton;margin:6px 0 3px;font-variant-numeric:tabular-nums}
-.stat .s{font-size:12.5px;color:#a9a3bd}
+.stat .k{font-size:0.75rem;letter-spacing:.05em;text-transform:uppercase;color:#c9c4da}
+.wins .cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}.wins .h{font-family:Anton;font-size:1rem;letter-spacing:.04em;text-transform:uppercase;color:var(--obj)}.wins ul{margin:6px 0 0;padding-left:18px;font-size:0.8125rem;line-height:1.45}.wins li{margin:4px 0}
+.stat .n{font:400 1.625rem/1.1 Anton;margin:6px 0 3px;font-variant-numeric:tabular-nums}
+.stat .s{font-size:0.78125rem;color:#a9a3bd}
 .stat.me{border-color:var(--purple)}.stat.me .n{color:#c9bdfd}
-.stat ul{margin:8px 0 0;padding-left:18px;font-size:13px;line-height:1.5;color:#c9c4da}.stat ul b{color:#ece9f4}
+.stat ul{margin:8px 0 0;padding-left:18px;font-size:0.8125rem;line-height:1.5;color:#c9c4da}.stat ul b{color:#ece9f4}
 .row{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-top:1px solid var(--line)}.row span:last-child{font-variant-numeric:tabular-nums;color:var(--cash)}
 #owner .row span:last-child{color:#c9bdfd}
-.ctaBox{max-width:34ch}.ctaBox .fine{margin:6px 0 0}.cta{display:inline-block;margin-top:14px;background:var(--magenta);color:#fff;font-family:Anton;letter-spacing:.06em;font-size:18px;padding:12px 22px;border-radius:8px;text-decoration:none;text-transform:uppercase;box-shadow:4px 4px 0 #000}
-@media (max-width:760px){.wins .cols{grid-template-columns:1fr}#panel{position:static;width:auto;display:none;margin-top:12px}#panel.on{display:block}#panel .m{max-height:none;background:var(--panel)}#game{aspect-ratio:3/4}#story{bottom:3%;padding:8px 10px}#storyT{font-size:15px}#storyS{font-size:11px;margin-top:4px}#storyK{font-size:9px;gap:2px 10px;margin-bottom:4px}#qaNav{gap:6px;margin-top:6px}#qaNav button{padding:5px 10px;font-size:11px}#start{align-items:flex-end;overflow:auto;padding:10px}#open{width:100%;padding:14px 14px 12px}#open .ln{font-size:22px}#open p{font-size:13px;margin-top:8px}#open .acts{margin-top:10px;gap:6px}#open .btn{font-size:14px;padding:9px 14px}.svcGrid{grid-template-columns:1fr}#service{padding:16px}#svc{padding:30px 10px 58px;max-height:46%}#svc .svcRow span{display:none}#svc .svcGrid{grid-template-columns:1fr}#svc .svcRow b{font-size:13px}#whats{font-size:13px;gap:4px 14px}}
+.ctaBox{max-width:34ch}.ctaBox .fine{margin:6px 0 0}.cta{display:inline-block;margin-top:14px;background:var(--magenta-f);color:#fff;font-family:Anton;letter-spacing:.06em;font-size:1.125rem;padding:12px 22px;border-radius:8px;text-decoration:none;text-transform:uppercase;box-shadow:4px 4px 0 #000}
+@media (max-width:760px){.wins .cols{grid-template-columns:1fr}#panel{position:static;width:auto;display:none;margin-top:12px}#panel.on{display:block}#panel .m{max-height:none;background:var(--panel)}#game{aspect-ratio:3/4}#story{bottom:3%;padding:8px 10px}#storyT{font-size:0.9375rem}#storyS{font-size:0.6875rem;margin-top:4px}#storyK{font-size:0.5625rem;gap:2px 10px;margin-bottom:4px}#qaNav{gap:6px;margin-top:6px}#qaNav button{padding:5px 10px;font-size:0.6875rem}#start{align-items:flex-end;overflow:auto;padding:10px}#open{width:100%;padding:14px 14px 12px}#open .ln{font-size:1.375rem}#open p{font-size:0.8125rem;margin-top:8px}#open .acts{margin-top:10px;gap:6px}#open .btn{font-size:0.875rem;padding:9px 14px}.svcGrid{grid-template-columns:1fr}#service{padding:16px}#svc{padding:30px 10px 58px;max-height:46%}#svc .svcRow span{display:none}#svc .svcGrid{grid-template-columns:1fr}#svc .svcRow b{font-size:0.8125rem}#whats{font-size:0.8125rem;gap:4px 14px}}
 /* phone pass: intro card is a headline and two buttons, Service dept lives in a fixed bottom bar, 12px floor for anything read */
 @media (max-width:760px){
 #startP,#openLive,#openSvc{display:none}
 #open{padding:12px 14px}
-#svcBtn{position:fixed;left:0;right:0;bottom:0;width:auto;margin:0;border-radius:0;border-width:2px 0 0;z-index:50;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));background:#0b0914;gap:10px}#svcBtn span{display:none}#svcBtn b{flex:1;font-size:17px}#svcBtn.back b.c{text-align:left}
+#svcBtn{position:fixed;left:0;right:0;bottom:0;width:auto;margin:0;border-radius:0;border-width:2px 0 0;z-index:50;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));background:#0b0914;gap:10px}#svcBtn span{display:none}#svcBtn b{flex:1;font-size:1.0625rem}#svcBtn.back b.c{text-align:left}
 body{padding-bottom:calc(52px + env(safe-area-inset-bottom,0px))} /* shortcut: bar is fixed for the whole page, not only while the scene is in view; scope it with an observer if that proves intrusive */
-.store .you,#storyK,#cash .l,#obj small,#qaNav .n,#qaNav button,#storyS,#phone .txt,#phone .who,#banner .sm{font-size:12px}
+.store .you,#storyK,#cash .l,#obj small,#qaNav .n,#qaNav button,#storyS,#phone .txt,#phone .who,#banner .sm{font-size:0.75rem}
 #svcBtn:hover{background:#0b0914;transform:none}
-.rs span,.svcSign span{display:none}.rs{padding:2px 8px 3px}.rs b{font-size:12px}.rs.plan b{font-size:13px}.svcSign{padding:5px 14px}.svcSign b{font-size:19px}
+.rs span,.svcSign span{display:none}.rs{padding:2px 8px 3px}.rs b{font-size:0.75rem}.rs.plan b{font-size:0.8125rem}.svcSign{padding:5px 14px}.svcSign b{font-size:1.1875rem}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media print{body{background:#fff;color:#111}#svcBtn,#game,#panel,.sheet,.btn,.cta{display:none!important}#owner{display:block!important}.stat,.hero{background:#fff!important;border-color:#ccc!important;color:#111}.stat .n,.hero .n,.hero .u{color:#111!important;text-shadow:none!important}.stat .k,.stat .s,.hero .k,.hero .s,.fine{color:#444!important}h1{color:#111;text-shadow:none}h1 span{color:#111}}
 </style>
 </head>
 <body>
-<div class="wrap">
+<main class="wrap">
 <header><h1 id="h1"></h1><p class="sub" id="sub"></p></header>
+<div class="sr" id="liveSay" aria-live="polite"></div><div class="sr" id="liveBanner" aria-live="polite"></div>
 <p class="motionRow"><button class="btn q sm" id="motionBtn" type="button">Pause motion</button></p>
 
 <div id="game">
   <div class="hud" id="mstep">STEP <span id="mstepV">1</span> OF 3</div>
   <div class="hud" id="cash"><div class="l">ADDED TO STORE NET, PER YEAR</div><div class="v" id="cashV">$0</div><div class="d" id="cashD"></div></div>
-  <div class="hud" id="obj"><small>Objective</small><span id="objT">Tap START</span></div>
-  <div id="phone"><svg viewBox="0 0 60 60" id="rockyFace" aria-hidden="true"></svg><div><div class="who" id="who"></div><div class="txt" id="phoneT"></div><button type="button" id="phoneX">Got it</button></div></div>
+  <div class="hud" id="obj"><small>Objective</small><span id="objT" aria-live="polite">Tap START</span></div>
+  <div id="phone"><svg viewBox="0 0 60 60" id="rockyFace" aria-hidden="true"></svg><div><div class="who" id="who"></div><div class="txt" id="phoneT" aria-hidden="true"></div><button type="button" id="phoneX">Got it</button></div></div>
   <div class="hud" id="story" aria-live="polite"><div id="storyK"></div><div id="storyT"></div><div id="storyS"></div><div id="qaNav"><button id="qaPrev">← Back</button><span class="n" id="qaN"></span><button id="qaNext" class="p">Next →</button><button id="qaAuto">Auto-play ▶</button><button id="qaLoad" style="display:none">Load this group</button><button id="qaClose">Close ✕</button></div></div>
-  <div id="banner"><div class="big" id="bannerBig">Mission <span>Passed</span></div><div class="mid" id="bannerMid"></div><div class="sm" id="bannerSm"></div></div>
+  <div id="banner" aria-hidden="true"><div class="big" id="bannerBig">Mission <span>Passed</span></div><div class="mid" id="bannerMid"></div><div class="sm" id="bannerSm"></div></div>
   <div id="svc" role="dialog" aria-label="Service department questions"><p class="tt">Pick a question. It plays on the cars above.</p><div class="svcGrid" id="svcList"></div></div>
   <div id="start"><div id="open"><div id="openLines"></div><p id="startP"></p><p class="live" id="openLive"></p><div class="acts"><button class="btn" id="tourBtn">How it works · 40 seconds ▶</button><button class="btn g" id="startBtn" disabled style="opacity:.5">Loading the city…</button><button class="btn q sm" id="openSvc" type="button">Jump to a question ▾</button></div></div></div>
   <div id="panel">
-    <div class="m on" id="m1"><div class="t"><span id="m1T"></span></div><div class="why" id="m1W"></div>
+    <div class="m on" id="m1"><h2 class="t"><span id="m1T"></span></h2><div class="why" id="m1W"></div>
       <div id="stores"></div>
-      <button class="btn next q" id="addStore" style="font-size:14px;box-shadow:none" data-t>+ Add a {site}</button>
+      <button class="btn next q" id="addStore" style="font-size:0.875rem;box-shadow:none" data-t>+ Add a {site}</button>
       <div class="fine" id="groupLine"></div>
       <div class="navrow"><button class="btn q back" id="b1" type="button">← Back</button><button class="btn next" id="n1">Next: your plans →</button></div></div>
-    <div class="m" id="m2"><div class="t">Your plans</div><div class="why">The payroll side first, then how your health plan is funded.</div>
+    <div class="m" id="m2"><h2 class="t">Your plans</h2><div class="why">The payroll side first, then how your health plan is funded.</div>
       <label class="l" for="qual"><span>Share who qualify and enroll</span><b id="qualV">80%</b></label><input type="range" id="qual" min="40" max="100" value="80">
       <div class="fine" id="planNote"></div>
       <div class="fine" style="margin-top:12px">How is your health plan funded?</div>
-      <div class="toggle" id="hp"><button data-v="insured" class="on">Fully insured</button><button data-v="level">Level-funded</button><button data-v="self">Self-funded</button></div>
+      <div class="toggle" id="hp"><button data-v="insured" class="on" aria-pressed="true">Fully insured</button><button data-v="level" aria-pressed="false">Level-funded</button><button data-v="self" aria-pressed="false">Self-funded</button></div>
       <div id="claims" style="display:none">
         <label class="l" for="cost"><span>Your plan's cost per enrolled employee, per year</span><b id="costV">$9,000</b></label><input type="range" id="cost" min="3000" max="25000" value="9000" step="250">
         <label class="l" for="defl"><span>Share of that care the $0 plan handles first</span><b id="deflV">3%</b></label><input type="range" id="defl" min="0" max="15" value="3" step="0.5">
         <div class="fine">Virtual primary care, urgent care, therapy and generics at $0 are the first stop, so some visits and fills never reach your plan. Dependents are included. Your TPA's 12-month claims summary sets the real number; this slider is only an illustration.</div>
       </div>
       <div class="navrow"><button class="btn q back" id="b2" type="button">← Back</button><button class="btn next" id="n2">Next: your pay plan →</button></div></div>
-    <div class="m" id="m3"><div class="t">Your pay plan</div><div class="why">What your bonus is figured on, and how.</div>
-      <div class="fine">I'm paid on</div><div class="toggle" id="scope"><button data-v="store" class="on" data-t>My {site}</button><button data-v="group" data-t>The whole {group}</button></div>
-      <div class="fine" style="margin-top:8px">How</div><div class="toggle" id="mode"><button data-v="all" class="on">Share of all net</button><button data-v="above">Share of net above target</button></div>
+    <div class="m" id="m3"><h2 class="t">Your pay plan</h2><div class="why">What your bonus is figured on, and how.</div>
+      <div class="fine">I'm paid on</div><div class="toggle" id="scope"><button data-v="store" class="on" aria-pressed="true" data-t>My {site}</button><button data-v="group" aria-pressed="false" data-t>The whole {group}</button></div>
+      <div class="fine" style="margin-top:8px">How</div><div class="toggle" id="mode"><button data-v="all" class="on" aria-pressed="true">Share of all net</button><button data-v="above" aria-pressed="false">Share of net above target</button></div>
       <label class="l" for="share"><span id="shareLabel">Your share</span><b id="shareV">5%</b></label><input type="range" id="share" min="1" max="40" value="5" step="0.5">
       <div class="fine" id="modeNote"></div>
       <details><summary data-t>{Site} benchmarks</summary>
@@ -219,7 +224,7 @@ body{padding-bottom:calc(52px + env(safe-area-inset-bottom,0px))} /* shortcut: b
 <p id="whats"><b>What you're looking at.</b><span><i style="background:var(--obj)"></i>The city is your group; the lot in the middle is your store</span><span><i style="background:var(--cash)"></i>The counter is what the plan adds to store net each year</span><span><i style="background:var(--magenta)"></i>Jump to a question takes you into the garage, where each answer lights up who it is about: the owner, the employees or the administrator</span><span><i style="background:#c9bdfd"></i>Drag to look around</span></p>
 
 <div class="sheet" id="sheet">
-  <div class="hero"><div class="k" id="liftK">Net profit added, per year</div><div class="n" id="lift">$0</div><div class="s" id="rockyCap" style="display:none"><b style="color:var(--magenta)">Rocky:</b> <span id="rockyCapT"></span></div><div class="u" id="units"></div><div class="s" id="liftS"></div>
+  <div class="hero"><h2 class="k" id="liftK">Net profit added, per year</h2><div class="n" id="lift">$0</div><div class="s" id="rockyCap" style="display:none"><b style="color:var(--magenta)">Rocky:</b> <span id="rockyCapT"></span></div><div class="u" id="units"></div><div class="s" id="liftS"></div>
     <div class="heroActs"><div class="ctaBox"><a class="cta" href="mailto:jay@jaybeatty.com?subject=Section%20125%20Wellness%20Plan%3A%20payroll%20analysis" id="cta"></a><div class="fine">Next step: talk to an expert. A payroll analysis confirms every number before anything is signed.</div></div><button class="btn q" id="sheetBack" type="button">← Back to my plans</button></div></div>
   <div class="stats">
     <div class="stat me"><div class="k">Your bonus</div><div class="n" id="bonusDelta">+$0</div><div class="s" id="bonusDeltaS"></div></div>
@@ -228,26 +233,26 @@ body{padding-bottom:calc(52px + env(safe-area-inset-bottom,0px))} /* shortcut: b
     <div class="stat" id="claimsStat" style="display:none"><div class="k">Doctor visits and prescriptions that never hit the company health plan (estimate)</div><div class="n" id="claimsV">$0</div><div class="s" id="claimsS"></div></div>
     <div class="stat"><div class="k">What your people see</div><div class="n">More take-home</div><div class="s">confirmed per employee in the payroll analysis. Only employees who come out ahead are enrolled, and their families get the $0 care too.</div></div>
   </div>
-  <div class="stat" style="grid-column:1/-1"><div class="k" data-t>Per {site}</div><div id="perStore" style="font-size:13px;margin-top:6px"></div></div>
-  <div class="stat wins" style="grid-column:1/-1"><div class="k">Everyone comes out ahead</div>
-    <div class="cols"><div><div class="h">Your people</div><ul><li><b>$0 care for the whole family.</b> Virtual primary care, urgent care, therapy, dermatology, generics. No copay, no claim.</li><li><b>More take-home on the same check,</b> confirmed per person before anything is signed.</li></ul></div>
-    <div><div class="h" data-t>Your {site}</div><ul><li><b id="winLift"></b> <span id="winLiftS"></span></li><li><b>Richer benefits with nothing added to the benefits budget.</b> The fee comes out of the saving.</li><li><b>Self-funded or level-funded:</b> everyday visits that never reach the company plan, shown as its own tile when you choose that in mission two.</li></ul></div></div>
+  <div class="stat" style="grid-column:1/-1"><h2 class="k" data-t>Per {site}</h2><div id="perStore" style="font-size:0.8125rem;margin-top:6px"></div></div>
+  <div class="stat wins" style="grid-column:1/-1"><h2 class="k">Everyone comes out ahead</h2>
+    <div class="cols"><div><h3 class="h">Your people</h3><ul><li><b>$0 care for the whole family.</b> Virtual primary care, urgent care, therapy, dermatology, generics. No copay, no claim.</li><li><b>More take-home on the same check,</b> confirmed per person before anything is signed.</li></ul></div>
+    <div><h3 class="h" data-t>Your {site}</h3><ul><li><b id="winLift"></b> <span id="winLiftS"></span></li><li><b>Richer benefits with nothing added to the benefits budget.</b> The fee comes out of the saving.</li><li><b>Self-funded or level-funded:</b> everyday visits that never reach the company plan, shown as its own tile when you choose that in mission two.</li></ul></div></div>
     <div class="fine" style="margin:10px 0 0"><b>Possible, not counted here.</b> Workers' comp: some carriers have recognized the lower reportable payroll. Ask your broker.</div></div>
-  <div class="stat" style="grid-column:1/-1"><div class="k" data-t>What the {site} gets</div><ul id="gets"></ul>
-    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center"><button class="btn q" id="howBtn2">How is it paid for? ▶</button><a class="btn g" id="ownerBtn" href="mailto:jay@jaybeatty.com?subject=Taking%20the%20Section%20125%20Wellness%20Plan%20to%20our%20owners" data-t style="text-decoration:none">Be the ambassador: take this to the {owners} →</a><span class="fine" style="margin:0" data-t>Next step: talk to an expert about how to bring it to the {owners}.</span><button class="btn q" id="ownerPage" type="button" style="box-shadow:none;font-size:14px" data-t>See the one-page {owner} view</button></div></div>
+  <div class="stat" style="grid-column:1/-1"><h2 class="k" data-t>What the {site} gets</h2><ul id="gets"></ul>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center"><button class="btn q" id="howBtn2">How is it paid for? ▶</button><a class="btn g" id="ownerBtn" href="mailto:jay@jaybeatty.com?subject=Taking%20the%20Section%20125%20Wellness%20Plan%20to%20our%20owners" data-t style="text-decoration:none">Be the ambassador: take this to the {owners} →</a><span class="fine" style="margin:0" data-t>Next step: talk to an expert about how to bring it to the {owners}.</span><button class="btn q" id="ownerPage" type="button" style="box-shadow:none;font-size:0.875rem" data-t>See the one-page {owner} view</button></div></div>
 </div>
 <section id="service" aria-labelledby="serviceH"><h2 id="serviceH">Service <span>department</span></h2><p class="lead">Every question a GM has asked, answered in the garage in under a minute each. Pick one; it plays in the game above.</p><div class="svcGrid" id="svcList2"></div></section>
 <div id="owner" style="display:none;margin-top:14px">
-  <div class="hero" style="border-color:var(--purple)"><div class="k" data-t>For the {owner} · prepared by your {roleLong}</div><div class="n" id="oLift" style="color:#c9bdfd;text-shadow:none">$0</div><div class="u" id="oUnits" style="color:var(--obj)"></div><div class="s" id="oLiftS"></div>
-    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap"><a class="cta" href="mailto:jay@jaybeatty.com?subject=Section%20125%20Wellness%20Plan%3A%20payroll%20analysis" style="background:var(--purple)">Run the payroll analysis →</a><span class="fine" style="align-self:center;margin:0">Next step: talk to an expert.</span><button class="btn q" id="oCopy" style="box-shadow:none;font-size:14px">Copy link</button><button class="btn q" id="oPrint" style="box-shadow:none;font-size:14px">Print / save PDF</button><button class="btn" id="oBack" style="background:transparent;color:var(--mute);box-shadow:none;font-size:14px">← Back to the city</button></div></div>
+  <div class="hero" style="border-color:var(--purple)"><h2 class="k" data-t>For the {owner} · prepared by your {roleLong}</h2><div class="n" id="oLift" style="color:#c9bdfd;text-shadow:none">$0</div><div class="u" id="oUnits" style="color:var(--obj)"></div><div class="s" id="oLiftS"></div>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap"><a class="cta" href="mailto:jay@jaybeatty.com?subject=Section%20125%20Wellness%20Plan%3A%20payroll%20analysis" style="background:#6D50DD">Run the payroll analysis →</a><span class="fine" style="align-self:center;margin:0">Next step: talk to an expert.</span><button class="btn q" id="oCopy" style="box-shadow:none;font-size:0.875rem">Copy link</button><button class="btn q" id="oPrint" style="box-shadow:none;font-size:0.875rem">Print / save PDF</button><button class="btn" id="oBack" style="background:transparent;color:var(--mute);box-shadow:none;font-size:0.875rem">← Back to the city</button></div></div>
   <div class="stats" style="margin-top:12px">
     <div class="stat"><div class="k" data-t>{group} net, before → after</div><div class="n" id="oNet">$0</div><div class="s" id="oNetS"></div></div>
     <div class="stat"><div class="k">Employees enrolled</div><div class="n" id="oEnrolled">0</div><div class="s" id="oEnrolledS"></div></div>
     <div class="stat" id="oClaimsStat" style="display:none"><div class="k">Visits and prescriptions kept off the company health plan (estimate)</div><div class="n" id="oClaims">$0</div><div class="s" id="oClaimsS"></div></div>
     <div class="stat"><div class="k">What your people see</div><div class="n">More take-home</div><div class="s">confirmed per employee in the payroll analysis. Only employees who come out ahead are enrolled; their families get the $0 care too.</div></div>
   </div>
-  <div class="stat" style="margin-top:10px"><div class="k" data-t>{Site} by {site}</div><div id="oPer" style="font-size:13px;margin-top:6px"></div></div>
-  <div class="stat" style="margin-top:10px"><div class="k">How it works</div><ul>
+  <div class="stat" style="margin-top:10px"><h2 class="k" data-t>{Site} by {site}</h2><div id="oPer" style="font-size:0.8125rem;margin-top:6px"></div></div>
+  <div class="stat" style="margin-top:10px"><h2 class="k">How it works</h2><ul>
     <li>Employees who enroll elect a pre-tax contribution under a Section 125 Wellness Plan. It funds $0 virtual primary care, urgent care, therapy, dermatology, 70-plus generics and coaching for them and their dependents.</li>
     <li data-t>Their taxable wages drop, so each {site} pays less FICA. After the plan's administration fee, that is the per-employee figure above, and it lands on the P&amp;L as net.</li>
     <li>When an employee completes qualifying care, a wellness reward comes back on the same paycheck. Only employees who come out ahead are enrolled.</li>
@@ -257,7 +262,7 @@ body{padding-bottom:calc(52px + env(safe-area-inset-bottom,0px))} /* shortcut: b
 <details id="legal"><summary>Illustrative only. Every number here is an estimate until a payroll analysis confirms it, and nothing is signed on these numbers. The fine print, benchmark sources and the full disclaimer are here.</summary>
 <p class="fine" style="margin-top:14px" id="sources"></p>
 <p class="fine" style="margin-top:8px">Illustrative only. No specific tax outcome is guaranteed; results depend on a payroll analysis and on current federal and state law. Employer figures use the plan's published per-employee math (the monthly pre-tax contribution × 7.65% FICA, less the plan's administration fee) and leave out any workers' compensation, FUTA or SUTA effect. Revenue, margin and pay-plan figures are industry averages or your own entries, not a forecast for your store. Participation is voluntary; employees typically see higher take-home pay, though some do not. This is a fixed indemnity benefit, not health insurance; it sits alongside, not in place of, major medical. Wellness payments above an employee's unreimbursed medical expenses may be taxable to the employee. This is a marketing communication, not legal, tax, accounting or financial advice. Not affiliated with any video game or its publisher.</p></details>
-</div>
+</main>
 
 <script>
 /* ===== engine: sector wiring, model, missions, HUD, questions (plain script) ===== */
@@ -274,7 +279,7 @@ const colorOf=b=>(LABELS.find(x=>x[0]===b)||LABELS[0])[1];
 const sitesN=n=>`${n} ${n===1?W.site:W.sites}`;
 document.title=SEC.title.join(' ');document.querySelector('meta[name=description]').content=SEC.meta;
 $('#h1').innerHTML=`${esc(SEC.title[0])} <span>${esc(SEC.title[1])}</span>`;
-$('#openLines').innerHTML=C.open.lines.map(([a,b])=>`<p class="ln"><span>${esc(t(a))}</span> ${esc(t(b))}</p>`).join('');
+$('#openLines').innerHTML=C.open.lines.map(([a,b])=>`<h2 class="ln"><span>${esc(t(a))}</span> ${esc(t(b))}</h2>`).join('');
 $('#sub').textContent=C.sub;$('#startP').textContent=t(C.open.para);$('#m1T').textContent=C.m1[0];$('#m1W').textContent=C.m1[1];$('#who').textContent=C.who;$('#cta').textContent=C.cta;$('#unitLabel').textContent=W.sale;
 $('#benchNote').textContent=SEC.bench.note;$('#sources').textContent='Benchmark sources: '+SEC.bench.sources.join('; ')+'.';
 document.querySelectorAll('[data-t]').forEach(el=>{el.innerHTML=t(el.innerHTML)});
@@ -293,11 +298,11 @@ function renderStores(){
   $('#addStore').style.display=S.stores.length>=BM.MAX_STORES?'none':'';
 }
 $('#addStore').onclick=()=>{const last=S.stores[S.stores.length-1];S.stores.push({brand:LABELS[S.stores.length%LABELS.length][0],emp:SEC.sizes.add,state:last.state});renderStores();update()};
-function toggle(id,k,after){$('#'+id).onclick=e=>{const b=e.target.closest('button');if(!b)return;S[k]=k==='plan'?+b.dataset.v:b.dataset.v;document.querySelectorAll('#'+id+' button').forEach(x=>x.classList.toggle('on',x===b));after&&after();update()}}
+function toggle(id,k,after){$('#'+id).onclick=e=>{const b=e.target.closest('button');if(!b)return;S[k]=k==='plan'?+b.dataset.v:b.dataset.v;document.querySelectorAll('#'+id+' button').forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-pressed',x===b)});after&&after();update()}}
 toggle('hp','hp');toggle('scope','scope');
 toggle('mode','mode',()=>{const was=S.mode==='all'?25:5;if(S.share===was){S.share=S.mode==='all'?5:25;$('#share').value=S.share}}); // keep a share the GM already set
 for(const k of ['qual','cost','defl','share','rpe','margin','unit']){$('#'+k).oninput=e=>{S[k]=+e.target.value;update()}}
-function syncControls(){for(const k of ['qual','cost','defl','share','rpe','margin','unit'])$('#'+k).value=S[k];for(const id of ['hp','scope','mode'])document.querySelectorAll('#'+id+' button').forEach(b=>b.classList.toggle('on',b.dataset.v==String(S[id])))}
+function syncControls(){for(const k of ['qual','cost','defl','share','rpe','margin','unit'])$('#'+k).value=S[k];for(const id of ['hp','scope','mode'])document.querySelectorAll('#'+id+' button').forEach(b=>{const on=b.dataset.v==String(S[id]);b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)})}
 
 const model=()=>BM.model(S);
 const shown={cash:0};
@@ -337,14 +342,15 @@ const HUD=['#cash','#mstep','#obj'];
 setTimeout(enableStart,7000); // the numbers work without the city (no WebGL, blocked CDN); do not keep a GM waiting
 
 const rockyLine=(n,m)=>C.lines[n].replace('{n}',S.stores.length).replace('{emp}',m.g.emp.toLocaleString()).replace('{enrolled}',m.g.enrolled.toLocaleString()).replace('{lift}',fmt(m.g.lift)).replace('{bonus}','+'+fmt(m.bonusDelta)).replace('{units}',Math.round(m.units).toLocaleString());
-function say(n,m){const x=rockyLine(n,m);
+function say(n,m){const x=rockyLine(n,m);$('#liveSay').textContent=x; // the full line goes to a polite node once; the typed copy in #phoneT is aria-hidden
+
   const el=$('#phoneT'),ty=document.createTextNode(''),rest=document.createElement('span');rest.style.visibility='hidden';rest.textContent=x;el.textContent='';el.append(ty,rest); // the hidden remainder holds the box at its final size while the line types
   gsap.killTweensOf('#phone');$('#phone').style.visibility='visible';gsap.to('#phone',{x:'0%',duration:reduce?0:.4,ease:'power3.out'});
   let i=0;clearInterval(say.tm);if(reduce){ty.data=x;rest.textContent=''}else{say.tm=setInterval(()=>{i++;ty.data=x.slice(0,i);rest.textContent=x.slice(i);if(i>=x.length)clearInterval(say.tm)},18)}}
 // shortcut: dimHud slides the dialog away without hiding it, so its button stays focusable off-screen until the next say(); hide it there too if keyboard users hit it
 const closeDialog=now=>{clearInterval(say.tm);gsap.killTweensOf('#phone');gsap.to('#phone',{x:'-130%',duration:now?0:.4,ease:'power3.in',onComplete:()=>{$('#phone').style.visibility='hidden'}})};
 $('#phoneX').onclick=()=>closeDialog(); // the button closes the dialog; no timer does
-function banner(big,mid,sm,hold=1.8){const b=$('#banner');$('#bannerBig').innerHTML=big;$('#bannerMid').textContent=mid;$('#bannerSm').textContent=sm;
+function banner(big,mid,sm,hold=1.8){const b=$('#banner');$('#bannerBig').innerHTML=big;$('#bannerMid').textContent=mid;$('#bannerSm').textContent=sm;$('#liveBanner').textContent=[$('#bannerBig').textContent,mid,sm].filter(Boolean).join('. ');
   if(reduce){b.style.opacity=1;setTimeout(()=>b.style.opacity=0,2500);return null}
   return gsap.timeline().set(b,{opacity:1}).fromTo('#bannerBig',{scale:2.2,opacity:0},{scale:1,opacity:1,duration:.35,ease:'power4.out'}).fromTo('#bannerMid',{y:20,opacity:0},{y:0,opacity:1,duration:.25},'-=.2').fromTo('#bannerSm',{opacity:0},{opacity:1,duration:.25},'-=.15').to(b,{opacity:0,duration:.5,delay:hold});} // rises in about .5 s, holds, fades
 
@@ -562,7 +568,7 @@ const host=document.getElementById('game');
 const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
 const mobile=matchMedia('(max-width:760px)').matches;renderer.setPixelRatio(mobile?1:Math.min(2,devicePixelRatio));renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.95;
 const ENV=(()=>{const p=new THREE.PMREMGenerator(renderer),t=p.fromScene(new RoomEnvironment(),.04).texture;p.dispose();return t})(); // reflections for the stage cars only
-host.insertBefore(renderer.domElement,host.firstChild);renderer.shadowMap.enabled=!mobile;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.domElement.setAttribute('role','img');renderer.domElement.setAttribute('aria-label','A 3D city that stands for your group, with your own store\'s lot in the middle and a garage with three service bays. Drag to look around. The same figures and answers are in the text on this page.');host.insertBefore(renderer.domElement,host.firstChild);renderer.shadowMap.enabled=!mobile;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 const labelRenderer=new CSS2DRenderer();Object.assign(labelRenderer.domElement.style,{position:'absolute',inset:'0',pointerEvents:'none',zIndex:1});renderer.domElement.after(labelRenderer.domElement); // text as real HTML pinned to the scene, crisp at any screen density
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x0b0914);scene.fog=new THREE.FogExp2(0x6b3a52,0.0024); // a light sunset haze; thick fog read as a blurred background
 /* sunset: a sky dome, a low sun that stays behind the city from wherever the camera looks, warm haze */
@@ -733,7 +739,7 @@ function setLot(tier,emp,brandColors){
 }
 function setRing(frac){if(ring)ring.material.opacity=.15+frac*.85}
 let towers=[];
-function labelSprite(text,hex,size){const el=document.createElement('div');el.className='l3';el.textContent=text.toUpperCase();el.style.color=hex;el.style.setProperty('--g',hex);el.style.fontSize=Math.round((size||16)*(mobile?.78:1))+'px';return new CSS2DObject(el)} // .scale on these is ignored: size is the font size
+function labelSprite(text,hex,size){const el=document.createElement('div');el.className='l3';el.textContent=text.toUpperCase();el.style.color=hex;el.style.setProperty('--g',hex);el.style.fontSize=Math.round((size||16)*(mobile?.78:1))/16+'rem';return new CSS2DObject(el)} // .scale on these is ignored: size is the font size
 function setGroup(stores){
   const me=stores[0];setLot(me.emp<=LOT[0]?0:me.emp<=LOT[1]?1:me.emp<=LOT[2]?2:3,me.emp,[me.color]);
   for(const t of towers)drop(scene,t);towers=[];for(const k in blocks)blocks[k].visible=true;
@@ -776,7 +782,7 @@ function bike(color){const g=new THREE.Group();const body=new THREE.Mesh(new THR
 const ROLES={owner:{kind:'suv-luxury',hex:0xffd166,css:'#ffd166',name:'Owner',sub:'Keeps the tax it no longer owes',sc:2.5,ss:1.45,sy:6},
   staff:{kind:'van',hex:0x22a85e,css:'#4fd486',name:'Employees',sub:'More take-home and $0 care',sc:2.45,ss:1.4,sy:6},
   admin:{kind:'truck',hex:0x8366ea,css:'#c9bdfd',name:'Administrator',sub:'Runs the plan for the fee',sc:2.4,ss:1.4,sy:6}};
-function mkSign(name,sub,css,big){const el=document.createElement('div');el.className='rs'+(big?' plan':'');el.style.setProperty('--c',css);el.style.fontSize=mobile?'12px':'';const b=document.createElement('b');b.textContent=name;const sp=document.createElement('span');sp.textContent=sub;el.append(b,sp);return new CSS2DObject(el)}
+function mkSign(name,sub,css,big){const el=document.createElement('div');el.className='rs'+(big?' plan':'');el.style.setProperty('--c',css);el.style.fontSize=mobile?'0.75rem':'';const b=document.createElement('b');b.textContent=name;const sp=document.createElement('span');sp.textContent=sub;el.append(b,sp);return new CSS2DObject(el)}
 const beacon=()=>{const b=new THREE.Mesh(new THREE.BoxGeometry(.3,.14,1.2),new THREE.MeshStandardMaterial({color:0x000,emissive:0xffb02e,emissiveIntensity:2.5}));b.position.set(-.35,2.05,0);return b}; // a service truck's roof light bar
 const roleSign=k=>mkSign(ROLES[k].name,ROLES[k].sub,ROLES[k].css);
 function coinTo(from,to,delay,parent){const c=new THREE.Mesh(new THREE.BoxGeometry(.8,.45,.8),gold);c.position.copy(from);parent.add(c);
